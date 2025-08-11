@@ -4,10 +4,15 @@ public class Main {
     public static void main(String[] args) {
 
         Person.Human h = new Person.Human("Тест");
-        Person.Skeleton s = new Person.Skeleton("Тест", 100, 2, 3, 10, 1);
+        Person s = Game.spawnPerson(3);
 
-        h.levelUp(100, h.getlevelUpThreshold());
+        Game.spawnPerson(1);
 
+
+        s.showStats();
+
+        Game.lootOfPerson(h, s);
+        h.showStats();
 
     }
 
