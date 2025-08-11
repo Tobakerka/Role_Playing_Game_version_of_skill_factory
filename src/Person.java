@@ -1,16 +1,32 @@
+import java.util.ArrayList;
+
 public abstract class Person {
 
-    String name;
-    double maxHealth, health;
-    int power, agility, gold, level ;
-    long levelUpThreshold; // порог для повышения уровня
-    long exp;
+    ArrayList<Item> inventory = new ArrayList<>();
+    private String name;
+    private double maxHealth, health;
+    private int power, agility, gold, level ;
+    private long levelUpThreshold; // порог для повышения уровня
+    private long exp;
+    private int maxStrength;
+    private int Strength;
+    private boolean isAlive;
 
     // Конструктор для создания персонажа
     public Person(String name) {
 
         this.name = name;
+        maxStrength = 100;
+        Strength = 100;
+        isAlive = true;
     }
+
+    // Геттеры и сеттеры:
+    public long getlevelUpThreshold() {
+        return levelUpThreshold;
+    }
+
+    // Методы:
 
     // Метод для повышения уровня
     public void levelUp(long givenExp, long levelUpThreshold) {
@@ -48,7 +64,7 @@ public abstract class Person {
 
             super(name);
             super.maxHealth = 100;
-            super.health = maxHealth;
+            super.health = 100;
             super.power = 10;
             super.agility = 10;
             super.gold = 0;
@@ -65,7 +81,7 @@ public abstract class Person {
 
             super(name);
             super.maxHealth = 80;
-            super.health = maxHealth;
+            super.health = 80;
             super.power = 8;
             super.agility = 15;
             super.gold = 0;
@@ -91,6 +107,18 @@ public abstract class Person {
     public static class Zombie extends Person {
 
         public Zombie(String name, int maxHealth, int power, int agility, int gold, int level) {
+
+            super(name, maxHealth, power, agility, gold);
+            super.level = level;
+            super.exp = 0L;
+            super.levelUpThreshold = 100L;
+        }
+    }
+
+    // Класс противника
+    public static class Goblin extends Person {
+
+        public Goblin(String name, int maxHealth, int power, int agility, int gold, int level) {
 
             super(name, maxHealth, power, agility, gold);
             super.level = level;
