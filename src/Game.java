@@ -2,6 +2,7 @@
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 import static java.lang.StrictMath.random;
 
@@ -41,7 +42,7 @@ public class Game {
         // Если у персонажа будет оружие или броня, то запускается метод создания оружия или брони. Если их нет, то присваивается null
         if (isWeapon) {
 
-            weapon = spawnWeapon(level);
+            weapon = (Item.Weapon) spawnWeapon(level);
         } else {
 
             weapon = null;
@@ -49,7 +50,7 @@ public class Game {
 
         if (isArmor) {
 
-            armor = spawnArmor(level);
+            armor = (Item.Armor)spawnArmor(level);
         } else {
 
             armor = null;
@@ -68,10 +69,10 @@ public class Game {
 
             if (level > 1) {
 
-                maxHealth += Math.round(maxHealth * 0.2);
-                maxStrength += Math.round(maxStrength * 0.2);
-                power += Math.round(power * 0.2);
-                agility += Math.round(agility * 0.2);
+                maxHealth += Math.round(maxHealth * 0.05);
+                maxStrength += Math.round(maxStrength * 0.05);
+                power += Math.round(power * 0.05);
+                agility += Math.round(agility * 0.05);
             } else {
                 maxHealth = 100;
                 maxHealth = 100;
@@ -112,7 +113,7 @@ public class Game {
         int levelWeapon = level;
         String name = "";
         int damage = 10;
-        int price = 2;
+        int price = 10;
 
         Random random = new Random();
         switch (random.nextInt(3))  {
@@ -128,40 +129,41 @@ public class Game {
         }
 
         for (int i = 0; i < level; i++) {
-            damage += damage * 0.2;
-            price += price * 0.2;
+            damage += Math.round(damage * 0.05);
+            price += Math.round(price * 0.05);
         }
 
         return new Item.Weapon(name, damage, price, level);
+
     }
 
     public static Item.Armor spawnArmor(int level) {
 
         int levelArmor = level;
         String name = "";
-        int price = 2;
+        int price = 10;
         int defence = 10;
 
         Random random = new Random();
 
         for (int i = 0; i < level; i++) {
-            price += price * 0.2;
-            defence += defence * 0.2;
+            price += Math.round(price * 0.05);
+            defence += Math.round(defence * 0.05);
         }
 
         // Случайным образом выбирается тип брони и в зависимости от этого выбирается название и сила доп эффекта
         switch (random.nextInt(3)) {
             case 0: {
                 name = "Кожаная броня";
-                price += Math.round(price * 0.2);
+                price += Math.round(price * 0.05);
             }
             case 1: {
                 name = "Железная броня";
-                price += Math.round(price * 0.4);
+                price += Math.round(price * 0.08);
             }
             case 2: {
                 name = "Стальной броня";
-                price += Math.round(price * 0.6);
+                price += Math.round(price * 0.1);
             }
         }
         return new Item.Armor(name, price, defence, level);
@@ -200,10 +202,147 @@ public class Game {
             System.out.println("Вы ничего не получили\n");
         }
 
+        for (Item item : loot) {
+
+            System.out.println("Добавить предмет + " + item.name + " в инвентарь? (y/n)");
+            Scanner scanner = new Scanner(System.in);
+            boolean check = true;
+            while (check) {
+
+                switch (scanner.next()) {
+                    case "y": {
+                        player.addInventory(item);
+                        check = false;
+                        scanner = null;
+                        break;
+                    }
+                    case "n": {
+                        check = false;
+                        scanner = null;
+                        break;
+                    }
+                    default: {
+                        System.out.println("Неверный ввод");
+                    }
+                }
+
+            }
+        }
     }
 
-    public static void generateItem() {
+    public static ArrayList generateItem(int countItem, int level) {
 
+        ArrayList<Item> items = new ArrayList<>();
+        for (int i = 0; i < countItem; i++) {
 
+            Random random = new Random();
+            int tempRand = random.nextInt(4);
+            switch (tempRand) {
+                case 0: {
+                    items.add(Game.spawnWeapon(level));
+                    break;
+                }
+                case 1: {
+                    items.add(Game.spawnArmor(level));
+                    break;
+                }
+                case 2: {
+                    items.add(Game.spawnPotion(level));
+                    break;
+                }
+                case 3: {
+                    items.add(Game.spawnFood(level));
+                    break;
+                }
+            }
+        }
+        return items;
+    }
+
+    private static Item.Potion spawnPotion(int level) {
+
+        Random random = new Random();
+        boolean isPotionEffect = random.nextBoolean();
+        String name = "";
+        int price = 10;
+        String typeEffect = "";
+        int power = 10;
+
+        if (isPotionEffect) {
+
+//          typeEffect = "лечебное";
+            name = "Зелье лечения";
+        } else {
+
+            typeEffect = "выносливости";
+            name = "Зелье выносливости";
+        }
+
+        if (level > 1) {
+            for (int i = 0; i < level; i++) {
+                price += Math.round(price * 0.05);
+                power += Math.round(power * 0.05);
+            }
+        } else {
+
+        }
+        return new Item.Potion(name, price, "Зелье", power, level);
+    }
+
+    public static Item.Food spawnFood(int level) {
+
+        String name = "";
+        int price = 10;
+        int power = 10;
+        Random random = new Random();
+        int rendFood = random.nextInt(7);
+
+        switch (rendFood) {
+            case 0: {
+                name = "Яблоко";
+                power += 1;
+                break;
+            }
+            case 1: {
+                name = "Хлеб";
+                power += 2;
+                break;
+            }
+            case 2: {
+                name = "Мясо";
+                power += 3;
+                break;
+            }
+            case 3: {
+                name = "Сыр";
+                power += 4;
+                break;
+            }
+            case 4: {
+                name = "Молоко";
+                power += 5;
+                break;
+            }
+            case 5: {
+                name = "Картошка";
+                power += 6;
+                break;
+            }
+            case 6: {
+                name = "Суп";
+                power += 7;
+                break;
+            }
+        }
+
+        if (level > 1) {
+            for (int i = 0; i < level; i++) {
+                price += Math.round(price * 0.05);
+                power += Math.round(power * 0.05);
+            }
+        } else {
+
+        }
+        return new Item.Food(name, price, power, level);
     }
 }

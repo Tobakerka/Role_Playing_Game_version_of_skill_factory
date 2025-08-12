@@ -1,8 +1,10 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public abstract class Person {
 
-    ArrayList<Item> inventory = new ArrayList<>();
+    private int countInventory;
+    ArrayList<Item> inventory = new ArrayList<>(countInventory);
 
     private String name;
     private double maxHealth, health;
@@ -10,7 +12,7 @@ public abstract class Person {
     private long levelUpThreshold; // порог для повышения уровня
     private long exp;
     private int maxStrength;
-    private int Strength;
+    private int strength;
     private boolean isAlive;
 
     private Item.Weapon weapon;
@@ -21,11 +23,17 @@ public abstract class Person {
 
         this.name = name;
         maxStrength = 100;
-        Strength = 100;
+        strength = 100;
         isAlive = true;
         Item.Weapon weapon = null;
         Item.Armor armor = null;
+
+        for (Item item : inventory) {
+            inventory.add(null);
+        }
     }
+
+    // Конструктор для удобного создания противника для процедурной генерации
 
     public Person(String name, int maxHealth, int power, int agility, int gold, Item.Weapon weapon, Item.Armor armor) {
         this.name = name;
@@ -37,6 +45,8 @@ public abstract class Person {
         this.weapon = weapon;
         this.armor = armor;
         this.isAlive = true;
+        this.countInventory = 20;
+        this.strength = 100;
     }
     // Геттеры и сеттеры:
     public long getlevelUpThreshold() {
@@ -77,14 +87,14 @@ public abstract class Person {
 
             givenExp -= levelUpThreshold;
             level++;
-            maxHealth += Math.round(maxHealth * 0.2);
+            maxHealth += Math.round(maxHealth * 0.05);
             health = maxHealth;
-            maxStrength += Math.round(maxStrength * 0.2);
-            Strength = maxStrength;
-            power += Math.round(power * 0.2);
-            agility += Math.round(agility * 0.2);
+            maxStrength += Math.round(maxStrength * 0.05);
+            strength = maxStrength;
+            power += Math.round(power * 0.05);
+            agility += Math.round(agility * 0.05);
 
-            levelUpThreshold += Math.round(levelUpThreshold * 0.2);
+            levelUpThreshold += Math.round(levelUpThreshold * 0.05);
             System.out.println("Уровень повышен!" + " Текущий уровень: " + level);
         }
         if (givenExp < this.levelUpThreshold) {
@@ -99,10 +109,197 @@ public abstract class Person {
     }
 
     // Метод открывает инвентарь и предлагает действия с предметами
-    public void openInventory() {
+    public void openInventary() {
 
-        for (Item item : inventory) {
-            System.out.println(item);
+        boolean check = true;
+        while (check) {
+        lookInventory();
+
+        System.out.println("Выберите предмет \nq - выход");
+        Scanner scanner = new Scanner(System.in);
+
+        int tempIntcheck = -1;
+            if (scanner.hasNextInt()) {
+                tempIntcheck = scanner.nextInt();
+
+                if (tempIntcheck <= inventory.size() && tempIntcheck >= 0) {
+
+                    int tempInt = tempIntcheck;
+
+                    if (this.inventory.get(tempInt).getType().equals("Оружие")) {
+
+                        if (this.inventory.get(tempInt).equals(weapon)) {
+
+                            System.out.println("1 - снять, 2 - удалить, 3 - информация, 0 - назад");
+                            Scanner scannerWeapon = new Scanner(System.in);
+                            String tempWeapon = scannerWeapon.nextLine();
+                            switch (tempWeapon) {
+                                case "1": {
+                                    this.weapon = null;
+                                    System.out.println("Оружие снято");
+                                    break;
+                                }
+                                case "2": {
+                                    this.weapon = null;
+                                    removeItem(inventory.get(tempInt));
+                                    System.out.println("Оружие удалено");
+                                    break;
+                                }
+                                case "3": {
+                                    inventory.get(tempInt).getInfo();
+                                    return;
+                                }
+                                case "0": {
+                                    System.out.println("Возврат");
+                                    return;
+                                }
+                                default: {
+                                    System.out.println("Неверный ввод");
+                                }
+                            }
+                        } else {
+
+                            System.out.println("1 - надеть, 2 - удалить, 3 - информация, 0 - назад");
+                            Scanner scannerWeapon1 = new Scanner(System.in);
+                            String tempWeapon1 = scannerWeapon1.nextLine();
+                            switch (tempWeapon1) {
+                                case "1": {
+                                    if (inventory.get(tempInt).getLevel() <= level) {
+                                        weapon = (Item.Weapon) inventory.get(tempInt);
+                                        System.out.println("Оружие надето");
+                                    } else {
+                                        System.out.println("Недостаточно уровня!");
+                                    }
+
+                                    break;
+                                }
+                                case "2": {
+                                    removeItem(inventory.get(tempInt));
+                                    System.out.println("Оружие удалено");
+                                    break;
+                                }
+                                case "3": {
+                                    Item.Weapon weapon1 = (Item.Weapon) inventory.get(tempInt);
+                                    weapon1.getInfo();
+                                    break;
+                                }
+                            }
+                        }
+                    } else if (inventory.get(tempInt).getType().equals("Броня")) {
+
+                        if (inventory.get(tempInt).equals(armor)) {
+                            System.out.println("1 - снять, 2 - удалить, 3 - информация, 0 - назад");
+                            Scanner scannerArmor = new Scanner(System.in);
+                            String tempArmor = scannerArmor.nextLine();
+                            if (tempArmor.equals("1")) {
+                                armor = null;
+                                System.out.println("Броня снята");
+                            } else if (tempArmor.equals("2")) {
+                                armor = null;
+                                removeItem(inventory.get(tempInt));
+                                System.out.println("Оружие удалено");
+                            } else if (tempArmor.equals("3")) {
+                                inventory.get(tempInt).getInfo();
+                            } else if (tempArmor.equals("0")) {
+                                System.out.println("Возврат");
+                                return;
+                            } else {
+                                System.out.println("Возврат");
+                                return;
+                            }
+                        } else {
+                            System.out.println("1 - надеть, 2 - удалить, 3 - информация, 0 - назад");
+                            Scanner scannerArmor1 = new Scanner(System.in);
+                            String tempArmor = scannerArmor1.nextLine();
+                            if (tempArmor.equals("1")) {
+                                if (inventory.get(tempInt).getLevel() <= level) {
+                                    armor = (Item.Armor) inventory.get(tempInt);
+                                    System.out.println("Броня надета");
+                                } else {
+                                    System.out.println("Уровень слишком мал!");
+                                }
+                            } else if (tempArmor.equals("2")) {
+                                armor = null;
+                                removeItem(inventory.get(tempInt));
+                                System.out.println("Броня удалена");
+                            }
+                            else if ( tempArmor.equals("3")) {
+                                inventory.get(tempInt).getInfo();
+                            } else if (tempArmor.equals("0")) {
+                                System.out.println("Возврат");
+                                return;
+                            } else {
+                                System.out.println("Возврат");
+                                return;
+                            }
+                        }
+                    } else if (inventory.get(tempInt).getType().equals("Зелье")) {
+
+                        System.out.println("1 - выпить, 2 - удалить, 0 - назад");
+                        Scanner scannerPotion = new Scanner(System.in);
+                        String tempPotion = scannerPotion.nextLine();
+                        if (tempPotion.equals("1")) {
+                            Item.Potion potion = (Item.Potion) inventory.get(tempInt);
+                            if (potion.typeEffect.equals("лечебное")) {
+                                setHealth(potion.getPower(), maxHealth);
+
+                                System.out.println("Вы выпили зелье здоровья. Здоровье: + " + potion.getPower());
+                            } else if (potion.typeEffect.equals("выносливости")){
+                                setStrength(potion.getPower(), maxStrength);
+                                System.out.println("Вы выпили зелье " + potion.typeEffect + potion.getPower());
+                                inventory.remove(potion);
+                            }
+                        } else {
+                            inventory.remove(inventory.get(tempInt));
+                            System.out.println("Зелье удалено");
+                        }
+                    } else {
+                        System.out.println("1 - съесть, 2 - удалить, 3 - информация, 0 - назад");
+                        Scanner scannerFood = new Scanner(System.in);
+                        String tempFood = scannerFood.nextLine();
+                        if (tempFood.equals("1")) {
+                            Item.Food food = (Item.Food) inventory.get(tempInt);
+                            setStrength(food.getPower(), maxStrength);
+                            System.out.println("Вы съели " + food.getName() + ". Сила: + " + food.getPower());
+                            removeItem(inventory.get(tempInt));
+                        } else if (tempFood.equals("2")) {
+                                inventory.remove(inventory.get(tempInt));
+                                System.out.println("Предмет удален");
+                        } else if (tempFood.equals("3")) {
+                            inventory.get(tempInt).getInfo();
+                        }
+                    }
+                } else {
+                    System.out.println("Неверный ввод");
+                    return;
+                }
+            } else {
+                System.out.println("Возврат");
+                check = false;
+            }
+
+            String temp = scanner.nextLine();
+
+        }
+    }
+
+    public void setStrength(int power, int maxStrength) {
+
+        int temp =  + maxStrength;
+        if (temp > maxStrength) {
+            this.strength = maxStrength;
+        } else {
+            this.strength += temp;
+        }
+    }
+
+    private void setHealth(int power, double maxHealth) {
+
+        double temp = this.health + health;
+        if (temp > maxHealth) {
+            this.health = maxHealth;
+        } else {
+            this.health += temp;
         }
     }
 
@@ -114,7 +311,7 @@ public abstract class Person {
             System.out.println("Уровень: " + level);
             System.out.println("Здоровье: " + health + "/" + maxHealth);
             if (maxStrength != 0) {
-                System.out.println("Выносливость: " + Strength + "/" + maxStrength);
+                System.out.println("Выносливость: " + strength + "/" + maxStrength);
             }
             System.out.println("Сила: " + power);
             System.out.println("Ловкость: " + agility);
@@ -149,7 +346,83 @@ public abstract class Person {
         }
 
     }
-    // Конструктор для удобного создания противника для процедурной генерации
+
+    // Метод для добавления предмета в инвентарь
+    public void addInventory(Item item) {
+
+        if (inventory.size() < countInventory && item != null) {
+            inventory.add(item);
+            System.out.println("Предмет добавлен в инвентарь");
+        } else if (item == null){
+            System.out.println("Невозможно добавить предмет");
+        } else {
+            System.out.println("Инвентарь заполнен");
+        }
+    }
+
+    // Метод для удаления предмета из инвентаря
+    public void removeItem(Item item){
+
+        inventory.remove(item);
+    }
+
+    public void lookInventory() {
+        int count = 0;
+        int schet = 0;
+
+        System.out.println("Инвентарь:" + "\n" +
+                "Предметы:" + inventory.size() + " из " + countInventory + "\n");
+
+        if (inventory.size() == 0) {
+
+            System.out.println("Инвентарь пуст");
+        } else {
+
+            for (Item item : inventory) {
+
+                String tempName = item.getName();
+
+                if (Integer.valueOf(count) < 10) {
+
+                    System.out.print("  ");
+                } else if (Integer.valueOf(count) < 100) {
+
+                    System.out.print(" ");
+                } else {
+                    System.out.print("");
+                }
+
+                StringBuilder sb = new StringBuilder();
+                sb.append(count + ": " + tempName);
+                tempName = sb.toString();
+                if ( sb.length() > 25) {
+                    tempName = tempName.substring(0, 20) + "...";
+                } else if (sb.length() < 20) {
+                    while (sb.length() < 20) {
+                        sb.append(" ");
+                    }
+                    tempName = sb.toString();
+                }
+                System.out.print(tempName + "\t");
+
+                schet++;
+                count++;
+
+                if (schet == 5) {
+
+                    schet = 0;
+                    System.out.println();
+                }
+
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
+    public int getLevel() {
+            return level;
+        }
 
     // Класс для игрока
     public static class Human extends Person {
@@ -168,6 +441,7 @@ public abstract class Person {
             super.setWeapon(new Item.Weapon("Кинжал", 10, 10, 1));
             super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1));
             super.isAlive = true;
+            super.countInventory = 20;
 
         }
     }
@@ -189,6 +463,7 @@ public abstract class Person {
             super.setWeapon(new Item.Weapon("Лук", 10, 10, 1));
             super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1));
             super.isAlive = true;
+            super.countInventory = 20;
         }
     }
 
