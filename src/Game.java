@@ -26,17 +26,53 @@ public class Game {
         Random randomLevel = new Random();
         int tempCheckLevel = randomLevel.nextInt(5);
         switch (tempCheckLevel) {
-            case 0: level = level += 1;
-            case 1: level = level += 2;
-            case 2: level = level -= 1;
-            case 3: level = level -= 2;
-            case 4: level = level;
+            case 0: {
+                level += 1;
+                break;
+            }
+            case 1: {
+                level += 2;
+                break;
+            }
+            case 2: {
+                level -= 1;
+                break;
+            }
+            case 3: {
+                level -= 2;
+                break;
+            }
+            case 4: {
+                break;
+            }
         }
 
         // Если уровень получился отрицательным, то он становится равным 1
         if (level < 1) {
 
             level = 1;
+        }
+
+        int maxHealth = 100;
+        int health = 100;
+        int maxStrength = 100;
+        int strength = 100;
+        int power = 10;
+        int agility = 10;
+        int gold = 0;
+
+        health = maxHealth;
+        strength = maxStrength;
+        // Присваиваются характеристики персонажа в зависимости от уровня
+        for (int i = 0; i < level -1 ; i++) {
+
+
+            maxHealth += Math.round(maxHealth * 0.05);
+            maxStrength += Math.round(maxStrength * 0.05);
+            power += Math.round(power * 0.05);
+            agility += Math.round(agility * 0.05);
+
+
         }
 
         // Если у персонажа будет оружие или броня, то запускается метод создания оружия или брони. Если их нет, то присваивается null
@@ -55,34 +91,6 @@ public class Game {
 
             armor = null;
         }
-
-        int maxHealth = 100;
-        int health = 100;
-        int maxStrength = 100;
-        int strength = 100;
-        int power = 10;
-        int agility = 10;
-        int gold = 0;
-
-        // Присваиваются характеристики персонажа в зависимости от уровня
-        for (int i = 0; i < level; i++) {
-
-            if (level > 1) {
-
-                maxHealth += Math.round(maxHealth * 0.05);
-                maxStrength += Math.round(maxStrength * 0.05);
-                power += Math.round(power * 0.05);
-                agility += Math.round(agility * 0.05);
-            } else {
-                maxHealth = 100;
-                maxHealth = 100;
-                power = 10;
-                agility = 10;
-            }
-
-        }
-        health = maxHealth;
-        strength = maxStrength;
 
         boolean checkIsMoney = false;
         Random randomMoney = new Random();

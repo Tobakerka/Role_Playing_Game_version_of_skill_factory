@@ -9,11 +9,12 @@ public class Main {
         Game.spawnPerson(1);
 
         h.showStats();
-        h.levelUp(40000);
-        h.showStats();
+        h.levelUp(300);
 
-        h.inventory.addAll(Game.generateItem(20, 10));
-        h.openInventary();
+        h.showStats();
+        s.showStats();
+
+
 
 
 
