@@ -28,6 +28,10 @@ public class Item {
         return level;
     }
 
+    public int getPrice() {
+        return price;
+    }
+
     public static class Food extends Item {
 
         int power;
