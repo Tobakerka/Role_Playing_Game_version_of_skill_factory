@@ -10,9 +10,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Magazine magazine = new Magazine();
-        magazine.spawnMagazine(1);
-
         Game game = new Game();
         try {
         game.mainMenu();

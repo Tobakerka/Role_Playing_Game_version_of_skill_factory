@@ -32,6 +32,10 @@ public class Item {
         return price;
     }
 
+    public void setPrice(int price) {
+        this.price += price;
+    }
+
     public static class Food extends Item {
 
         int power;
@@ -143,6 +147,14 @@ public class Item {
             this.levelChange = levelChange;
         }
 
+        public int getLevelChange() {
+            return levelChange;
+        }
+
+        public String getTypeEffect() {
+            return typeEffect;
+        }
+
         // Метод передает информацию о оружии
 
         public String print() {
@@ -164,11 +176,20 @@ public class Item {
         }
 
         public void getInfo() {
-            System.out.println(type + ": \n" +
+
+            String tempText = type + ": \n" +
                     "Название: " + name + "\n" +
                     "Уровень: " + level + "\n" +
                     "Цена: " + price + "\n" +
-                    "Урон: " + damage + "\n\n");
+                    "Урон: " + damage + "\n" +
+                    "Уровень заточки: " + levelChange + "\n";
+            if (!typeEffect.equals("")) {
+                tempText += "Эффект: " + typeEffect + "\n" + "Сила эффекта: " + powerEffect + "\n";
+
+            } else {
+                tempText += "\n";
+            }
+            System.out.println(tempText);
         }
 
 
@@ -179,6 +200,30 @@ public class Item {
 
         public String getType() {
             return type;
+        }
+
+        public void levelUp() {
+
+            levelChange++;
+            price += price * 10 / 100;
+            damage += price * 10 / 100;
+
+        }
+
+        public int getPowerEffect() {
+            return powerEffect;
+        }
+
+        public void setPowerEffect(int powerEffect) {
+            this.powerEffect = powerEffect;
+        }
+
+        public void setTypeEffect(String typeEffect) {
+            this.typeEffect = typeEffect;
+        }
+
+        public int getDamage() {
+            return damage;
         }
     }
 
@@ -196,6 +241,10 @@ public class Item {
 
         }
 
+        public int getLevelChange() {
+            return levelChange;
+        }
+
         // Метод передает информацию о брони
 
         public String print() {
@@ -204,14 +253,22 @@ public class Item {
                     "Название: " + name + "\n" +
                     "Уровень: " + level + "\n" +
                     "Цена: " + price + "\n" +
-                    "Защита: " + defense + "\n\n";
+                    "Защита: " + defense + "\n\n" +
+                    "Уровень заточки: " + levelChange + "\n";
+        }
+
+        public void levelUp() {
+            levelChange++;
+            price += price * 10 / 100;
+            defense += price * 10 / 100;
         }
         public void getInfo() {
             System.out.println(type + ": \n" +
                     "Название: " + name + "\n" +
                     "Уровень: " + level + "\n" +
                     "Цена: " + price + "\n" +
-                    "Защита: " + defense + "\n\n");
+                    "Защита: " + defense + "\n\n" +
+                    "Уровень заточки: " + levelChange + "\n");
         }
 
 

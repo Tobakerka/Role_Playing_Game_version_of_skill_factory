@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -533,11 +534,11 @@ public class Person {
 
         if (inventory.size() < countInventory && item != null) {
             inventory.add(item);
-            System.out.println("Предмет добавлен в инвентарь");
+            System.out.println("Предмет добавлен в инвентарь\n");
         } else if (item == null){
-            System.out.println("Невозможно добавить предмет");
+            System.out.println("Невозможно добавить предмет\n");
         } else {
-            System.out.println("Инвентарь заполнен");
+            System.out.println("Инвентарь заполнен\n");
         }
     }
 
@@ -563,6 +564,27 @@ public class Person {
             for (Item item : inventory) {
 
                 String tempName = item.getName();
+                if (item.getType().equals("Оружие")) {
+                    Item.Weapon weapon = (Item.Weapon) item;
+                    tempName += " " + weapon.getLevel() + " Ур. " + weapon.getLevelChange() + " точ. ";
+                    if (!weapon.getTypeEffect().equals("")) {
+                        tempName +=  weapon.getTypeEffect() + " " + weapon.getPowerEffect() + "ед. ";
+                    }
+                }
+                if (item.getType().equals("Броня")) {
+                    Item.Armor armor = (Item.Armor) item;
+                    tempName += " " + armor.getLevel() + " Ур. " + armor.getLevelChange() + " точ. ";
+                }
+
+                if (item.getType().equals("Зелье")) {
+                    Item.Potion potion = (Item.Potion) item;
+                    tempName += " " + potion.getLevel() + " Ур. ";
+                }
+
+                if (item.getType().equals("Еда")) {
+                    Item.Food food = (Item.Food) item;
+                    tempName += " " + food.getLevel() + " Ур. ";
+                }
 
                 if (Integer.valueOf(count) < 10) {
 
@@ -578,10 +600,10 @@ public class Person {
                 sb.append(count + ": " + tempName);
                 tempName = sb.toString();
                 if ( sb.length() > 25) {
-                    tempName = tempName.substring(0, 10) + "... " + item.getPrice() + " золота.";
-                } else if (sb.length() < 25) {
-                    sb.append(" " + item.getPrice() + " золота.");
-                    while (sb.length() - 25 < 15) {
+                    tempName = tempName.substring(0, 20) + "... " + item.getPrice() + " з.";
+                } else if (sb.length() <= 25) {
+                    sb.append(" " + item.getPrice() + " з.");
+                    while (sb.length() - 30 < 13) {
                         sb.append(" ");
                     }
                     tempName = sb.toString();
@@ -601,6 +623,10 @@ public class Person {
             System.out.println();
         }
         System.out.println();
+    }
+
+    public ArrayList<Item> getInventory() {
+        return inventory;
     }
 
     // Класс для игрока

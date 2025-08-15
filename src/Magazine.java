@@ -24,7 +24,7 @@ public class Magazine {
         int count = 0;
         int schet = 0;
 
-        System.out.println("Магазин проданных предметов:" + "\n" +
+        System.out.println("Магазин\n" +
                 "Ваше золото:" + player.getGold() + "\n" +
                 "Предметы:" + itemsOfSales.size() + " из " + countToItems + "\n");
 
@@ -81,7 +81,7 @@ public class Magazine {
         int count = 0;
         int schet = 0;
 
-        System.out.println("Магазин:" + "\n");
+        System.out.println("Магазин проданных предметов:" + "\n");
 
         if (itemsOfsellPerson.size() == 0) {
 
@@ -141,27 +141,28 @@ public class Magazine {
             Scanner scanner = new Scanner(System.in);
             String tempString = scanner.nextLine();
             switch (tempString) {
-                case "1" -> {
+                case "1" : {
                     openMagazine(player);
                     break;
                 }
-                case "2" -> {
+                case "2" : {
                     sellItem(player);
                     break;
                 }
-                case "3" -> {
+                case "3" : {
                     openSellPerson(player);
                     break;
                 }
-                case "0" -> {
+                case "0" : {
                     System.out.println("Выход");
                     return;
                 }
-                default -> {
+                default : {
                     System.out.println("Неверный ввод");
                     Main.clearConsole();
                 }
             }
+            scanner = null;
         }
     }
 
@@ -400,12 +401,12 @@ public class Magazine {
         while (true) {
             printMagazine(player);
             System.out.println("Выберите предмет \nлюбая буква или символ для выхода");
-            Scanner scanner = new Scanner(System.in);
+            Scanner scannerPred = new Scanner(System.in);
 
             int tempInt = 0;
-            if (scanner.hasNextInt()) {
+            if (scannerPred.hasNextInt()) {
 
-                tempInt = scanner.nextInt();
+                tempInt = scannerPred.nextInt();
                 if (tempInt < itemsOfSales.size() && tempInt >= 0) {
 
                     itemsOfSales.get(tempInt).getInfo();
@@ -413,7 +414,7 @@ public class Magazine {
                     Scanner scannerVar = new Scanner(System.in);
                     String tempString = scannerVar.nextLine();
                     switch (tempString) {
-                        case "1" -> {
+                        case "1" : {
                             if (player.getGold() >= itemsOfSales.get(tempInt).getPrice()) {
                                 if (player.inventory.size() < player.getCountInventory()) {
                                     player.deliteGold(itemsOfSales.get(tempInt).getPrice());
@@ -428,7 +429,7 @@ public class Magazine {
                             }
                             break;
                         }
-                        case "2" -> {
+                        case "2" : {
                             Main.clearConsole();
                             return;
                         }
@@ -443,6 +444,7 @@ public class Magazine {
                 Main.clearConsole();
                 return;
             }
+            scannerPred = null;
         }
     }
 }
