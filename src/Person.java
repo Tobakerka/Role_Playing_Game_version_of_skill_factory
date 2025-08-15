@@ -1,8 +1,8 @@
-import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Person {
+public class Person implements Serializable{
 
     private int countInventory;
     ArrayList<Item> inventory = new ArrayList<>(countInventory);
@@ -66,6 +66,30 @@ public class Person {
     public long getlevelUpThreshold() {
 
         return levelUpThreshold;
+    }
+
+    public void setStrength(int strength) {
+        if (strength <= maxStrength) {
+            this.strength = strength;
+        } else {
+            this.strength = maxStrength;
+        }
+    }
+
+    public int getStrength() {
+        return strength;
+    }
+
+    public int getMaxStrength() {
+        return maxStrength;
+    }
+
+    public void setMaxStrength(int maxStrength) {
+        if (maxStrength > this.maxStrength) {
+            this.maxStrength = maxStrength;
+        } else {
+            System.out.println("Нельзя установить значение меньше максимального");
+        }
     }
 
     public Item.Weapon getWeapon() {
@@ -489,7 +513,12 @@ public class Person {
     public void showStats() {
 
         if (isAlive) {
-            System.out.println("Имя: " + name);
+            if (!name.equals("")) {
+
+                System.out.println("Имя: " + name);
+            }
+
+            System.out.println("Род: " + race);;
             System.out.println("Уровень: " + level);
             System.out.println("Здоровье: " + health + "/" + maxHealth);
             if (maxStrength != 0) {
@@ -629,8 +658,28 @@ public class Person {
         return inventory;
     }
 
+    public void move(int i) {
+        if (i <= this.strength && this.isAlive) {
+            this.strength -= i;
+            if (this.strength <= 0) {
+                this.isAlive = false;
+                Main.clearConsole();
+                System.out.println("Вы погибли от усталости!");
+                System.out.println("Игра окончена");
+            } else {
+
+            }
+        } else {
+            System.out.println("Нет живых персонажей!");
+        }
+    }
+
+    public boolean getIsAlive() {
+        return isAlive;
+    }
+
     // Класс для игрока
-    public static class Human extends Person {
+    public static class Human extends Person implements Serializable{
 
         public Human(String name) {
 
@@ -653,7 +702,7 @@ public class Person {
     }
 
     // Класс для игрока
-    public static class Elf extends Person {
+    public static class Elf extends Person implements Serializable {
 
         public Elf(String name) {
 

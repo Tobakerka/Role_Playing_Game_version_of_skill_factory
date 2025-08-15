@@ -1,9 +1,8 @@
 // Основная логика игры
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -13,13 +12,19 @@ import static java.lang.Thread.sleep;
 
 public class Game {
 
-    Person player;
-    Magazine magazine;
     boolean isSave = false;
     boolean isGameToPlay = false;
     int difficulty = 1; // Сложность игры 1 - Легко, 2 - Средне, 3 - Сложно
     boolean isShopSort = false;
     boolean isInventorySort = false;
+
+    public boolean getIsGameToPlay() {
+        return isGameToPlay;
+    }
+
+    public void setIsGameToPlay(boolean isGameToPlay) {
+        this.isGameToPlay = isGameToPlay;
+    }
 
     public static Person spawnPerson(int level) {
 
@@ -212,10 +217,13 @@ public class Game {
     }
 
     public void mainMenu() throws CustomException {
+        Person player = new Person("");
+        Magazine magazine = new Magazine();
         String text = "";
-        File file = new File("src/Save.dat");
-        if (file.exists()) {
-            while (true) {
+        File file = new File("src/Save.ser");
+        while (true) {
+            if (file.exists()) {
+
 
                 try (FileInputStream fis = new FileInputStream(file)) {
                     byte[] buffer = new byte[1024]; // буфер для чтения
@@ -226,44 +234,43 @@ public class Game {
                         // Можно обработать байты, например, преобразовать в строку
                         for (int i = 0; i < bytesRead; i++) {
                             content.append((char) buffer[i]);
+                            isSave = true;
                         }
                     }
-                    text = content.toString();
+                    byte[] bytes = content.toString().getBytes();
                 } catch (FileNotFoundException e) {
                     Main.clearConsole();
                     throw new CustomException("Ошибка в файле сохранения!");
                 } catch (IOException e) {
                     Main.clearConsole();
-                    System.err.println(e.getMessage() + "Ошибка при чтении файла!");
+                    System.err.println(e.getMessage() + "Файл сохранения поврежден!");
                 }
                 String sTemp;
                 int otvet = -1;
 
-                if (text.length() > 0) {
-                    isSave = true;
-                } else {
-                    isSave = false;
-                }
                 if (isSave && isGameToPlay) {
-                    sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n3 - Загрузить игру\n4 - Настройки\n0 - Выйти из игры";
-                    otvet = Main.checkInt(sTemp, 4);
+                    sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n3 - Загрузить игру\n4 - Настройки\n5 - Сохранить\n0 - Выйти из игры";
+                    otvet = Main.checkInt(sTemp, 5);
                     switch (otvet) {
                         case 1: {
-                            player = Main.startNewGame();
+                            player = startNewGame();
                             magazine = new Magazine();
                             magazine.spawnMagazine(player.getLevel());
                             Main.clearConsole();
-                            startGame();
+                            isGameToPlay = true;
+                            startGame(player, magazine);
                             break;
                         }
                         case 2: {
+
                             Main.clearConsole();
-                            Main.continueGame();
+                            continueGame(player, magazine);
                             break;
                         }
                         case 3: {
                             Main.clearConsole();
-                            Main.loadGame();
+                            player = Main.loadGame();
+                            isGameToPlay = true;
                             break;
                         }
                         case 4: {
@@ -271,9 +278,17 @@ public class Game {
                             options();
                             break;
                         }
+                        case 5: {
+                            try {
+                                isSave = Main.saveGame(player);
+                            } catch (CustomException e) {
+                                System.err.println(e.getMessage());
+                            }
+                            break;
+                        }
                         case 0: {
                             Main.clearConsole();
-                            Main.quitGame();
+                            quitGame(player);
                             break;
                         }
                         default: {
@@ -286,11 +301,13 @@ public class Game {
                     switch (otvet) {
 
                         case 1: {
-                            player = Main.startNewGame();
-                            magazine = new Magazine();
+                            player = startNewGame();
+                            Magazine magazine1 = new Magazine();
+                            magazine = magazine1;
                             magazine.spawnMagazine(player.getLevel());
+                            isGameToPlay = true;
                             Main.clearConsole();
-                            startGame();
+                            startGame(player, magazine);
                             break;
                         }
                         case 2: {
@@ -300,7 +317,7 @@ public class Game {
                         }
                         case 0: {
                             Main.clearConsole();
-                            Main.quitGame();
+                            quitGame(player);
                             return;
                         }
                         default: {
@@ -308,20 +325,21 @@ public class Game {
                         }
                     }
                 } else if (!isSave && isGameToPlay) {
-                    sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n3 - Настройки\n0 - Выйти из игры";
-                    otvet = Main.checkInt(sTemp, 3);
+                    sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n3 - Настройки\n4 - Сохранить\n0 - Выйти из игры";
+                    otvet = Main.checkInt(sTemp, 4);
                     switch (otvet) {
                         case 1: {
-                            player = Main.startNewGame();
+                            player = startNewGame();
                             magazine = new Magazine();
                             magazine.spawnMagazine(player.getLevel());
+                            isGameToPlay = true;
                             Main.clearConsole();
-                            startGame();
+                            startGame(player, magazine);
                             break;
                         }
                         case 2: {
                             Main.clearConsole();
-                            Main.continueGame();
+                            continueGame(player, magazine);
                             break;
                         }
                         case 3: {
@@ -329,9 +347,18 @@ public class Game {
                             options();
                             break;
                         }
+                        case 4: {
+                            try {
+                                Main.saveGame(player);
+                            } catch (CustomException e) {
+                                System.err.println(e.getMessage());
+                            }
+                            break;
+                        }
                         case 0: {
                             Main.clearConsole();
-                            Main.quitGame();
+                            isGameToPlay = false;
+                            quitGame(player);
                             break;
                         }
                         default: {
@@ -343,16 +370,19 @@ public class Game {
                     otvet = Main.checkInt(sTemp, 3);
                     switch (otvet) {
                         case 1: {
-                            player = Main.startNewGame();
+                            player = startNewGame();
                             magazine = new Magazine();
                             magazine.spawnMagazine(player.getLevel());
+                            isGameToPlay = true;
                             Main.clearConsole();
-                            startGame();
+                            startGame(player, magazine);
                             break;
                         }
                         case 2: {
                             Main.clearConsole();
-                            Main.loadGame();
+                            player = Main.loadGame();
+                            isGameToPlay = true;
+                            magazine.spawnMagazine(player.getLevel());
                             break;
                         }
                         case 3: {
@@ -362,7 +392,7 @@ public class Game {
                         }
                         case 0: {
                             Main.clearConsole();
-                            Main.quitGame();
+                            quitGame(player);
                             break;
                         }
                         default: {
@@ -372,33 +402,99 @@ public class Game {
                     }
                 }
                 System.out.println();
-            }
-        } else {
-            try {
-                File save = new File("src/Save.dat");
-                save.createNewFile();
-                System.out.println("Файл сохранения создан!");
-            } catch (Exception e) {
-                Main.clearConsole();
-                System.out.println("Ошибка при создании файла сохранения!");
+            } else {
+                try {
+                    File save = new File("src/Save.ser");
+                    save.createNewFile();
+                    System.out.println("Файл сохранения создан!");
+                } catch (Exception e) {
+                    Main.clearConsole();
+                    System.out.println("Ошибка при создании файла сохранения!");
+                }
             }
         }
     }
 
-    public void startGame() {
+    public Person startNewGame() {
 
+        Person[] person = new Person[] {new Person.Human(""), new Person.Elf("")};
+        System.out.println("Выбор персонажа:");
+        System.out.println();
+        for (Person player : person) {
+            player.showStats();
+            System.out.println();
+        }
 
-        player.inventory = (Game.generateItem(10, 1));
-        player.addGold(1999);
         while (true) {
 
-            System.out.println("Действия: \n");
+            switch (Main.checkInt("Выберите персонажа:\n\n1 - " + person[0].getRace() + "\n2 - " + person[1].getRace() + "\n" + "0 - Выход",2)) {
+
+                case 1: {
+                    System.out.println("Вы выбрали " + person[0].getRace());
+                    person[0].setName(Main.checkNameOfNull("Введите имя:"));
+                    return person[0];
+                }
+                case 2: {
+                    System.out.println("Вы выбрали " + person[1].getRace());
+                    person[1].setName(Main.checkNameOfNull("Введите имя:\n"));
+                    return person[1];
+                }
+                case 0: {
+
+                    break;
+                }
+                default: {
+                }
+            }
+        }
+    }
+
+    public void quitGame(Person player) {
+
+        System.out.println();
+        switch (Main.checkInt("Вы хотите выйти из игры?\n1. Да\n2. Нет",2)) {
+
+            case 1: {
+
+                switch (Main.checkInt("Хотите сохранить игру?\n1. Да\n2. Нет",2)) {
+
+                    case 1: {
+                        try {
+
+                            Main.saveGame(player);
+                        } catch (CustomException e) {
+                            new CustomException("Ошибка! " + e.getMessage());
+                        }
+                        System.exit(0);
+                        break;
+                    }
+                    case 2: {
+                        System.exit(0);
+                        break;
+                    }
+
+                }
+                break;
+            }
+            case 2: {
+                System.out.println("Вы вернулись в главное меню");
+                break;
+            }
+        }
+    }
+
+    public void startGame(Person player, Magazine magazine) {
+
+        while (true) {
+
+            System.out.println("Выносливость: " + player.getStrength() + "/" + player.getMaxStrength() + "\n");
 
             switch (Main.checkInt("Действия: \n\n1 - Открыть инвентарь\n" +
                     "2 - идти в магазин\n" +
                     "3 - идти в темный лес\n" +
                     "4 - идти к кузнецу\n" +
-                    "0 - Меню\n", 4)) {
+                    "5 - отдыхать\n" +
+                    "0 - Меню\n", 5)) {
                 case 1: {
                     player.openInventary();
                     break;
@@ -408,7 +504,9 @@ public class Game {
                     break;
                 }
                 case 3: {
-                    fight();
+
+                    Fight fight = new Fight();
+                    fight.start();
                     break;
                 }
                 case 4: {
@@ -417,8 +515,13 @@ public class Game {
                     } catch (CustomException e) {
                         System.err.println(e.getMessage());
                     }
+                    break;
                 }
-                break;
+                case 5: {
+                    Main.clearConsole();
+                    toTakeADreak(player, magazine);
+                    break;
+                }
                 case 0: {
                     return;
                 }
@@ -429,406 +532,422 @@ public class Game {
         }
     }
 
+    private void toTakeADreak(Person player, Magazine magazine) {
+        player.setStrength(player.getMaxStrength());
+        magazine.spawnMagazine(player.getLevel());
+    }
+
+    public void continueGame(Person player, Magazine magazine) {
+        startGame(player, magazine);
+
+    }
+
     private void goToTheBlacksmith(Person player) throws CustomException {
-        Main.clearConsole();
-        System.out.println("Привет, " + player.getName() + " я кузнец!\n");
-        ArrayList<Item.Weapon> weapons = new ArrayList<>();
-        ArrayList<Item.Armor> armors = new ArrayList<>();
-
-        player.getInventory().forEach(item -> {
-            if (item.getType().equals("Оружие")) {
-                weapons.add((Item.Weapon) item);
-            } else if (item.getType().equals("Броня")) {
-                armors.add((Item.Armor) item);
+        if (player.getStrength() >= 10) {
+            player.move(1);
+            if (!player.getIsAlive()) {
+                System.out.println("Вы умерли!");
+                return;
             }
-        });
-        while (true) {
+            Main.clearConsole();
+            System.out.println("Привет, " + player.getName() + " я кузнец!\n");
+            ArrayList<Item.Weapon> weapons = new ArrayList<>();
+            ArrayList<Item.Armor> armors = new ArrayList<>();
 
+            player.getInventory().forEach(item -> {
+                if (item.getType().equals("Оружие")) {
+                    weapons.add((Item.Weapon) item);
+                } else if (item.getType().equals("Броня")) {
+                    armors.add((Item.Armor) item);
+                }
+            });
+            while (true) {
 
+                int count = 0;
+                int count2 = 0;
+                switch (Main.checkInt("Кузнец: Я могу прокачать или зачаровать твои вещи! Что ты хочешь сделать?\n1 - Прокачать вещь\n2 - Зачаровать вещь\n0 - Попрощаться", 2)) {
 
-            int count = 0;
-            int count2 = 0;
-            switch (Main.checkInt("Кузнец: Я могу прокачать или зачаровать твои вещи! Что ты хочешь сделать?\n1 - Прокачать вещь\n2 - Зачаровать вещь\n0 - Попрощаться" , 2)) {
+                    case 1: {
+                        while (true) {
+                            StringBuilder sb = new StringBuilder();
+                            sb.append("Твои вещи:\n");
+                            sb.append("Оружие:\n");
+                            for (Item.Weapon weapon : weapons) {
+                                sb.append(count + " - " + weapon.getName() + " " + weapon.getLevelChange() + " ур.\n");
+                                count++;
+                                if (count2 == 10) {
+                                    count2 = 0;
+                                } else {
+                                    count2++;
+                                }
+                            }
+                            sb.append("\n");
+                            sb.append("Броня:\n");
+                            for (Item.Armor armor : armors) {
+                                sb.append(count + " - " + armor.getName() + " " + armor.getLevelChange() + " ур.\n");
+                                count++;
+                                if (count2 == 10) {
+                                    count2 = 0;
+                                } else {
+                                    count2++;
+                                }
+                            }
+                            count = 0;
 
-                case 1: {
-                    while (true) {
-                        StringBuilder sb = new StringBuilder();
-                        sb.append("Твои вещи:\n");
-                        sb.append("Оружие:\n");
-                        for (Item.Weapon weapon : weapons) {
-                            sb.append(count + " - " + weapon.getName() + " " + weapon.getLevelChange() + " ур.\n");
-                            count++;
-                            if (count2 == 10) {
-                                count2 = 0;
+                            ArrayList<Item> items = new ArrayList<>();
+                            items.addAll(weapons);
+                            items.addAll(armors);
+
+                            System.out.println(sb.toString());
+                            System.out.println("Выберите вещь, которую хотите прокачать: или введите любую букву для выхода");
+                            Scanner scanner = new Scanner(System.in);
+                            if (scanner.hasNextInt()) {
+
+                                int tempInt = scanner.nextInt();
+                                Item itemNew = items.get(tempInt);
+                                Item itemOld = items.get(tempInt);
+                                if (tempInt >= 0 && tempInt < items.size()) {
+
+                                    if (items.get(tempInt).getType().equals("Оружие")) {
+                                        Item.Weapon weapon = (Item.Weapon) items.get(tempInt);
+                                        switch (Main.checkInt("Вы хотите прокачать " + weapon.getName() + "?\n1 - Да\n2 - Нет", 2)) {
+                                            case 1: {
+                                                int tempIntLevel = Main.checkInt("Введите на сколько хотите прокачать: ", 19);
+                                                if (tempIntLevel > 0 && tempIntLevel <= 20) {
+                                                    Item.Weapon weaponNew = (Item.Weapon) items.get(tempInt);
+                                                    Item.Weapon weaponOld = (Item.Weapon) items.get(tempInt);
+                                                    if (weaponNew.getLevelChange() + tempIntLevel <= 20) {
+                                                        int tempPrice = weaponNew.getPrice();
+                                                        while (tempIntLevel > 0) {
+                                                            tempIntLevel--;
+                                                            tempPrice += weaponNew.getPrice();
+                                                            weaponNew.levelUp();
+                                                        }
+                                                        System.out.println("Цена прокачки: " + tempPrice);
+                                                        switch (Main.checkInt("1 - Да\n2 - Нет", 2)) {
+                                                            case 1: {
+                                                                if (player.getGold() >= tempPrice) {
+                                                                    player.deliteGold(tempPrice);
+                                                                    player.removeItem(weaponOld);
+                                                                    if (player.getWeapon().equals(weaponNew)) {
+                                                                        player.setWeapon(null);
+                                                                        itemNew = weaponNew;
+                                                                        player.setWeapon(weaponNew);
+                                                                        player.addInventory(itemNew);
+                                                                    } else {
+                                                                        player.removeItem(itemOld);
+                                                                        player.addInventory(itemNew);
+                                                                    }
+                                                                    System.out.println("Успешно прокачено!");
+                                                                    System.out.println("Оружие: " + weaponNew.getName() + " " + weaponNew.getLevelChange() + " ур.");
+                                                                } else {
+                                                                    System.err.println("Недостаточно денег!");
+                                                                }
+                                                            }
+                                                            case 2: {
+                                                                System.out.println("Возврат");
+                                                            }
+                                                        }
+
+                                                    } else {
+                                                        System.err.println("Невозможно прокачать на такую величину!\nМаксимальный уровень может быть 20");
+                                                    }
+                                                }
+                                                break;
+                                            }
+                                            case 2: {
+                                                System.out.println("Возврат");
+                                                break;
+                                            }
+                                            default: {
+                                                System.err.println("Некорректный ввод!");
+                                            }
+                                        }
+                                    } else if (items.get(tempInt).getType().equals("Броня")) {
+                                        Item.Armor armor = (Item.Armor) items.get(tempInt);
+                                        switch (Main.checkInt("Вы хотите прокачать " + armor.getName() + "?\n1 - Да\n2 - Нет", 2)) {
+                                            case 1: {
+                                                int tempIntLevel = Main.checkInt("Введите на сколько хотите прокачать: ", 19);
+                                                if (tempIntLevel > 0 && tempIntLevel <= 20) {
+                                                    Item.Armor armorNew = (Item.Armor) items.get(tempInt);
+                                                    Item.Armor oldArmor = (Item.Armor) items.get(tempInt);
+                                                    if (armorNew.getLevelChange() + tempIntLevel <= 20) {
+                                                        int tempPrice = armorNew.getPrice();
+                                                        while (tempIntLevel > 0) {
+                                                            tempIntLevel--;
+                                                            armorNew.levelUp();
+                                                            tempPrice += armorNew.getPrice();
+                                                        }
+                                                        System.out.println("Цена прокачки: " + tempPrice);
+                                                        switch (Main.checkInt("1 - Да\n2 - Нет", 2)) {
+                                                            case 1: {
+                                                                if (player.getGold() >= tempPrice) {
+                                                                    player.deliteGold(tempPrice);
+                                                                    if (player.getArmor().equals(armorNew)) {
+                                                                        player.setArmor(null);
+                                                                        player.setArmor(armorNew);
+                                                                        player.removeItem(oldArmor);
+                                                                        player.addInventory(armorNew);
+                                                                    } else {
+                                                                        itemNew = armorNew;
+                                                                        player.removeItem(itemOld);
+                                                                        player.addInventory(itemNew);
+                                                                    }
+                                                                    System.out.println("Успешно прокачено!");
+                                                                    System.out.println("Броня: " + armorNew.getName() + " " + armorNew.getLevelChange() + " ур.");
+                                                                } else {
+                                                                    System.err.println("Недостаточно денег!");
+                                                                }
+                                                                break;
+                                                            }
+                                                            case 2: {
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    System.err.println("Невозможно прокачать на такую величину!\nМаксимальный уровень может быть 20");
+                                                }
+                                                break;
+                                            }
+                                            case 2: {
+                                                System.out.println("Возврат");
+                                                break;
+                                            }
+                                            default: {
+                                                System.err.println("Некорректный ввод!");
+                                            }
+
+                                        }
+
+                                    }
+                                } else {
+                                    System.err.println("Некорректный ввод!");
+                                }
                             } else {
-                                count2++;
+                                return;
                             }
                         }
-                        sb.append("\n");
-                        sb.append("Броня:\n");
-                        for (Item.Armor armor : armors) {
-                            sb.append(count + " - " + armor.getName() + " " + armor.getLevelChange() + " ур.\n");
-                            count++;
-                            if (count2 == 10) {
-                                count2 = 0;
-                            } else {
-                                count2++;
-                            }
-                        }
+                    }
+                    case 2: {
                         count = 0;
-
-                        ArrayList<Item> items = new ArrayList<>();
-                        items.addAll(weapons);
-                        items.addAll(armors);
-
-                        System.out.println(sb.toString());
-                        System.out.println("Выберите вещь, которую хотите прокачать: или введите любую букву для выхода");
+                        StringBuilder sbChar = new StringBuilder();
+                        sbChar.append("Твои вещи:\n");
+                        sbChar.append("Оружие:\n");
+                        for (Item.Weapon weapon : weapons) {
+                            sbChar.append(count + " - " + weapon.getName() + " " + weapon.getLevelChange() + " ур.\n");
+                            if (!weapon.getTypeEffect().equals("")) {
+                                sbChar.append("Эффект: " + weapon.getTypeEffect() + "\n");
+                            }
+                            count++;
+                            if (count2 == 10) {
+                                count2 = 0;
+                            } else {
+                                count2++;
+                            }
+                        }
+                        sbChar.append("\n");
+                        System.out.println(sbChar.toString());
+                        System.out.println("Выберите вещь, которую хотите зачаровать: или введите любую букву для выхода");
                         Scanner scanner = new Scanner(System.in);
                         if (scanner.hasNextInt()) {
 
                             int tempInt = scanner.nextInt();
-                            Item itemNew = items.get(tempInt);
-                            Item itemOld = items.get(tempInt);
-                            if (tempInt >= 0 && tempInt < items.size()) {
+                            if (tempInt >= 0 && tempInt < weapons.size()) {
 
-                                if (items.get(tempInt).getType().equals("Оружие")) {
-                                    Item.Weapon weapon = (Item.Weapon) items.get(tempInt);
-                                    switch (Main.checkInt("Вы хотите прокачать " + weapon.getName() + "?\n1 - Да\n2 - Нет", 2)) {
-                                        case 1: {
-                                            int tempIntLevel = Main.checkInt("Введите на сколько хотите прокачать: ", 19);
-                                            if (tempIntLevel > 0 && tempIntLevel <=20) {
-                                                Item.Weapon weaponNew = (Item.Weapon) items.get(tempInt);
-                                                Item.Weapon weaponOld = (Item.Weapon) items.get(tempInt);
-                                                if (weaponNew.getLevelChange() + tempIntLevel <= 20) {
-                                                    int tempPrice = weaponNew.getPrice();
-                                                    while (tempIntLevel > 0) {
-                                                        tempIntLevel--;
-                                                        tempPrice += weaponNew.getPrice();
-                                                        weaponNew.levelUp();
-                                                    }
-                                                    System.out.println("Цена прокачки: " + tempPrice);
-                                                    switch (Main.checkInt("1 - Да\n2 - Нет", 2)) {
-                                                        case 1: {
-                                                            if (player.getGold() >= tempPrice) {
-                                                                player.deliteGold(tempPrice);
-                                                                player.removeItem(weaponOld);
-                                                                if (player.getWeapon().equals(weaponNew)) {
-                                                                    player.setWeapon(null);
-                                                                    itemNew = weaponNew;
-                                                                    player.setWeapon(weaponNew);
-                                                                    player.addInventory(itemNew);
-                                                                } else {
-                                                                    player.removeItem(itemOld);
-                                                                    player.addInventory(itemNew);
-                                                                }
-                                                                System.out.println("Успешно прокачено!");
-                                                                System.out.println("Оружие: " + weaponNew.getName() + " " + weaponNew.getLevelChange() + " ур.");
-                                                            } else {
-                                                                System.err.println("Недостаточно денег!");
+                                Item itemOld = weapons.get(tempInt);
+                                Item itemNew = weapons.get(tempInt);
+                                Item.Weapon itemWeaponNew = weapons.get(tempInt);
+                                Item.Weapon itemWeaponOld = weapons.get(tempInt);
+                                if (tempInt >= 0 && tempInt < weapons.size()) {
+                                    if (itemWeaponOld.getTypeEffect().equals("")) {
+
+                                        System.out.println("Вы хотите зачаровать " + itemWeaponOld.getName() + "\n");
+                                        System.out.println("Стоимость зачарования: " + (itemWeaponOld.getPrice()) * 3);
+                                        switch (Main.checkInt("1 - Да\n2 - Нет", 2)) {
+                                            case 1: {
+                                                Random randomChar = new Random();
+                                                int chanceChar = randomChar.nextInt(5);
+                                                if (player.getGold() >= (itemWeaponOld.getPrice()) * 3) {
+                                                    int tempPowerEffect = 5 + randomChar.nextInt(100);
+                                                    switch (chanceChar) {
+                                                        case 0: {
+                                                            System.out.println("Зачарование прошло неудачно!");
+                                                            System.out.println("Вы потеряли " + itemWeaponOld + (itemWeaponOld.getPrice() * 3) + " золота!");
+                                                            player.deliteGold(itemWeaponOld.getPrice() * 3);
+                                                            player.removeItem(itemOld);
+                                                            if (player.getWeapon().equals(itemWeaponOld)) {
+                                                                player.setWeapon(null);
                                                             }
-                                                        } case 2: {
-                                                            System.out.println("Возврат");
+                                                            break;
                                                         }
-                                                    }
-
-                                                } else {
-                                                    System.err.println("Невозможно прокачать на такую величину!\nМаксимальный уровень может быть 20");
-                                                }
-                                            }
-                                            break;
-                                        }
-                                        case 2: {
-                                            System.out.println("Возврат");
-                                            break;
-                                        }
-                                        default: {
-                                            System.err.println("Некорректный ввод!");
-                                        }
-                                    }
-                                } else if (items.get(tempInt).getType().equals("Броня")) {
-                                    Item.Armor armor = (Item.Armor) items.get(tempInt);
-                                    switch (Main.checkInt("Вы хотите прокачать " + armor.getName() + "?\n1 - Да\n2 - Нет", 2)) {
-                                        case 1: {
-                                            int tempIntLevel = Main.checkInt("Введите на сколько хотите прокачать: ", 19);
-                                            if (tempIntLevel > 0 && tempIntLevel  <= 20) {
-                                                Item.Armor armorNew = (Item.Armor) items.get(tempInt);
-                                                Item.Armor oldArmor = (Item.Armor) items.get(tempInt);
-                                                if (armorNew.getLevelChange() + tempIntLevel <= 20) {
-                                                    int tempPrice = armorNew.getPrice();
-                                                    while (tempIntLevel > 0) {
-                                                        tempIntLevel--;
-                                                        armorNew.levelUp();
-                                                        tempPrice += armorNew.getPrice();
-                                                    }
-                                                    System.out.println("Цена прокачки: " + tempPrice);
-                                                    switch (Main.checkInt("1 - Да\n2 - Нет", 2)) {
                                                         case 1: {
-                                                            if (player.getGold() >= tempPrice) {
-                                                                player.deliteGold(tempPrice);
-                                                                if (player.getArmor().equals(armorNew)) {
-                                                                    player.setArmor(null);
-                                                                    player.setArmor(armorNew);
-                                                                    player.removeItem(oldArmor);
-                                                                    player.addInventory(armorNew);
-                                                                } else {
-                                                                    itemNew = armorNew;
-                                                                    player.removeItem(itemOld);
-                                                                    player.addInventory(itemNew);
-                                                                }
-                                                                System.out.println("Успешно прокачено!");
-                                                                System.out.println("Броня: " + armorNew.getName() + " " + armorNew.getLevelChange() + " ур.");
+
+                                                            System.out.println("Зачарование прошло успешно!");
+                                                            if (tempPowerEffect <= 25) {
+                                                                tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 1.5);
+                                                                itemWeaponNew.setPowerEffect(tempPowerEffect);
+                                                            } else if (tempPowerEffect > 25 && tempPowerEffect <= 50) {
+                                                                tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 1.7);
+                                                                itemWeaponNew.setPowerEffect(tempPowerEffect);
+                                                            } else if (tempPowerEffect > 50 && tempPowerEffect <= 75) {
+                                                                tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 1.9);
+                                                                itemWeaponNew.setPowerEffect(tempPowerEffect);
                                                             } else {
-                                                                System.err.println("Недостаточно денег!");
+                                                                tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 2.1);
+                                                                itemWeaponNew.setPowerEffect(tempPowerEffect);
+                                                            }
+                                                            System.out.println("Вы получили огненные чары " + tempPowerEffect);
+                                                            itemWeaponNew.setTypeEffect("огонь");
+                                                            itemWeaponNew.setPrice((int) Math.round(itemWeaponNew.getPowerEffect() * 1.5));
+                                                            player.deliteGold(itemWeaponOld.getPrice() * 3);
+                                                            itemNew = itemWeaponNew;
+                                                            if (player.getWeapon().equals(itemWeaponOld)) {
+                                                                player.setWeapon(null);
+                                                                player.setWeapon(itemWeaponNew);
+                                                                player.removeItem(itemOld);
+                                                                player.addInventory(itemNew);
+                                                            } else {
+                                                                player.removeItem(itemOld);
+                                                                player.addInventory(itemNew);
                                                             }
                                                             break;
                                                         }
                                                         case 2: {
+                                                            System.out.println("Зачарование прошло успешно!");
+                                                            if (tempPowerEffect <= 25) {
+                                                                tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 1.5);
+                                                                itemWeaponNew.setPowerEffect(tempPowerEffect);
+                                                            } else if (tempPowerEffect > 25 && tempPowerEffect <= 50) {
+                                                                tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 1.7);
+                                                                itemWeaponNew.setPowerEffect(tempPowerEffect);
+                                                            } else if (tempPowerEffect > 50 && tempPowerEffect <= 75) {
+                                                                tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 1.9);
+                                                                itemWeaponNew.setPowerEffect(tempPowerEffect);
+                                                            } else {
+                                                                tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 2.1);
+                                                                itemWeaponNew.setPowerEffect(tempPowerEffect);
+                                                            }
+
+                                                            System.out.println("Вы получили ледяные чары " + tempPowerEffect);
+                                                            itemWeaponNew.setTypeEffect("лед");
+                                                            itemWeaponNew.setPrice((int) Math.round(itemWeaponNew.getPowerEffect() * 1.5));
+                                                            player.deliteGold(itemWeaponOld.getPrice() * 3);
+                                                            itemNew = itemWeaponNew;
+                                                            if (player.getWeapon().equals(itemWeaponOld)) {
+                                                                player.setWeapon(null);
+                                                                player.setWeapon(itemWeaponNew);
+                                                                player.removeItem(itemOld);
+                                                                player.addInventory(itemNew);
+                                                            } else {
+                                                                player.removeItem(itemOld);
+                                                                player.addInventory(itemNew);
+                                                            }
+                                                            break;
+                                                        }
+                                                        case 3: {
+                                                            System.out.println("Зачарование прошло успешно!");
+                                                            if (tempPowerEffect <= 25) {
+                                                                tempPowerEffect += (int) Math.round(itemWeaponOld.getPowerEffect() * 1.5);
+                                                                itemWeaponNew.setPowerEffect(tempPowerEffect);
+                                                            } else if (tempPowerEffect > 25 && tempPowerEffect <= 50) {
+                                                                tempPowerEffect += (int) Math.round(itemWeaponOld.getPowerEffect() * 1.7);
+                                                                itemWeaponNew.setPowerEffect(tempPowerEffect);
+                                                            } else if (tempPowerEffect > 50 && tempPowerEffect <= 75) {
+                                                                tempPowerEffect += (int) Math.round(itemWeaponOld.getPowerEffect() * 1.9);
+                                                                itemWeaponNew.setPowerEffect(tempPowerEffect);
+                                                            } else {
+                                                                tempPowerEffect += (int) Math.round(itemWeaponOld.getPowerEffect() * 2.1);
+                                                                itemWeaponNew.setPowerEffect(tempPowerEffect);
+                                                            }
+                                                            System.out.println("Вы получили водные чары " + tempPowerEffect);
+                                                            itemWeaponNew.setTypeEffect("вода");
+                                                            itemWeaponNew.setPrice((int) Math.round(itemWeaponNew.getPowerEffect() * 1.5));
+                                                            player.deliteGold(itemWeaponOld.getPrice() * 3);
+                                                            itemNew = itemWeaponNew;
+                                                            if (player.getWeapon().equals(itemWeaponOld)) {
+                                                                player.setWeapon(null);
+                                                                player.setWeapon(itemWeaponNew);
+                                                                player.removeItem(itemOld);
+                                                                player.addInventory(itemNew);
+
+                                                            } else {
+                                                                player.removeItem(itemOld);
+                                                                player.addInventory(itemNew);
+                                                            }
+                                                            break;
+                                                        }
+                                                        case 4: {
+                                                            System.out.println("Зачарование прошло успешно!");
+                                                            if (tempPowerEffect <= 25) {
+                                                                itemWeaponNew.setPowerEffect((int) Math.round(itemWeaponOld.getPowerEffect() * 1.5));
+                                                            } else if (tempPowerEffect > 25 && tempPowerEffect <= 50) {
+                                                                itemWeaponNew.setPowerEffect((int) Math.round(itemWeaponOld.getPowerEffect() * 1.7));
+                                                            } else if (tempPowerEffect > 50 && tempPowerEffect <= 75) {
+                                                                itemWeaponNew.setPowerEffect((int) Math.round(itemWeaponOld.getPowerEffect() * 1.9));
+                                                            } else {
+                                                                itemWeaponNew.setPowerEffect((int) Math.round(itemWeaponOld.getPowerEffect() * 2.1));
+                                                            }
+                                                            System.out.println("Вы получили зачарование ветра " + tempPowerEffect);
+                                                            itemWeaponNew.setTypeEffect("ветер");
+                                                            itemWeaponNew.setPrice((int) Math.round(itemWeaponNew.getPowerEffect() * 1.5));
+                                                            player.deliteGold(itemWeaponOld.getPrice() * 3);
+                                                            itemNew = itemWeaponNew;
+                                                            if (player.getWeapon().equals(itemWeaponOld)) {
+                                                                player.setWeapon(null);
+                                                                player.setWeapon(itemWeaponNew);
+                                                                player.removeItem(itemOld);
+                                                                player.addInventory(itemNew);
+                                                            } else {
+                                                                player.removeItem(itemOld);
+                                                                player.addInventory(itemNew);
+                                                            }
                                                             break;
                                                         }
                                                     }
+                                                } else {
+                                                    System.out.println("Недостаточно золота!");
                                                 }
-                                            } else {
-                                                System.err.println("Невозможно прокачать на такую величину!\nМаксимальный уровень может быть 20");
+
+                                                break;
                                             }
-                                            break;
+                                            case 2: {
+                                                System.out.println("Возврат");
+                                                break;
+                                            }
+                                            default: {
+                                                System.err.println("Некорректный ввод!");
+                                            }
                                         }
-                                        case 2: {
-                                            System.out.println("Возврат");
-                                            break;
-                                        }
-                                        default: {
-                                            System.err.println("Некорректный ввод!");
-                                        }
-
+                                    } else {
+                                        System.err.println("Нельзя чаровать. Предмет уже зачарован!");
                                     }
-
                                 }
                             } else {
                                 System.err.println("Некорректный ввод!");
                             }
                         } else {
-                            return;
+                            System.out.println("Возврат");
                         }
+                        break;
+                    }
+                    case 0: {
+                        System.out.println("Пока!");
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            throw new CustomException("Ошибка при ожидании!");
+                        }
+                        return;
                     }
                 }
-                case 2: {
-                    count = 0;
-                    StringBuilder sbChar = new StringBuilder();
-                    sbChar.append("Твои вещи:\n");
-                    sbChar.append("Оружие:\n");
-                    for (Item.Weapon weapon : weapons) {
-                        sbChar.append(count + " - " + weapon.getName() + " " + weapon.getLevelChange() + " ур.\n");
-                        if (!weapon.getTypeEffect().equals("")) {
-                            sbChar.append("Эффект: " + weapon.getTypeEffect() + "\n");
-                        }
-                        count++;
-                        if (count2 == 10) {
-                            count2 = 0;
-                        } else {
-                            count2++;
-                        }
-                    }
-                    sbChar.append("\n");
-                    System.out.println(sbChar.toString());
-                    System.out.println("Выберите вещь, которую хотите зачаровать: или введите любую букву для выхода");
-                    Scanner scanner = new Scanner(System.in);
-                    if (scanner.hasNextInt()) {
 
-                        int tempInt = scanner.nextInt();
-                        if (tempInt >= 0 && tempInt < weapons.size()) {
-
-                            Item itemOld = weapons.get(tempInt);
-                            Item itemNew = weapons.get(tempInt);
-                            Item.Weapon itemWeaponNew = weapons.get(tempInt);
-                            Item.Weapon itemWeaponOld = weapons.get(tempInt);
-                            if (tempInt >= 0 && tempInt < weapons.size()) {
-                                if (itemWeaponOld.getTypeEffect().equals("")) {
-
-                                    System.out.println("Вы хотите зачаровать " + itemWeaponOld.getName() + "\n");
-                                    System.out.println("Стоимость зачарования: " + (itemWeaponOld.getPrice()) * 3);
-                                    switch (Main.checkInt("1 - Да\n2 - Нет", 2)) {
-                                        case 1: {
-                                            Random randomChar = new Random();
-                                            int chanceChar = randomChar.nextInt(5);
-                                            if (player.getGold() >= (itemWeaponOld.getPrice()) * 3) {
-                                                int tempPowerEffect = 5 + randomChar.nextInt(100);
-                                                switch (chanceChar) {
-                                                    case 0: {
-                                                        System.out.println("Зачарование прошло неудачно!");
-                                                        System.out.println("Вы потеряли " + itemWeaponOld + (itemWeaponOld.getPrice() * 3) + " золота!");
-                                                        player.deliteGold(itemWeaponOld.getPrice() * 3);
-                                                        player.removeItem(itemOld);
-                                                        if (player.getWeapon().equals(itemWeaponOld)) {
-                                                            player.setWeapon(null);
-                                                        }
-                                                        break;
-                                                    }
-                                                    case 1: {
-
-                                                        System.out.println("Зачарование прошло успешно!");
-                                                        if (tempPowerEffect <= 25) {
-                                                            tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 1.5);
-                                                            itemWeaponNew.setPowerEffect(tempPowerEffect);
-                                                        } else if (tempPowerEffect > 25 && tempPowerEffect <= 50) {
-                                                            tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 1.7);
-                                                            itemWeaponNew.setPowerEffect(tempPowerEffect);
-                                                        } else if (tempPowerEffect > 50 && tempPowerEffect <= 75) {
-                                                            tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 1.9);
-                                                            itemWeaponNew.setPowerEffect(tempPowerEffect);
-                                                        } else {
-                                                            tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 2.1);
-                                                            itemWeaponNew.setPowerEffect(tempPowerEffect);
-                                                        }
-                                                        System.out.println("Вы получили огненные чары " + tempPowerEffect);
-                                                        itemWeaponNew.setTypeEffect("огонь");
-                                                        itemWeaponNew.setPrice((int) Math.round(itemWeaponNew.getPowerEffect() * 1.5));
-                                                        player.deliteGold(itemWeaponOld.getPrice() * 3);
-                                                        itemNew = itemWeaponNew;
-                                                        if (player.getWeapon().equals(itemWeaponOld)) {
-                                                            player.setWeapon(null);
-                                                            player.setWeapon(itemWeaponNew);
-                                                            player.removeItem(itemOld);
-                                                            player.addInventory(itemNew);
-                                                        } else {
-                                                            player.removeItem(itemOld);
-                                                            player.addInventory(itemNew);
-                                                        }
-                                                        break;
-                                                    }
-                                                    case 2: {
-                                                        System.out.println("Зачарование прошло успешно!");
-                                                        if (tempPowerEffect <= 25) {
-                                                            tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 1.5);
-                                                            itemWeaponNew.setPowerEffect(tempPowerEffect);
-                                                        } else if (tempPowerEffect > 25 && tempPowerEffect <= 50) {
-                                                            tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 1.7);
-                                                            itemWeaponNew.setPowerEffect(tempPowerEffect);
-                                                        } else if (tempPowerEffect > 50 && tempPowerEffect <= 75) {
-                                                            tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 1.9);
-                                                            itemWeaponNew.setPowerEffect(tempPowerEffect);
-                                                        } else {
-                                                            tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 2.1);
-                                                            itemWeaponNew.setPowerEffect(tempPowerEffect);
-                                                        }
-
-                                                        System.out.println("Вы получили ледяные чары " + tempPowerEffect);
-                                                        itemWeaponNew.setTypeEffect("лед");
-                                                        itemWeaponNew.setPrice((int) Math.round(itemWeaponNew.getPowerEffect() * 1.5));
-                                                        player.deliteGold(itemWeaponOld.getPrice() * 3);
-                                                        itemNew = itemWeaponNew;
-                                                        if (player.getWeapon().equals(itemWeaponOld)) {
-                                                            player.setWeapon(null);
-                                                            player.setWeapon(itemWeaponNew);
-                                                            player.removeItem(itemOld);
-                                                            player.addInventory(itemNew);
-                                                        } else {
-                                                            player.removeItem(itemOld);
-                                                            player.addInventory(itemNew);
-                                                        }
-                                                        break;
-                                                    }
-                                                    case 3: {
-                                                        System.out.println("Зачарование прошло успешно!");
-                                                        if (tempPowerEffect <= 25) {
-                                                            tempPowerEffect += (int) Math.round(itemWeaponOld.getPowerEffect() * 1.5);
-                                                            itemWeaponNew.setPowerEffect(tempPowerEffect);
-                                                        } else if (tempPowerEffect > 25 && tempPowerEffect <= 50) {
-                                                            tempPowerEffect += (int) Math.round(itemWeaponOld.getPowerEffect() * 1.7);
-                                                            itemWeaponNew.setPowerEffect(tempPowerEffect);
-                                                        } else if (tempPowerEffect > 50 && tempPowerEffect <= 75) {
-                                                            tempPowerEffect += (int) Math.round(itemWeaponOld.getPowerEffect() * 1.9);
-                                                            itemWeaponNew.setPowerEffect(tempPowerEffect);
-                                                        } else {
-                                                            tempPowerEffect += (int) Math.round(itemWeaponOld.getPowerEffect() * 2.1);
-                                                            itemWeaponNew.setPowerEffect(tempPowerEffect);
-                                                        }
-                                                        System.out.println("Вы получили водные чары " + tempPowerEffect);
-                                                        itemWeaponNew.setTypeEffect("вода");
-                                                        itemWeaponNew.setPrice((int) Math.round(itemWeaponNew.getPowerEffect() * 1.5));
-                                                        player.deliteGold(itemWeaponOld.getPrice() * 3);
-                                                        itemNew = itemWeaponNew;
-                                                        if (player.getWeapon().equals(itemWeaponOld)) {
-                                                            player.setWeapon(null);
-                                                            player.setWeapon(itemWeaponNew);
-                                                            player.removeItem(itemOld);
-                                                            player.addInventory(itemNew);
-
-                                                        } else {
-                                                            player.removeItem(itemOld);
-                                                            player.addInventory(itemNew);
-                                                        }
-                                                        break;
-                                                    }
-                                                    case 4: {
-                                                        System.out.println("Зачарование прошло успешно!");
-                                                        if (tempPowerEffect <= 25) {
-                                                            itemWeaponNew.setPowerEffect((int) Math.round(itemWeaponOld.getPowerEffect() * 1.5));
-                                                        } else if (tempPowerEffect > 25 && tempPowerEffect <= 50) {
-                                                            itemWeaponNew.setPowerEffect((int) Math.round(itemWeaponOld.getPowerEffect() * 1.7));
-                                                        } else if (tempPowerEffect > 50 && tempPowerEffect <= 75) {
-                                                            itemWeaponNew.setPowerEffect((int) Math.round(itemWeaponOld.getPowerEffect() * 1.9));
-                                                        } else {
-                                                            itemWeaponNew.setPowerEffect((int) Math.round(itemWeaponOld.getPowerEffect() * 2.1));
-                                                        }
-                                                        System.out.println("Вы получили зачарование ветра " + tempPowerEffect);
-                                                        itemWeaponNew.setTypeEffect("ветер");
-                                                        itemWeaponNew.setPrice((int) Math.round(itemWeaponNew.getPowerEffect() * 1.5));
-                                                        player.deliteGold(itemWeaponOld.getPrice() * 3);
-                                                        itemNew = itemWeaponNew;
-                                                        if (player.getWeapon().equals(itemWeaponOld)) {
-                                                            player.setWeapon(null);
-                                                            player.setWeapon(itemWeaponNew);
-                                                            player.removeItem(itemOld);
-                                                            player.addInventory(itemNew);
-                                                        } else {
-                                                            player.removeItem(itemOld);
-                                                            player.addInventory(itemNew);
-                                                        }
-                                                        break;
-                                                    }
-                                                }
-                                            } else {
-                                                System.out.println("Недостаточно золота!");
-                                            }
-
-                                            break;
-                                        }
-                                        case 2: {
-                                            System.out.println("Возврат");
-                                            break;
-                                        }
-                                        default: {
-                                            System.err.println("Некорректный ввод!");
-                                        }
-                                    }
-                                } else {
-                                    System.err.println("Нельзя чаровать. Предмет уже зачарован!");
-                                }
-                            }
-                        } else {
-                            System.err.println("Некорректный ввод!");
-                        }
-                    } else {
-                        System.out.println("Возврат");
-                    }
-                    break;
-                }
-                case 0: {
-                    System.out.println("Пока!");
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException e) {
-                        throw new CustomException("Ошибка при ожидании!");
-                    }
-                    return;
-                }
             }
+        } else {
+            Main.clearConsole();
+            System.err.println("Недостаточно силы!");
 
         }
-
-    }
-
-    private void fight() {
 
     }
 

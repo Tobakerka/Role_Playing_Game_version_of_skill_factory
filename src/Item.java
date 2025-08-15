@@ -1,4 +1,6 @@
-public class Item {
+import java.io.Serializable;
+
+public class Item implements Serializable {
 
     String name;
     int price;
@@ -36,7 +38,7 @@ public class Item {
         this.price += price;
     }
 
-    public static class Food extends Item {
+    public static class Food extends Item implements Serializable{
 
         int power;
         String type = "Еда";
@@ -76,7 +78,7 @@ public class Item {
         }
     }
 
-    public static class Potion extends Item {
+    public static class Potion extends Item implements Serializable{
 
         int power;
         String typeEffect;
@@ -129,7 +131,7 @@ public class Item {
         }
     }
 
-    public static class Weapon extends Item {
+    public static class Weapon extends Item implements Serializable{
 
         private int damage;
         private String type = "Оружие";
@@ -227,7 +229,7 @@ public class Item {
         }
     }
 
-    public static class Armor extends Item {
+    public static class Armor extends Item implements Serializable{
 
         int defense;
         String type = "Броня";

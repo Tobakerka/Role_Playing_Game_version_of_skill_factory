@@ -5,9 +5,6 @@ import java.util.Scanner;
 
 public class Main {
 
-    boolean isSave = false;
-    boolean isGameToPlay = false;
-
     public static void main(String[] args) {
 
         Game game = new Game();
@@ -21,10 +18,6 @@ public class Main {
     public static void clearConsole() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
-    }
-
-    public static void continueGame() {
-
     }
 
     public static String checkNameOfNull(String text) {
@@ -41,89 +34,36 @@ public class Main {
         }
     }
 
-    public static Person startNewGame() {
 
-        Person[] person = new Person[] {new Person.Human(""), new Person.Elf("")};
-        System.out.println("Выбор персонажа:");
-        System.out.println();
-        for (Person player : person) {
-            player.showStats();
-            System.out.println();
-        }
+    public static boolean saveGame(Person person) throws CustomException {
+        Path pathToSave = Paths.get("src/Save.ser");
 
-        while (true) {
+        try (FileOutputStream fos = new FileOutputStream(pathToSave.toFile());
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
 
-            switch (Main.checkInt("Выберите персонажа:\n\n1 - " + person[0].getRace() + "\n2 - " + person[1].getRace() + "\n" + "0 - Выход",2)) {
-
-                case 1: {
-                    System.out.println("Вы выбрали " + person[0].getRace());
-                    person[0].setName(Main.checkNameOfNull("Введите имя:"));
-                    return person[0];
-                }
-                case 2: {
-                    System.out.println("Вы выбрали " + person[1].getRace());
-                    person[1].setName(Main.checkNameOfNull("Введите имя:\n"));
-                    return person[1];
-                }
-                case 0: {
-                    quitGame();
-                    break;
-                }
-                default: {
-                }
-            }
+            // Если файл не существует, он будет создан автоматически
+            oos.writeObject(person);
+            Main.clearConsole();
+            System.out.println("Игра сохранена");
+            return true;
+        } catch (IOException e) {
+            throw new CustomException("Ошибка! Файл не найден или произошла ошибка при записи: " + e.getMessage());
         }
     }
 
-    public static void quitGame() {
+    public static Person loadGame() {
 
-        System.out.println();
-        switch (Main.checkInt("Вы хотите выйти из игры?\n1. Да\n2. Нет",2)) {
+        Person loadedPerson = null;
+        try (FileInputStream fis = new FileInputStream("src/Save.ser");
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
 
-            case 1: {
+            loadedPerson = (Person) ois.readObject(); // Читаем объект из файла
+            System.out.println("Восстановленный объект: " + loadedPerson);
 
-                switch (Main.checkInt("Хотите сохранить игру?\n1. Да\n2. Нет",2)) {
-
-                    case 1: {
-                        try {
-                        saveGame();
-                        } catch (CustomException e) {
-                            new CustomException("Ошибка! " + e.getMessage());
-                        }
-                        System.exit(0);
-                        break;
-                    }
-                    case 2: {
-                        System.exit(0);
-                        break;
-                    }
-
-                }
-                break;
-            }
-            case 2: {
-                System.out.println("Вы вернулись в главное меню");
-                break;
-            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
-    }
-
-    public static void saveGame() throws CustomException{
-
-        Path pathToSave = Paths.get("src/Save.txt");
-        if (pathToSave.toFile().exists()) {
-
-            try {
-                InputStream inputStream = new FileInputStream(pathToSave.toFile());
-            } catch (FileNotFoundException e) {
-                throw new CustomException("Файл не найден!");
-            }
-        } else {
-
-        }
-    }
-
-    public static void loadGame() {
+        return loadedPerson;
 
     }
 
