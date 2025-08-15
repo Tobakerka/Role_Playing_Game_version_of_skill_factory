@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public abstract class Person {
+public class Person {
 
     private int countInventory;
     ArrayList<Item> inventory = new ArrayList<>(countInventory);
@@ -15,6 +15,18 @@ public abstract class Person {
     private int strength;
     private boolean isAlive;
     private String race;
+
+    // Возможные уязвимости
+    private boolean vulnerabilityOfFire;
+    private boolean vulnerabilityOfIce;
+    private boolean vulnerabilityOfWind;
+    private boolean vulnerabilityOfWater;
+
+    // Возможные резисты
+    private boolean resistanceOfFire;
+    private boolean resistanceOfIce;
+    private boolean resistanceOfWind;
+    private boolean resistanceOfWater;
 
     private Item.Weapon weapon;
     private Item.Armor armor;
@@ -81,8 +93,147 @@ public abstract class Person {
         this.name = name;
     }
 
+    public boolean getVulnerabilityOfFire() {
+        return vulnerabilityOfFire;
+    }
+
+    public boolean getVulnerabilityOfIce() {
+        return vulnerabilityOfIce;
+    }
+
+    public boolean getVulnerabilityOfWind() {
+        return vulnerabilityOfWind;
+    }
+
+    public boolean getVulnerabilityOfWater() {
+        return vulnerabilityOfWater;
+    }
+
+    public boolean getResistanceOfFire() {
+        return resistanceOfFire;
+    }
+
+    public boolean getResistanceOfIce() {
+        return resistanceOfIce;
+    }
+
+    public boolean getResistanceOfWind() {
+        return resistanceOfWind;
+    }
+
+    public boolean getResistanceOfWater() {
+        return resistanceOfWater;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public String getRace() {
+        return race;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     // Методы:
 
+    // Метод списания золота за покупку предмета
+    public void deliteGold(int price) {
+        gold -= price;
+    }
+
+    // Метод для проверки резистов и уязвимостей
+
+    public int checkVulnerabilityResistanceOfDamage(String element, int powerElement, int damage) {
+
+        switch (element) {
+
+            case "огонь": {
+                if (vulnerabilityOfFire) {
+                    System.out.println("Уезвимость: Урон с огнем повышен на " + powerElement);
+                    return damage + powerElement;
+                } else {
+                    if (resistanceOfFire) {
+                        int temp = (int) Math.rint(damage / 0.5);
+                        if (temp > 0) {
+                            System.out.println("Резист: Урон с огнем уменьшен на половину " + temp);
+                            return temp;
+                        } else {
+                            System.out.println("Резист: Урон равен нулю");
+                            return 0;
+                        }
+                    } else {
+                        System.out.println("Урон равен " + damage);
+                        return damage;
+                    }
+                }
+            }
+            case "вода": {
+                if (vulnerabilityOfWater) {
+                    System.out.println("Уезвимость: Урон с огнем повышен на " + powerElement);
+                    return damage + powerElement;
+                } else {
+                    if (resistanceOfWater) {
+                        int temp = (int) Math.rint(damage / 0.5);
+                        if (temp > 0) {
+                            System.out.println("Резист: Урон с водой уменьшен на половину " + temp);
+                            return temp;
+                        } else {
+                            System.out.println("Резист: Урон равен нулю");
+                            return 0;
+                        }
+                    } else {
+                        return damage;
+                    }
+                }
+            }
+            case "лед": {
+                if (vulnerabilityOfIce) {
+
+                    System.out.println("Уезвимость: Урон со льдом повышен на " + powerElement);
+                    return damage + powerElement;
+                } else {
+                    if (resistanceOfIce) {
+
+                        int temp = (int) Math.rint(damage / 0.5);
+                        if (temp > 0) {
+                            System.out.println("Резист: Урон со льдом уменьшен на половину " + temp);
+                            return temp;
+                        } else {
+                            System.out.println("Резист: Урон равен нулю");
+                            return 0;
+                        }
+                    } else {
+                        return damage;
+                    }
+                }
+            }
+            case "ветер" : {
+                if (vulnerabilityOfWind) {
+                    System.out.println("Уезвимость: Урон с ветром повышен на " + powerElement);
+                    return damage + powerElement;
+                } else {
+                    if (resistanceOfWind) {
+                        int temp = (int) Math.rint(damage / 0.5);
+                        if (temp > 0) {
+                            System.out.println("Резист: Урон с ветром уменьшен на половину " + temp);
+                            return temp;
+                        } else {
+                            System.out.println("Резист: Урон равен нулю");
+                            return 0;
+                        }
+                    } else {
+                        return damage;
+                    }
+                }
+            }
+            default: {
+                return 0;
+            }
+        }
+    }
     // Метод для повышения уровня
     public void levelUp(long givenExp) {
 
@@ -452,18 +603,6 @@ public abstract class Person {
         System.out.println();
     }
 
-    public int getLevel() {
-            return level;
-        }
-
-    public void deliteGold(int price) {
-        gold -= price;
-    }
-
-    public String getRace() {
-        return race;
-    }
-
     // Класс для игрока
     public static class Human extends Person {
 
@@ -478,8 +617,8 @@ public abstract class Person {
             super.level = 1;
             super.exp = 0L;
             super.levelUpThreshold = 100L;
-            super.setWeapon(new Item.Weapon("Кинжал", 10, 10, 1));
-            super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1));
+            super.setWeapon(new Item.Weapon("Кинжал", 10, 10, 1, "", 0, 1));
+            super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1, 1));
             super.isAlive = true;
             super.countInventory = 20;
             super.race = "Человек";
@@ -501,8 +640,8 @@ public abstract class Person {
             super.level = 1;
             super.exp = 0L;
             super.levelUpThreshold = 100L;
-            super.setWeapon(new Item.Weapon("Лук", 10, 10, 1));
-            super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1));
+            super.setWeapon(new Item.Weapon("Лук", 10, 10, 1, "", 0, 1));
+            super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1, 1));
             super.isAlive = true;
             super.countInventory = 20;
             super.race = "Эльф";
@@ -520,6 +659,16 @@ public abstract class Person {
             super.levelUpThreshold = 100L;
             super.isAlive = true;
             super.race = "Скелет";
+            // Уезвим к стихии ветра а резист к воде
+            super.vulnerabilityOfFire = false;
+            super.vulnerabilityOfIce = false;
+            super.vulnerabilityOfWind = true;
+            super.vulnerabilityOfWater = false;
+            super.resistanceOfFire = false;
+            super.resistanceOfIce = false;
+            super.resistanceOfWind = false;
+            super.resistanceOfWater = true;
+
         }
     }
 
@@ -534,6 +683,15 @@ public abstract class Person {
             super.levelUpThreshold = 100L;
             super.isAlive = true;
             super.race = "Зомби";
+            // Уезвим к стихии воды а резист к ветру
+            super.vulnerabilityOfFire = false;
+            super.vulnerabilityOfIce = false;
+            super.vulnerabilityOfWind = false;
+            super.vulnerabilityOfWater = true;
+            super.resistanceOfFire = false;
+            super.resistanceOfIce = false;
+            super.resistanceOfWind = true;
+            super.resistanceOfWater = false;
         }
     }
 
@@ -548,6 +706,41 @@ public abstract class Person {
             super.levelUpThreshold = 100L;
             super.isAlive = true;
             super.race = "Гоблин";
+            // Уезвим к стихии льда а резист к огню
+            super.vulnerabilityOfFire = false;
+            super.vulnerabilityOfIce = true;
+            super.vulnerabilityOfWind = false;
+            super.vulnerabilityOfWater = false;
+            super.resistanceOfFire = true;
+            super.resistanceOfIce = false;
+            super.resistanceOfWind = false;
+            super.resistanceOfWater = false;
+        }
+    }
+
+    // Класс противника
+    public static class Vampire extends Person {
+
+        public Vampire(String name) {
+            super(name);
+        }
+
+        public Vampire(String name, int maxHealth, int power, int agility, int gold,int level, Item.Weapon weapon, Item.Armor armor) {
+            super(name, maxHealth, power, agility, gold, weapon, armor);
+            super.level = level;
+            super.exp = 0L;
+            super.levelUpThreshold = 100L;
+            super.isAlive = true;
+            super.race = "Вампир";
+            // Уезвим к стихии огня а резист к льду
+            super.vulnerabilityOfFire = true;
+            super.vulnerabilityOfIce = false;
+            super.vulnerabilityOfWind = true;
+            super.vulnerabilityOfWater = false;
+            super.resistanceOfFire = false;
+            super.resistanceOfIce = true;
+            super.resistanceOfWind = false;
+            super.resistanceOfWater = true;
         }
     }
 }

@@ -1,5 +1,9 @@
 // Основная логика игры
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -7,6 +11,10 @@ import java.util.Scanner;
 import static java.lang.StrictMath.random;
 
 public class Game {
+
+    Person player;
+    boolean isSave = false;
+    boolean isGameToPlay = false;
 
     public static Person spawnPerson(int level) {
 
@@ -104,16 +112,161 @@ public class Game {
 
         // Случайным образом выбирается тип персонажа
         Random randomPerson = new Random();
-        int tempCheckPerson = randomPerson.nextInt(3);
+        int tempCheckPerson = randomPerson.nextInt(4);
         switch (tempCheckPerson) {
-            case 0:
-                return new Person.Skeleton("Скелет", maxHealth, power, agility, gold, level, weapon, armor );
-            case 1:
-                return new Person.Goblin("Гоблин", maxHealth, power, agility, gold, level, weapon, armor);
-            case 2:
-                return new Person.Zombie("Зомби", maxHealth, power, agility, gold, level,weapon, armor);
+            case 0: return new Person.Skeleton("Скелет", maxHealth, power, agility, gold, level, weapon, armor );
+            case 1: return new Person.Goblin("Гоблин", maxHealth, power, agility, gold, level, weapon, armor);
+            case 2: return new Person.Zombie("Зомби", maxHealth, power, agility, gold, level,weapon, armor);
+            case 3: return new Person.Vampire("Вампир", maxHealth, power, agility, gold, level, weapon, armor);
         }
         return null;
+    }
+
+    public void mainMenu() throws CustomException {
+        String text = "";
+        File file = new File("src/Save.dat");
+        if (file.exists()) {
+            while (true) {
+
+                try (FileInputStream fis = new FileInputStream(file)) {
+                    byte[] buffer = new byte[1024]; // буфер для чтения
+                    int bytesRead;
+                    StringBuilder content = new StringBuilder();
+
+                    while ((bytesRead = fis.read(buffer)) != -1) {
+                        // Можно обработать байты, например, преобразовать в строку
+                        for (int i = 0; i < bytesRead; i++) {
+                            content.append((char) buffer[i]);
+                        }
+                    }
+                    text = content.toString();
+                } catch (FileNotFoundException e) {
+                    throw new CustomException("Ошибка в файле сохранения!");
+                } catch (IOException e) {
+                    System.err.println(e.getMessage() + "Ошибка при чтении файла!");
+                }
+                String sTemp;
+                int otvet = -1;
+
+                if (text.length() > 0) {
+                    isSave = true;
+                } else {
+                    isSave = false;
+                }
+                if (isSave && isGameToPlay) {
+                    sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n3 - Загрузить игру\n0 - Выйти из игры";
+                    otvet = Main.checkInt(sTemp, 3);
+                    switch (otvet) {
+                        case 1: {
+                            player = Main.startNewGame();
+                            break;
+                        }
+                        case 2: {
+                            Main.continueGame();
+                            break;
+                        }
+                        case 3: {
+                            Main.loadGame();
+                        }
+                        case 0: {
+                            Main.quitGame();
+                        }
+                        default: {
+
+                        }
+                    }
+                } else if (!isSave && !isGameToPlay) {
+                    sTemp = "Главное меню\n\n1 - Начать новую игру\n0 - Выйти из игры";
+                    otvet = Main.checkInt(sTemp, 1);
+                    switch (otvet) {
+
+                        case 1: {
+                            player = Main.startNewGame();
+                            break;
+                        }
+                        case 0: {
+                            Main.quitGame();
+                            break;
+                        }
+                        default: {
+
+                        }
+                    }
+                } else if (!isSave && isGameToPlay) {
+                    sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n0 - Выйти из игры";
+                    otvet = Main.checkInt(sTemp, 2);
+                    switch (otvet) {
+                        case 1: {
+                            player = Main.startNewGame();
+                            break;
+                        }
+                        case 2: {
+                            Main.continueGame();
+                            break;
+                        }
+                        case 0: {
+                            Main.quitGame();
+                            break;
+                        }
+                        default: {
+
+                        }
+                    }
+                } else if (isSave && !isGameToPlay) {
+                    sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Загрузить игру\n0 - Выйти из игры";
+                    otvet = Main.checkInt(sTemp, 2);
+                    switch (otvet) {
+                        case 1: {
+                            player = Main.startNewGame();
+                            break;
+                        }
+                        case 2: {
+                            Main.loadGame();
+                            break;
+                        }
+                        case 0: {
+                            Main.quitGame();
+                            break;
+                        }
+                        default: {
+
+                        }
+                    }
+                }
+                System.out.println();
+            }
+        } else {
+            try {
+                File save = new File("src/Save.dat");
+                save.createNewFile();
+                System.out.println("Файл сохранения создан!");
+            } catch (Exception e) {
+                System.out.println("Ошибка при создании файла сохранения!");
+            }
+        }
+
+        while (true) {
+
+            System.out.println("Действия: \n");
+
+            switch (Main.checkInt("Действия: \n\n1 - Открыть инвентарь\n" +
+                    "2 - идти в магазин\n" +
+                    "3 - идти в темный лес\n" +
+                    "4 - идти к кузнецу\n" +
+                    "0 - Выход\n", 4)) {
+                case 1: {
+                }
+                case 2: {}
+                case 3: {}
+                case 4: {}
+                case 0: {
+                    return;
+                }
+                default: {
+                    System.out.println("Некорректный ввод!");
+                }
+            };
+        }
     }
 
     public static Item.Weapon spawnWeapon(int level) {
@@ -122,6 +275,9 @@ public class Game {
         String name = "";
         int damage = 10;
         int price = 10;
+        String typeEffect = "";
+        int powerEffect = 0;
+        int levelCharacter = 1;
 
         Random random = new Random();
         switch (random.nextInt(3))  {
@@ -136,12 +292,39 @@ public class Game {
             }
         }
 
+        Random randTypeEffect = new Random();
+        switch (randTypeEffect.nextInt(5)) {
+            case 0: {
+                typeEffect = "огонь";
+
+            }
+            case 1: {
+                typeEffect = "воздух";
+            }
+            case 2: {
+                typeEffect = "вода";
+            }
+            case 3: {
+                typeEffect = "лед";
+            }
+            case 4: {
+                typeEffect = "";
+            }
+
+        }
+
         for (int i = 0; i < level; i++) {
             damage += Math.round(damage * 0.05);
             price += Math.round(price * 0.05);
+            if (!typeEffect.equals("")) {
+
+                if (random.nextBoolean()) {
+                    powerEffect += Math.round(powerEffect * 0.05);
+                }
+            }
         }
 
-        return new Item.Weapon(name, damage, price, level);
+        return new Item.Weapon(name, price, damage, level, typeEffect, powerEffect, levelCharacter);
 
     }
 
@@ -151,6 +334,7 @@ public class Game {
         String name = "";
         int price = 10;
         int defence = 10;
+        int levelCharacter = 1;
 
         Random random = new Random();
 
@@ -174,7 +358,7 @@ public class Game {
                 price += Math.round(price * 0.1);
             }
         }
-        return new Item.Armor(name, price, defence, level);
+        return new Item.Armor(name, price, defence, level, levelCharacter);
     }
 
     // метод для дропа предметов из поверженного противника. В первый параметр передается игрок, которому будет присвоен дроп. Во второй параметр передается поверженный противник.

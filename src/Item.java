@@ -127,25 +127,40 @@ public class Item {
 
     public static class Weapon extends Item {
 
-        int power;
-        int damage;
-        String type = "Оружие";
-        public Weapon(String name, int price, int damage, int level) {
+        private int damage;
+        private String type = "Оружие";
+        private String typeEffect = "";
+        private int powerEffect;
+        private int levelChange; // Уровень заточки
+
+        public Weapon(String name, int price, int damage, int level, String typeEffect, int powerEffect, int levelChange) {
 
             super(name, price, level);
             this.damage = damage;
             super.level = level;
+            this.typeEffect = typeEffect;
+            this.powerEffect = powerEffect;
+            this.levelChange = levelChange;
         }
 
         // Метод передает информацию о оружии
 
         public String print() {
 
-            return  type + ": \n" +
+            String tempText = type + ": \n" +
                     "Название: " + name + "\n" +
                     "Уровень: " + level + "\n" +
                     "Цена: " + price + "\n" +
-                    "Урон: " + damage + "\n\n";
+                    "Урон: " + damage + "\n" +
+                    "Уровень заточки: " + levelChange + "\n";
+            if (!typeEffect.equals("")) {
+                tempText += "Эффект: " + typeEffect + "\n" + "Сила эффекта: " + powerEffect + "\n";
+
+            } else {
+                tempText += "\n";
+            }
+            return  tempText;
+
         }
 
         public void getInfo() {
@@ -171,11 +186,14 @@ public class Item {
 
         int defense;
         String type = "Броня";
+        int levelChange;
 
-        public Armor(String name, int price, int defense, int level) {
+        public Armor(String name, int price, int defense, int level, int levelChange) {
 
             super(name, price, level);
             this.defense = defense;
+            this.levelChange = levelChange;
+
         }
 
         // Метод передает информацию о брони
