@@ -62,6 +62,8 @@ public class Person implements Serializable{
         this.isAlive = true;
         this.countInventory = 20;
         this.strength = 100;
+        inventory.add(weapon);
+        inventory.add(armor);
     }
 
     // Геттеры и сеттеры:
@@ -114,6 +116,17 @@ public class Person implements Serializable{
 
     public int getGold() {
         return gold;
+    }
+
+    public void setGold(int gold) {
+
+        if (gold > 0) {
+
+            this.gold = gold;
+        } else {
+
+            System.out.println("Нельзя установить значение меньше 0");
+        }
     }
 
     public void setName(String name) {
@@ -699,6 +712,8 @@ public class Person implements Serializable{
             super.isAlive = true;
             super.countInventory = 20;
             super.race = "Человек";
+            inventory.add(getWeapon());
+            inventory.add(getArmor());
 
         }
     }
@@ -722,6 +737,8 @@ public class Person implements Serializable{
             super.isAlive = true;
             super.countInventory = 20;
             super.race = "Эльф";
+            inventory.add(getWeapon());
+            inventory.add(getArmor());
         }
     }
 
