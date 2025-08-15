@@ -1,23 +1,24 @@
 // Основная логика игры
 
-import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-import static java.lang.StrictMath.random;
 import static java.lang.Thread.sleep;
 
 public class Game {
 
-    boolean isSave = false;
-    boolean isGameToPlay = false;
-    int difficulty = 1; // Сложность игры 1 - Легко, 2 - Средне, 3 - Сложно
-    boolean isShopSort = false;
-    boolean isInventorySort = false;
+    private boolean isSave = false; // Проверка есть ли файл сохранения
+    private boolean isGameToPlay = false; // Проверка запущена ли игра. Нужен для правильного отображения меню при запуске игры
+    private int difficulty = 1; // Сложность игры 1 - Легко, 2 - Средне, 3 - Сложно
+    private boolean isShopSort = false; // Проверка включена ли сортировка магазина
+    private boolean isInventorySort = false; // Проверка включена ли сортировка инвентаря
 
+    // Геттеры и сеттеры
     public boolean getIsGameToPlay() {
         return isGameToPlay;
     }
@@ -71,6 +72,7 @@ public class Game {
             level = 1;
         }
 
+        // Поля будующего персонажа
         int maxHealth = 100;
         int health = 100;
         int maxStrength = 100;
@@ -79,18 +81,17 @@ public class Game {
         int agility = 10;
         int gold = 0;
 
+        // Присваиваются максимально доступные жизнь и стамина.
         health = maxHealth;
         strength = maxStrength;
+
         // Присваиваются характеристики персонажа в зависимости от уровня
         for (int i = 0; i < level -1 ; i++) {
-
 
             maxHealth += Math.round(maxHealth * 0.05);
             maxStrength += Math.round(maxStrength * 0.05);
             power += Math.round(power * 0.05);
             agility += Math.round(agility * 0.05);
-
-
         }
 
         // Если у персонажа будет оружие или броня, то запускается метод создания оружия или брони. Если их нет, то присваивается null
@@ -110,10 +111,12 @@ public class Game {
             armor = null;
         }
 
+        // Проверка будет ли у персонажа деньги
         boolean checkIsMoney = false;
         Random randomMoney = new Random();
         checkIsMoney = randomMoney.nextBoolean();
 
+        // Количество денег
         if (checkIsMoney) {
 
             Random intRandomMoney = new Random();
@@ -138,20 +141,24 @@ public class Game {
             String sMag = "";
             String sInv = "";
 
+            // Проверка включена ли сортировка магазина в опциях
             if (isShopSort) {
                 sMag = "Сортировка магазина включена";
             } else {
                 sMag = "Сортировка магазина выключена";
             }
 
+            // Проверка включена ли сортировка инвентаря в опциях
             if (isInventorySort) {
                 sInv = "Сортировка инвентаря включена";
             } else {
                 sInv = "Сортировка инвентаря выключена";
             }
 
+            // Переменная для выставления сложности игры
             String sDef = "";
 
+            // Проверка сложности игры
             switch (difficulty) {
                 case 1: {
                     sDef = "Сложность игры: Легко";
@@ -167,6 +174,7 @@ public class Game {
                 }
             }
 
+            // Вывод меню опций
             Scanner scanner = new Scanner(System.in);
             System.out.println("Настройки\n\n");
             System.out.println(sInv + "\n" + sMag + "\n" + sDef);
@@ -223,7 +231,6 @@ public class Game {
         File file = new File("src/Save.ser");
         while (true) {
             if (file.exists()) {
-
 
                 try (FileInputStream fis = new FileInputStream(file)) {
                     byte[] buffer = new byte[1024]; // буфер для чтения
@@ -494,7 +501,8 @@ public class Game {
                     "3 - идти в темный лес\n" +
                     "4 - идти к кузнецу\n" +
                     "5 - отдыхать\n" +
-                    "0 - Меню\n", 5)) {
+                    "6 - статистика\n" +
+                    "0 - Меню\n", 6)) {
                 case 1: {
                     player.openInventary();
                     break;
@@ -522,6 +530,10 @@ public class Game {
                     toTakeADreak(player, magazine);
                     break;
                 }
+                case 6: {
+                    player.showStats();
+                    break;
+                }
                 case 0: {
                     return;
                 }
@@ -532,6 +544,7 @@ public class Game {
         }
     }
 
+    // Метод для отдыха и восстановления стамины
     private void toTakeADreak(Person player, Magazine magazine) {
         player.setStrength(player.getMaxStrength());
         magazine.spawnMagazine(player.getLevel());
@@ -543,7 +556,7 @@ public class Game {
     }
 
     private void goToTheBlacksmith(Person player) throws CustomException {
-        if (player.getStrength() >= 10) {
+
             player.move(1);
             if (!player.getIsAlive()) {
                 System.out.println("Вы умерли!");
@@ -943,107 +956,15 @@ public class Game {
                 }
 
             }
-        } else {
-            Main.clearConsole();
-            System.err.println("Недостаточно силы!");
 
-        }
 
     }
 
-    public static Item.Weapon spawnWeapon(int level) {
 
-        int levelWeapon = level;
-        String name = "";
-        int damage = 10;
-        int price = 10;
-        String typeEffect = "";
-        int powerEffect = 0;
-        int levelCharacter = 1;
-
-        Random random = new Random();
-        switch (random.nextInt(3))  {
-            case 0: {
-                name = "Кинжал";
-            }
-            case 1: {
-                name = "Посох";
-            }
-            case 2: {
-                name = "Лук";
-            }
-        }
-
-        Random randTypeEffect = new Random();
-        switch (randTypeEffect.nextInt(5)) {
-            case 0: {
-                typeEffect = "огонь";
-
-            }
-            case 1: {
-                typeEffect = "воздух";
-            }
-            case 2: {
-                typeEffect = "вода";
-            }
-            case 3: {
-                typeEffect = "лед";
-            }
-            case 4: {
-                typeEffect = "";
-            }
-
-        }
-
-        for (int i = 0; i < level; i++) {
-            damage += Math.round(damage * 0.05);
-            price += Math.round(price * 0.05);
-            if (!typeEffect.equals("")) {
-
-                if (random.nextBoolean()) {
-                    powerEffect += Math.round(powerEffect * 0.05);
-                }
-            }
-        }
-
-        return new Item.Weapon(name, price, damage, level, typeEffect, powerEffect, levelCharacter);
-
-    }
-
-    public static Item.Armor spawnArmor(int level) {
-
-        int levelArmor = level;
-        String name = "";
-        int price = 10;
-        int defence = 10;
-        int levelCharacter = 1;
-
-        Random random = new Random();
-
-        for (int i = 0; i < level; i++) {
-            price += Math.round(price * 0.05);
-            defence += Math.round(defence * 0.05);
-        }
-
-        // Случайным образом выбирается тип брони и в зависимости от этого выбирается название и сила доп эффекта
-        switch (random.nextInt(3)) {
-            case 0: {
-                name = "Кожаная броня";
-                price += Math.round(price * 0.05);
-            }
-            case 1: {
-                name = "Железная броня";
-                price += Math.round(price * 0.08);
-            }
-            case 2: {
-                name = "Стальной броня";
-                price += Math.round(price * 0.1);
-            }
-        }
-        return new Item.Armor(name, price, defence, level, levelCharacter);
-    }
-
-    // метод для дропа предметов из поверженного противника. В первый параметр передается игрок, которому будет присвоен дроп. Во второй параметр передается поверженный противник.
+    /* Метод для дропа предметов из поверженного противника.
+    В первый параметр передается игрок, которому будет присвоен дроп.
+    Во второй параметр передается поверженный противник.
+     */
     public static void lootOfPerson(Person player, Person isDeadPerson) {
 
         ArrayList<Item> loot = new ArrayList<>();
@@ -1104,11 +1025,18 @@ public class Game {
         }
     }
 
+    /* Метод для генерации предметов в магазин или если потребуется куда либо еще.
+    Данный метод принимает два параметра:
+    1. Количество предметов, которые нужно сгенерировать
+    2. Уровень предметов
+    Сам метод возвращает список сгенерированных предметов
+     */
     public static ArrayList generateItem(int countItem, int level) {
 
         ArrayList<Item> items = new ArrayList<>();
         for (int i = 0; i < countItem; i++) {
 
+            // Случайным образом выбирается тип предмета
             Random random = new Random();
             int tempRand = random.nextInt(4);
             switch (tempRand) {
@@ -1130,21 +1058,137 @@ public class Game {
                 }
             }
         }
+
+        // Возвращаем сгенерированный список
         return items;
     }
 
+    // Метод для генерации оружия
+    public static Item.Weapon spawnWeapon(int level) {
+
+        // Присваиваются начальные значения
+        int levelWeapon = level;
+        String name = "";
+        int damage = 10;
+        int price = 10;
+        String typeEffect = "";
+        int powerEffect = 0;
+        int levelCharacter = 1;
+
+        // Случайным образом выбирается название оружия
+        Random random = new Random();
+        switch (random.nextInt(3))  {
+            case 0: {
+                name = "Кинжал";
+                break;
+            }
+            case 1: {
+                name = "Посох";
+                break;
+            }
+            case 2: {
+                name = "Лук";
+                break;
+            }
+        }
+
+        // Случайным образом выбирается тип эффекта
+        Random randTypeEffect = new Random();
+        switch (randTypeEffect.nextInt(5)) {
+            case 0: {
+                typeEffect = "огонь";
+                break;
+            }
+            case 1: {
+                typeEffect = "воздух";
+                break;
+            }
+            case 2: {
+                typeEffect = "вода";
+                break;
+            }
+            case 3: {
+                typeEffect = "лед";
+                break;
+            }
+            case 4: {
+                typeEffect = "";
+            }
+        }
+
+        // Производится расчет параметров оружия
+        for (int i = 0; i < level; i++) {
+            damage += Math.round(damage * 0.05);
+            price += Math.round(price * 0.05);
+            if (!typeEffect.equals("")) {
+
+                if (random.nextBoolean()) {
+                    powerEffect += Math.round(powerEffect * 0.05);
+                }
+            }
+        }
+
+        return new Item.Weapon(name, price, damage, level, typeEffect, powerEffect, levelCharacter);
+
+    }
+
+    // Метод для генерации брони
+    public static Item.Armor spawnArmor(int level) {
+
+        // Присваиваются начальные значения
+        int levelArmor = level;
+        String name = "";
+        int price = 10;
+        int defence = 10;
+        int levelCharacter = 1;
+
+        // Определение мощьности и цены брони
+        for (int i = 0; i < level; i++) {
+            price += Math.round(price * 0.05);
+            defence += Math.round(defence * 0.05);
+        }
+
+        // Случайным образом выбирается название брони
+        Random random = new Random();
+        // Случайным образом выбирается тип брони и в зависимости от этого выбирается название и сила доп эффекта
+        switch (random.nextInt(3)) {
+            case 0: {
+                name = "Кожаная броня";
+                price += Math.round(price * 0.05);
+                break;
+            }
+            case 1: {
+                name = "Железная броня";
+                price += Math.round(price * 0.08);
+                break;
+            }
+            case 2: {
+                name = "Стальной броня";
+                price += Math.round(price * 0.1);
+                break;
+            }
+        }
+        return new Item.Armor(name, price, defence, level, levelCharacter);
+    }
+
+    // Метод для генерации зелий
     private static Item.Potion spawnPotion(int level) {
 
-        Random random = new Random();
-        boolean isPotionEffect = random.nextBoolean();
+
+        // Создаются начальные параметры зелья
         String name = "";
         int price = 10;
         String typeEffect = "";
         int power = 10;
 
+        // Случайным образом выбирается тип зелья. Может быть лечебное или выносливость
+        Random random = new Random();
+        boolean isPotionEffect = random.nextBoolean();
+
+        // Проверка типа зелья
         if (isPotionEffect) {
 
-//          typeEffect = "лечебное";
+            typeEffect = "лечебное";
             name = "Зелье лечения";
         } else {
 
@@ -1152,22 +1196,25 @@ public class Game {
             name = "Зелье выносливости";
         }
 
+        //Если уровень зелья больше 1, то происходит увеличение цены и силы зелья
         if (level > 1) {
             for (int i = 0; i < level; i++) {
                 price += Math.round(price * 0.05);
                 power += Math.round(power * 0.05);
             }
-        } else {
-
         }
-        return new Item.Potion(name, price, "Зелье", power, level);
+
+        return new Item.Potion(name, "Зелье", price, typeEffect, power, level);
     }
 
     public static Item.Food spawnFood(int level) {
 
+        // Создаются начальные параметры еды
         String name = "";
         int price = 10;
         int power = 10;
+
+        // Случайным образом выбирается название и тип еды + от типа еды зависит сколько сил будет прибавлять
         Random random = new Random();
         int rendFood = random.nextInt(7);
 
@@ -1209,13 +1256,12 @@ public class Game {
             }
         }
 
+        // Если уровень еды больше 1, то происходит увеличение цены и силы еды
         if (level > 1) {
             for (int i = 0; i < level; i++) {
                 price += Math.round(price * 0.05);
                 power += Math.round(power * 0.05);
             }
-        } else {
-
         }
         return new Item.Food(name, price, power, level);
     }

@@ -84,10 +84,11 @@ public class Item implements Serializable {
         String typeEffect;
         String type = "Зелье";
 
-        public Potion(String name, int price, String type, int power, int level) {
+        public Potion(String name, String type, int price, String typeEffect, int power, int level) {
 
             super(name, price, level);
-            this.typeEffect = type;
+            this.type = type;
+            this.typeEffect = typeEffect;
             this.power = power;
         }
 

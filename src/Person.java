@@ -29,6 +29,7 @@ public class Person implements Serializable{
     private boolean resistanceOfWind;
     private boolean resistanceOfWater;
 
+    // Экипировка:
     private Item.Weapon weapon;
     private Item.Armor armor;
 
@@ -62,6 +63,7 @@ public class Person implements Serializable{
         this.countInventory = 20;
         this.strength = 100;
     }
+
     // Геттеры и сеттеры:
     public long getlevelUpThreshold() {
 
@@ -162,13 +164,42 @@ public class Person implements Serializable{
         return name;
     }
 
-    // Методы:
+    public int getCountInventory() {
+        return countInventory;
+    }
 
+    public void setStrength(int power, int maxStrength) {
+
+        int temp =  + maxStrength;
+        if (temp > maxStrength) {
+            this.strength = maxStrength;
+        } else {
+            this.strength += temp;
+        }
+    }
+    private void setHealth(int power, double maxHealth) {
+
+        double temp = this.health + health;
+        if (temp > maxHealth) {
+            this.health = maxHealth;
+        } else {
+            this.health += temp;
+        }
+    }
+
+    public boolean getIsAlive() {
+        return isAlive;
+    }
+
+    public ArrayList<Item> getInventory() {
+        return inventory;
+    }
+    // Методы:
     // Метод списания золота за покупку предмета
+
     public void deliteGold(int price) {
         gold -= price;
     }
-
     // Метод для проверки резистов и уязвимостей
 
     public int checkVulnerabilityResistanceOfDamage(String element, int powerElement, int damage) {
@@ -260,6 +291,7 @@ public class Person implements Serializable{
         }
     }
     // Метод для повышения уровня
+
     public void levelUp(long givenExp) {
 
         System.out.println("Вы получили " + givenExp + " опыта!");
@@ -285,15 +317,11 @@ public class Person implements Serializable{
         System.out.println();
     }
 
-    public int getCountInventory() {
-        return countInventory;
-    }
-
     public void addGold(int gold) {
         this.gold += gold;
     }
-
     // Метод открывает инвентарь и предлагает действия с предметами
+
     public void openInventary() {
 
         boolean check = true;
@@ -488,28 +516,8 @@ public class Person implements Serializable{
             }
         }
     }
-
-    public void setStrength(int power, int maxStrength) {
-
-        int temp =  + maxStrength;
-        if (temp > maxStrength) {
-            this.strength = maxStrength;
-        } else {
-            this.strength += temp;
-        }
-    }
-
-    private void setHealth(int power, double maxHealth) {
-
-        double temp = this.health + health;
-        if (temp > maxHealth) {
-            this.health = maxHealth;
-        } else {
-            this.health += temp;
-        }
-    }
-
     // печатает информацию о персонаже
+
     public void showStats() {
 
         if (isAlive) {
@@ -535,8 +543,8 @@ public class Person implements Serializable{
         }
 
     }
-
     // печатает информацию о одетом оружии
+
     public void showWeapon() {
 
         if (weapon != null) {
@@ -546,8 +554,8 @@ public class Person implements Serializable{
             System.out.println("нет оружия!\n");
         }
     }
-
     // печатает информацию о одетой броне
+
     public void showArmor() {
 
         if (armor != null) {
@@ -557,8 +565,8 @@ public class Person implements Serializable{
         }
 
     }
-
     // Метод для добавления предмета в инвентарь
+
     public void addInventory(Item item) {
 
         if (inventory.size() < countInventory && item != null) {
@@ -570,12 +578,13 @@ public class Person implements Serializable{
             System.out.println("Инвентарь заполнен\n");
         }
     }
-
     // Метод для удаления предмета из инвентаря
+
     public void removeItem(Item item){
 
         inventory.remove(item);
     }
+    // Метод для вывода содержимого инвентаря
 
     public void lookInventory() {
         int count = 0;
@@ -654,10 +663,6 @@ public class Person implements Serializable{
         System.out.println();
     }
 
-    public ArrayList<Item> getInventory() {
-        return inventory;
-    }
-
     public void move(int i) {
         if (i <= this.strength && this.isAlive) {
             this.strength -= i;
@@ -674,10 +679,7 @@ public class Person implements Serializable{
         }
     }
 
-    public boolean getIsAlive() {
-        return isAlive;
-    }
-
+    // Внутренние статические классы:
     // Класс для игрока
     public static class Human extends Person implements Serializable{
 
