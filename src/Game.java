@@ -224,11 +224,11 @@ public class Game {
         }
     }
 
-    public void mainMenu() throws CustomException {
+    public void mainMenu() {
         Person player = new Person("");
         Magazine magazine = new Magazine();
         String text = "";
-        File file = new File("src/Save.ser");
+        File file = new File("C:\\SaveToProgramOfTobakerka\\SaveOfGameRole.ser");
         while (true) {
             if (file.exists()) {
 
@@ -247,7 +247,12 @@ public class Game {
                     byte[] bytes = content.toString().getBytes();
                 } catch (FileNotFoundException e) {
                     Main.clearConsole();
-                    throw new CustomException("Ошибка в файле сохранения!");
+                    new CustomException("Ошибка в файле сохранения!");
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException ex) {
+                        new CustomException("Ошибка при ожидании!");
+                    }
                 } catch (IOException e) {
                     Main.clearConsole();
                     System.err.println(e.getMessage() + "Файл сохранения поврежден!");
@@ -256,6 +261,7 @@ public class Game {
                 int otvet = -1;
 
                 if (isSave && isGameToPlay) {
+                    Main.clearConsole();
                     sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n3 - Загрузить игру\n4 - Настройки\n5 - Сохранить\n0 - Выйти из игры";
                     otvet = Main.checkInt(sTemp, 5);
                     switch (otvet) {
@@ -303,6 +309,7 @@ public class Game {
                         }
                     }
                 } else if (!isSave && !isGameToPlay) {
+                    Main.clearConsole();
                     sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Настройки\n0 - Выйти из игры";
                     otvet = Main.checkInt(sTemp, 2);
                     switch (otvet) {
@@ -332,6 +339,7 @@ public class Game {
                         }
                     }
                 } else if (!isSave && isGameToPlay) {
+                    Main.clearConsole();
                     sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n3 - Настройки\n4 - Сохранить\n0 - Выйти из игры";
                     otvet = Main.checkInt(sTemp, 4);
                     switch (otvet) {
@@ -345,12 +353,10 @@ public class Game {
                             break;
                         }
                         case 2: {
-                            Main.clearConsole();
                             continueGame(player, magazine);
                             break;
                         }
                         case 3: {
-                            Main.clearConsole();
                             options();
                             break;
                         }
@@ -373,6 +379,7 @@ public class Game {
                         }
                     }
                 } else if (isSave && !isGameToPlay) {
+                    Main.clearConsole();
                     sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Загрузить игру\n3 - Настройки\n0 - Выйти из игры";
                     otvet = Main.checkInt(sTemp, 3);
                     switch (otvet) {
@@ -404,6 +411,7 @@ public class Game {
                         }
                         default: {
                             Main.clearConsole();
+                            Main.clearConsole();
                             System.err.println("Некорректный ввод!");
                         }
                     }
@@ -411,9 +419,11 @@ public class Game {
                 System.out.println();
             } else {
                 try {
-                    File save = new File("src/Save.ser");
+                    File path = new File("C:\\SaveToProgramOfTobakerka");
+                    File save = new File("C:\\SaveToProgramOfTobakerka\\SaveOfGameRole.ser");
+                    path.mkdir();
                     save.createNewFile();
-                    System.out.println("Файл сохранения создан!");
+                    System.out.println("Файл сохранения создан! сохрание находится по пути: " + save.getAbsolutePath());
                 } catch (Exception e) {
                     Main.clearConsole();
                     System.out.println("Ошибка при создании файла сохранения!");
@@ -460,6 +470,7 @@ public class Game {
     //Запуск игры
     public void startGame(Person player, Magazine magazine) {
 
+        Main.clearConsole();
         player.inventory = Game.generateItem(15,1);
         player.setGold(2000);
         while (true) {
@@ -529,12 +540,11 @@ public class Game {
 
     // Метод для выхода из игры
     public void quitGame(Person player) {
-
+        Main.clearConsole();
         System.out.println();
         switch (Main.checkInt("Вы хотите выйти из игры?\n1. Да\n2. Нет",2)) {
-
             case 1: {
-
+                Main.clearConsole();
                 switch (Main.checkInt("Хотите сохранить игру?\n1. Да\n2. Нет",2)) {
 
                     case 1: {
@@ -556,6 +566,7 @@ public class Game {
                 break;
             }
             case 2: {
+                Main.clearConsole();
                 System.out.println("Вы вернулись в главное меню");
                 break;
             }
@@ -564,13 +575,14 @@ public class Game {
 
     // Метод для отдыха и восстановления стамины
     private void toTakeADreak(Person player, Magazine magazine) {
+        Main.clearConsole();
+        System.out.println("Вы отдохнули\n");
         player.setStrength(player.getMaxStrength());
         magazine.spawnMagazine(player.getLevel());
     }
 
     // Метод "Идти к кузнецу"
     private void goToTheBlacksmith(Person player) {
-
         // Защитывается передвижение персонажа и тратится стамина
         player.move(1);
 
@@ -584,6 +596,7 @@ public class Game {
         Main.clearConsole();
 
         while (true) {
+            Main.clearConsole();
             // Приветствие кузнеца
             System.out.println("Привет, " + player.getName() + " я кузнец!\n");
 
@@ -607,6 +620,7 @@ public class Game {
 
                 case 1: {
                     while (true) {
+                        Main.clearConsole();
                         StringBuilder sb = new StringBuilder();
                         sb.append("Твои вещи:\n");
                         sb.append("Оружие:\n");
@@ -647,9 +661,11 @@ public class Game {
                             if (tempInt >= 0 && tempInt < items.size()) {
 
                                 if (items.get(tempInt).getType().equals("Оружие")) {
+                                    Main.clearConsole();
                                     Item.Weapon weapon = (Item.Weapon) items.get(tempInt);
                                     switch (Main.checkInt("Вы хотите прокачать " + weapon.getName() + "?\n1 - Да\n2 - Нет", 2)) {
                                         case 1: {
+                                            Main.clearConsole();
                                             int tempIntLevel = Main.checkInt("Введите на сколько хотите прокачать: ", 19);
                                             if (tempIntLevel > 0 && tempIntLevel <= 20) {
                                                 Item.Weapon weaponNew = (Item.Weapon) items.get(tempInt);
@@ -661,9 +677,11 @@ public class Game {
                                                         tempPrice += weaponNew.getPrice();
                                                         weaponNew.levelUp();
                                                     }
+                                                    Main.clearConsole();
                                                     System.out.println("Цена прокачки: " + tempPrice);
                                                     switch (Main.checkInt("1 - Да\n2 - Нет", 2)) {
                                                         case 1: {
+                                                            Main.clearConsole();
                                                             if (player.getGold() >= tempPrice) {
                                                                 player.deliteGold(tempPrice);
                                                                 player.removeItem(weaponOld);
@@ -679,32 +697,39 @@ public class Game {
                                                                 System.out.println("Успешно прокачено!");
                                                                 System.out.println("Оружие: " + weaponNew.getName() + " " + weaponNew.getLevelChange() + " ур.");
                                                             } else {
+                                                                Main.clearConsole();
                                                                 System.err.println("Недостаточно денег!");
                                                             }
                                                         }
                                                         case 2: {
+                                                            Main.clearConsole();
                                                             System.out.println("Возврат");
                                                         }
                                                     }
 
                                                 } else {
+                                                    Main.clearConsole();
                                                     System.err.println("Невозможно прокачать на такую величину!\nМаксимальный уровень может быть 20");
                                                 }
                                             }
                                             break;
                                         }
                                         case 2: {
+                                            Main.clearConsole();
                                             System.out.println("Возврат");
                                             break;
                                         }
                                         default: {
+                                            Main.clearConsole();
                                             System.err.println("Некорректный ввод!");
                                         }
                                     }
                                 } else if (items.get(tempInt).getType().equals("Броня")) {
+                                    Main.clearConsole();
                                     Item.Armor armor = (Item.Armor) items.get(tempInt);
                                     switch (Main.checkInt("Вы хотите прокачать " + armor.getName() + "?\n1 - Да\n2 - Нет", 2)) {
                                         case 1: {
+                                            Main.clearConsole();
                                             int tempIntLevel = Main.checkInt("Введите на сколько хотите прокачать: ", 19);
                                             if (tempIntLevel > 0 && tempIntLevel <= 20) {
                                                 Item.Armor armorNew = (Item.Armor) items.get(tempInt);
@@ -716,9 +741,11 @@ public class Game {
                                                         armorNew.levelUp();
                                                         tempPrice += armorNew.getPrice();
                                                     }
+                                                    Main.clearConsole();
                                                     System.out.println("Цена прокачки: " + tempPrice);
                                                     switch (Main.checkInt("1 - Да\n2 - Нет", 2)) {
                                                         case 1: {
+                                                            Main.clearConsole();
                                                             if (player.getGold() >= tempPrice) {
                                                                 player.deliteGold(tempPrice);
                                                                 if (player.getArmor().equals(armorNew)) {
@@ -739,20 +766,24 @@ public class Game {
                                                             break;
                                                         }
                                                         case 2: {
+                                                            Main.clearConsole();
                                                             break;
                                                         }
                                                     }
                                                 }
                                             } else {
+                                                Main.clearConsole();
                                                 System.err.println("Невозможно прокачать на такую величину!\nМаксимальный уровень может быть 20");
                                             }
                                             break;
                                         }
                                         case 2: {
+                                            Main.clearConsole();
                                             System.out.println("Возврат");
                                             break;
                                         }
                                         default: {
+                                            Main.clearConsole();
                                             System.err.println("Некорректный ввод!");
                                         }
 
@@ -760,6 +791,7 @@ public class Game {
 
                                 }
                             } else {
+                                Main.clearConsole();
                                 System.err.println("Некорректный ввод!");
                             }
                         } else {
@@ -768,6 +800,7 @@ public class Game {
                     }
                 }
                 case 2: {
+                    Main.clearConsole();
                     count = 0;
                     StringBuilder sbChar = new StringBuilder();
                     sbChar.append("Твои вещи:\n");
@@ -799,17 +832,20 @@ public class Game {
                             Item.Weapon itemWeaponOld = weapons.get(tempInt);
                             if (tempInt >= 0 && tempInt < weapons.size()) {
                                 if (itemWeaponOld.getTypeEffect().equals("")) {
+                                    Main.clearConsole();
 
                                     System.out.println("Вы хотите зачаровать " + itemWeaponOld.getName() + "\n");
                                     System.out.println("Стоимость зачарования: " + (itemWeaponOld.getPrice()) * 3);
                                     switch (Main.checkInt("1 - Да\n2 - Нет", 2)) {
                                         case 1: {
+                                            Main.clearConsole();
                                             Random randomChar = new Random();
                                             int chanceChar = randomChar.nextInt(5);
                                             if (player.getGold() >= (itemWeaponOld.getPrice()) * 3) {
                                                 int tempPowerEffect = 5 + randomChar.nextInt(100);
                                                 switch (chanceChar) {
                                                     case 0: {
+                                                        Main.clearConsole();
                                                         System.out.println("Зачарование прошло неудачно!");
                                                         System.out.println("Вы потеряли " + itemWeaponOld + (itemWeaponOld.getPrice() * 3) + " золота!");
                                                         player.deliteGold(itemWeaponOld.getPrice() * 3);
@@ -820,7 +856,7 @@ public class Game {
                                                         break;
                                                     }
                                                     case 1: {
-
+                                                        Main.clearConsole();
                                                         System.out.println("Зачарование прошло успешно!");
                                                         if (tempPowerEffect <= 25) {
                                                             tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 1.5);
@@ -852,6 +888,7 @@ public class Game {
                                                         break;
                                                     }
                                                     case 2: {
+                                                        Main.clearConsole();
                                                         System.out.println("Зачарование прошло успешно!");
                                                         if (tempPowerEffect <= 25) {
                                                             tempPowerEffect += (int) Math.round(itemWeaponOld.getDamage() * 1.5);
@@ -884,6 +921,7 @@ public class Game {
                                                         break;
                                                     }
                                                     case 3: {
+                                                        Main.clearConsole();
                                                         System.out.println("Зачарование прошло успешно!");
                                                         if (tempPowerEffect <= 25) {
                                                             tempPowerEffect += (int) Math.round(itemWeaponOld.getPowerEffect() * 1.5);
@@ -916,6 +954,7 @@ public class Game {
                                                         break;
                                                     }
                                                     case 4: {
+                                                        Main.clearConsole();
                                                         System.out.println("Зачарование прошло успешно!");
                                                         if (tempPowerEffect <= 25) {
                                                             itemWeaponNew.setPowerEffect((int) Math.round(itemWeaponOld.getPowerEffect() * 1.5));
@@ -944,32 +983,39 @@ public class Game {
                                                     }
                                                 }
                                             } else {
+                                                Main.clearConsole();
                                                 System.out.println("Недостаточно золота!");
                                             }
 
                                             break;
                                         }
                                         case 2: {
+                                            Main.clearConsole();
                                             System.out.println("Возврат");
                                             break;
                                         }
                                         default: {
+                                            Main.clearConsole();
                                             System.err.println("Некорректный ввод!");
                                         }
                                     }
                                 } else {
+                                    Main.clearConsole();
                                     System.err.println("Нельзя чаровать. Предмет уже зачарован!");
                                 }
                             }
                         } else {
+                            Main.clearConsole();
                             System.err.println("Некорректный ввод!");
                         }
                     } else {
+                        Main.clearConsole();
                         System.out.println("Возврат");
                     }
                     break;
                 }
                 case 0: {
+                    Main.clearConsole();
                     System.out.println("Пока!");
                     try {
 
@@ -991,6 +1037,7 @@ public class Game {
      */
     public static void lootOfPerson(Person player, Person isDeadPerson) {
 
+        Main.clearConsole();
         ArrayList<Item> loot = new ArrayList<>();
 
         Random random = new Random();

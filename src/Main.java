@@ -3,6 +3,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
+import static java.lang.Thread.sleep;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -10,8 +12,9 @@ public class Main {
         Game game = new Game();
         try {
         game.mainMenu();
-        } catch (CustomException e) {
-            new CustomException("Ошибка! " + e.getMessage());
+        sleep (1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -36,7 +39,7 @@ public class Main {
 
 
     public static boolean saveGame(Person person) throws CustomException {
-        Path pathToSave = Paths.get("src/Save.ser");
+        Path pathToSave = Paths.get("C:\\SaveToProgramOfTobakerka\\SaveOfGameRole.ser");
 
         try (FileOutputStream fos = new FileOutputStream(pathToSave.toFile());
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
@@ -54,7 +57,7 @@ public class Main {
     public static Person loadGame() {
 
         Person loadedPerson = null;
-        try (FileInputStream fis = new FileInputStream("src/Save.ser");
+        try (FileInputStream fis = new FileInputStream("C:\\SaveToProgramOfTobakerka\\SaveOfGameRole.ser");
              ObjectInputStream ois = new ObjectInputStream(fis)) {
 
             loadedPerson = (Person) ois.readObject(); // Читаем объект из файла

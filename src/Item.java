@@ -256,7 +256,7 @@ public class Item implements Serializable {
                     "Название: " + name + "\n" +
                     "Уровень: " + level + "\n" +
                     "Цена: " + price + "\n" +
-                    "Защита: " + defense + "\n\n" +
+                    "Защита: " + defense + "\n" +
                     "Уровень заточки: " + levelChange + "\n";
         }
 
