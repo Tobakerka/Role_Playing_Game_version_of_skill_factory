@@ -106,7 +106,7 @@ public class Item implements Serializable {
                     tempText = "выносливости";
                 }
             }
-            return  type + ": " + name + " " + typeEffect +
+            return  type + ": " + typeEffect + " " +
                     "Цена: " + price + "\n" +
                     "Восстанавливает: " + power + " " + tempText + "\n";
         }
@@ -126,7 +126,7 @@ public class Item implements Serializable {
         }
 
         public void getInfo() {
-            System.out.println(type + ": " + name + " " + typeEffect +
+            System.out.println(type + ": " + typeEffect + " " +
                     "Цена: " + price + "\n" +
                     "Восстанавливает: " + power + " " + "\n");
         }
