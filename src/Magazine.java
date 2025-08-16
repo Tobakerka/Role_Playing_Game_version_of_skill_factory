@@ -19,7 +19,7 @@ public class Magazine {
         itemsOfSales = new ArrayList<>(Game.generateItem(countToItems, level));
     }
 
-    public void printMagazine(Person player) {
+    public void printMagazine(Person player, boolean isShopSort) {
 
         int count = 0;
         int schet = 0;
@@ -28,6 +28,9 @@ public class Magazine {
                 "Ваше золото:" + player.getGold() + "\n" +
                 "Предметы:" + itemsOfSales.size() + " из " + countToItems + "\n");
 
+        if (isShopSort) {
+            sortMagazine();
+        }
         if (itemsOfSales.size() == 0) {
 
             System.out.println("Магазин пуст");
@@ -71,16 +74,14 @@ public class Magazine {
                 }
 
             }
+            count = 0;
             System.out.println();
         }
         System.out.println();
     }
 
-    public void printMagazineOfSellPerson(boolean isShopSort) {
+    public void printMagazineOfSellPerson() {
 
-        if (isShopSort) {
-            sortMagazine();
-        }
         int count = 0;
         int schet = 0;
 
@@ -137,7 +138,7 @@ public class Magazine {
     public void addItemToMagazine(){
     }
 
-    public void menuMagazine(Person player, boolean isInventorySort) {
+    public void menuMagazine(Person player, boolean isInventorySort, boolean isShopSort) {
 
         while (true) {
             System.out.printf("Магазин: \n\n1 - Купить | 2 - Продать | 3 - Выкупить | 0 - Выйти\n");
@@ -145,7 +146,7 @@ public class Magazine {
             String tempString = scanner.nextLine();
             switch (tempString) {
                 case "1" : {
-                    openMagazine(player);
+                    openMagazine(player, isShopSort);
                     break;
                 }
                 case "2" : {
@@ -171,7 +172,7 @@ public class Magazine {
 
     private void openSellPerson(Person player, boolean isInventorySort) {
         while (true) {
-            printMagazineOfSellPerson(isInventorySort);
+            printMagazineOfSellPerson();
             System.out.println("Выберите предмет \nлюбая буква или символ для выхода");
             Scanner scanner = new Scanner(System.in);
 
@@ -191,6 +192,7 @@ public class Magazine {
                                 if (player.inventory.size() < player.getCountInventory()) {
                                     player.deliteGold(itemsOfsellPerson.get(tempInt).getPrice());
                                     player.addInventory(itemsOfsellPerson.get(tempInt));
+                                    itemsOfsellPerson.remove(tempInt);
                                 } else {
                                     System.out.println("Нет места в инвентаре");
                                     Main.clearConsole();
@@ -254,6 +256,7 @@ public class Magazine {
         itemsOfSales = tempItems;
     }
 
+    // Продажа предметов
     private void sellItem(Person player, boolean isInventorySort) {
 
         while (true) {
@@ -267,6 +270,7 @@ public class Magazine {
                 tempInt = scanner.nextInt();
                 if (tempInt < player.inventory.size() && tempInt >= 0) {
 
+                    player.inventory.get(tempInt).getInfo();
                     if (player.inventory.get(tempInt).getType().equals("Оружие")) {
 
                         if (player.inventory.get(tempInt).equals(player.getWeapon())) {
@@ -435,10 +439,11 @@ public class Magazine {
         }
     }
 
-    public void openMagazine(Person player) {
+    // Открытие магазина для покупки
+    public void openMagazine(Person player, boolean isShopSort) {
 
         while (true) {
-            printMagazine(player);
+            printMagazine(player, isShopSort);
             System.out.println("Выберите предмет \nлюбая буква или символ для выхода");
             Scanner scannerPred = new Scanner(System.in);
 

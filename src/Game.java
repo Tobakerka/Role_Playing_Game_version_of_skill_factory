@@ -481,7 +481,7 @@ public class Game {
                 }
                 case 2: {
 
-                    magazine.menuMagazine(player,isShopSort);
+                    magazine.menuMagazine(player,isInventorySort, isShopSort);
                     break;
                 }
                 case 3: {
