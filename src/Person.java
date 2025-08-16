@@ -1,5 +1,6 @@
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Person implements Serializable{
@@ -335,11 +336,11 @@ public class Person implements Serializable{
     }
     // Метод открывает инвентарь и предлагает действия с предметами
 
-    public void openInventary() {
+    public void openInventary(boolean isInventorySort) {
 
         boolean check = true;
         while (check) {
-        lookInventory();
+        lookInventory(isInventorySort);
 
         System.out.println("Выберите предмет \nлюбая буква или символ для выхода");
         Scanner scanner = new Scanner(System.in);
@@ -597,11 +598,56 @@ public class Person implements Serializable{
 
         inventory.remove(item);
     }
+
+    public void sortInventory() {
+        for (int i = 0; i < inventory.size(); i++) {
+
+            ArrayList temp = new ArrayList();
+            ArrayList<Item> weapons = new ArrayList();
+            ArrayList<Item> armors = new ArrayList();
+            ArrayList<Item> potions = new ArrayList();
+            ArrayList<Item> foods = new ArrayList();
+
+            for (int j = 0; j < inventory.size(); j++) {
+                if (inventory.get(j).getType().equals("Оружие")) {
+                    weapons.add(inventory.get(j));
+                } else if (inventory.get(j).getType().equals("Броня")) {
+                    armors.add(inventory.get(j));
+                } else if (inventory.get(j).getType().equals("Зелье")) {
+                    potions.add(inventory.get(j));
+                } else if (inventory.get(j).getType().equals("Еда")) {
+                    foods.add(inventory.get(j));
+                }
+            }
+
+            for (Item item : weapons) {
+                temp.add(item);
+            }
+            for (Item item : armors) {
+                temp.add(item);
+            }
+            for (Item item : potions) {
+                temp.add(item);
+            }
+            for (Item item : foods) {
+                temp.add(item);
+            }
+
+            inventory.clear();
+            inventory.addAll(temp);
+        }
+    }
     // Метод для вывода содержимого инвентаря
 
-    public void lookInventory() {
+    public void lookInventory(boolean isInventorySort) {
         int count = 0;
         int schet = 0;
+
+        // Проверка включена ли сортировка. Если да, то предмены сортируются
+        if (isInventorySort) {
+
+            sortInventory();
+        }
 
         System.out.println("Инвентарь:" + "\n" +
                 "Ваше золото: " + gold + "\n" +

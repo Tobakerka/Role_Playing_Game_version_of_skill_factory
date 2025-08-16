@@ -76,8 +76,11 @@ public class Magazine {
         System.out.println();
     }
 
-    public void printMagazineOfSellPerson(){
+    public void printMagazineOfSellPerson(boolean isShopSort) {
 
+        if (isShopSort) {
+            sortMagazine();
+        }
         int count = 0;
         int schet = 0;
 
@@ -134,7 +137,7 @@ public class Magazine {
     public void addItemToMagazine(){
     }
 
-    public void menuMagazine(Person player) {
+    public void menuMagazine(Person player, boolean isInventorySort) {
 
         while (true) {
             System.out.printf("Магазин: \n\n1 - Купить | 2 - Продать | 3 - Выкупить | 0 - Выйти\n");
@@ -146,11 +149,11 @@ public class Magazine {
                     break;
                 }
                 case "2" : {
-                    sellItem(player);
+                    sellItem(player, isInventorySort);
                     break;
                 }
                 case "3" : {
-                    openSellPerson(player);
+                    openSellPerson(player, isInventorySort);
                     break;
                 }
                 case "0" : {
@@ -166,9 +169,9 @@ public class Magazine {
         }
     }
 
-    private void openSellPerson(Person player) {
+    private void openSellPerson(Person player, boolean isInventorySort) {
         while (true) {
-            printMagazineOfSellPerson();
+            printMagazineOfSellPerson(isInventorySort);
             System.out.println("Выберите предмет \nлюбая буква или символ для выхода");
             Scanner scanner = new Scanner(System.in);
 
@@ -215,10 +218,46 @@ public class Magazine {
         }
     }
 
-    private void sellItem(Person player) {
+    public void sortMagazine(){
+
+        ArrayList<Item> tempItems = new ArrayList<>(itemsOfSales);
+        ArrayList<Item.Weapon> weapons = new ArrayList<>();
+        ArrayList<Item.Armor> armors = new ArrayList<>();
+        ArrayList<Item.Potion> potions = new ArrayList<>();
+        ArrayList<Item.Food> foods = new ArrayList<>();
+
+        for (Item item : itemsOfSales) {
+
+            if (item.getType().equals("Оружие")) {
+                weapons.add((Item.Weapon) item);
+            } else if (item.getType().equals("Броня")) {
+                armors.add((Item.Armor) item);
+            } else if (item.getType().equals("Зелье")) {
+                potions.add((Item.Potion) item);
+            } else if (item.getType().equals("Еда")){
+                foods.add((Item.Food) item);
+            }
+        }
+
+        for (Item i : weapons) {
+            tempItems.add(i);
+        }
+        for (Item i : armors) {
+            tempItems.add(i);
+        }
+        for (Item i : potions) {
+            tempItems.add(i);
+        }
+        for (Item i : foods) {
+            tempItems.add(i);
+        }
+        itemsOfSales = tempItems;
+    }
+
+    private void sellItem(Person player, boolean isInventorySort) {
 
         while (true) {
-            player.lookInventory();
+            player.lookInventory(isInventorySort);
 
             System.out.println("Выберите предмет \nлюбая буква или символ для выхода");
             Scanner scanner = new Scanner(System.in);

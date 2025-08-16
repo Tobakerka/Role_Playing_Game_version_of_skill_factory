@@ -476,12 +476,12 @@ public class Game {
                     "0 - Меню\n", 6)) {
                 case 1: {
 
-                    player.openInventary();
+                    player.openInventary(isInventorySort);
                     break;
                 }
                 case 2: {
 
-                    magazine.openMagazine(player);
+                    magazine.menuMagazine(player,isShopSort);
                     break;
                 }
                 case 3: {
