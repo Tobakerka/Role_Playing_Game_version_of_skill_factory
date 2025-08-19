@@ -100,7 +100,7 @@ public class Game {
             weapon = (Item.Weapon) spawnWeapon(level);
         } else {
 
-            weapon = null;
+            weapon = new Item.Weapon("Пусто", 0, 0, 0, "",0,0);
         }
 
         if (isArmor) {
@@ -108,7 +108,7 @@ public class Game {
             armor = (Item.Armor)spawnArmor(level);
         } else {
 
-            armor = null;
+            armor = new Item.Armor("Пусто", 0, 0,0,0);
         }
 
         // Проверка будет ли у персонажа деньги
@@ -133,6 +133,10 @@ public class Game {
             case 3: return new Person.Vampire("Вампир", maxHealth, power, agility, gold, level, weapon, armor);
         }
         return null;
+    }
+
+    public int getDifficulty() {
+        return difficulty;
     }
 
     public void options() {
@@ -264,7 +268,6 @@ public class Game {
                 int otvet = -1;
 
                 if (isSave && isGameToPlay) {
-                    Main.clearConsole();
                     sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n3 - Загрузить игру\n4 - Настройки\n5 - Сохранить\n0 - Выйти из игры";
                     otvet = Main.checkInt(sTemp, 5);
                     switch (otvet) {
@@ -312,7 +315,6 @@ public class Game {
                         }
                     }
                 } else if (!isSave && !isGameToPlay) {
-                    Main.clearConsole();
                     sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Настройки\n0 - Выйти из игры";
                     otvet = Main.checkInt(sTemp, 2);
                     switch (otvet) {
@@ -342,7 +344,6 @@ public class Game {
                         }
                     }
                 } else if (!isSave && isGameToPlay) {
-                    Main.clearConsole();
                     sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n3 - Настройки\n4 - Сохранить\n0 - Выйти из игры";
                     otvet = Main.checkInt(sTemp, 4);
                     switch (otvet) {
@@ -382,11 +383,11 @@ public class Game {
                         }
                     }
                 } else if (isSave && !isGameToPlay) {
-                    Main.clearConsole();
                     sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Загрузить игру\n3 - Настройки\n0 - Выйти из игры";
                     otvet = Main.checkInt(sTemp, 3);
                     switch (otvet) {
                         case 1: {
+                            Main.clearConsole();
                             player = startNewGame();
                             magazine = new Magazine();
                             magazine.spawnMagazine(player.getLevel());
@@ -476,12 +477,13 @@ public class Game {
     public void startGame(Person player, Magazine magazine) {
 
         Main.clearConsole();
-        player.inventory = Game.generateItem(15,1);
-        player.setGold(2000);
         while (true) {
 
             // Отображение доступных действий
+            System.out.println("Уровень: " + player.getLevel() + "\n");
+            System.out.println("Здоровье: " + player.getHealth());
             System.out.println("Выносливость: " + player.getStrength() + "/" + player.getMaxStrength() + "\n");
+            System.out.println("Золото: " + player.getGold() + "\n");
 
             switch (Main.checkInt("Действия: \n\n1 - Открыть инвентарь\n" +
                     "2 - идти в магазин\n" +
@@ -497,17 +499,28 @@ public class Game {
                 }
                 case 2: {
                     Main.clearConsole();
+                    player.move(difficulty);
                     magazine.menuMagazine(player,isInventorySort, isShopSort);
                     break;
                 }
                 case 3: {
                     Main.clearConsole();
-                    Fight fight = new Fight();
-                    fight.start();
+                    Fight fight = new Fight(player,difficulty, isInventorySort);
+                    Thread thread = new Thread(fight);
+                    thread.start();
+                    try {
+                        thread.join();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    if (!player.getIsAlive()) {
+                        player = restartGame(player);
+                    }
                     break;
                 }
                 case 4: {
                     Main.clearConsole();
+                    player.move(difficulty);
                     goToTheBlacksmith(player);
                     break;
                 }
@@ -537,7 +550,33 @@ public class Game {
 
     // Метод для продолжения игры
     public void continueGame(Person player, Magazine magazine) {
-        startGame(player, magazine);
+        if (player.getIsAlive()) {
+            startGame(player, magazine);
+        } else {
+            restartGame(player);
+        }
+    }
+
+    private Person restartGame(Person player) {
+        System.out.println("Игра окончена!\n");
+        boolean isRestart = true;
+        while (isRestart) {
+            System.out.println("Начать новую игру?");
+            switch (Main.checkInt("1 - Да\n0 - Нет", 1)) {
+                case 1: {
+
+                    isRestart = false;
+                    return startNewGame();
+                }
+                case 0: {
+                    System.exit(0);
+                    break;
+                }
+                default: {
+                }
+            }
+        }
+        return null;
     }
 
     // Метод для выхода из игры
@@ -586,11 +625,9 @@ public class Game {
     // Метод "Идти к кузнецу"
     private void goToTheBlacksmith(Person player) {
         // Защитывается передвижение персонажа и тратится стамина
-        player.move(1);
 
         // Проверка на то, жив ли персонаж
         if (!player.getIsAlive()) {
-            System.out.println("Вы умерли!");
             return;
         }
 
@@ -598,7 +635,6 @@ public class Game {
         Main.clearConsole();
 
         while (true) {
-            Main.clearConsole();
             // Приветствие кузнеца
             System.out.println("Привет, " + player.getName() + " я кузнец!\n");
 
@@ -621,8 +657,9 @@ public class Game {
             switch (Main.checkInt("Кузнец: Я могу прокачать или зачаровать твои вещи! Что ты хочешь сделать?\n1 - Прокачать вещь\n2 - Зачаровать вещь\n0 - Попрощаться", 2)) {
 
                 case 1: {
+                    Main.clearConsole();
                     while (true) {
-                        Main.clearConsole();
+                        System.out.println("Деньги: " + player.getGold());
                         StringBuilder sb = new StringBuilder();
                         sb.append("Твои вещи:\n");
                         sb.append("Оружие:\n");
@@ -668,6 +705,7 @@ public class Game {
                                     switch (Main.checkInt("Вы хотите прокачать " + weapon.getName() + "?\n1 - Да\n2 - Нет", 2)) {
                                         case 1: {
                                             Main.clearConsole();
+                                            weapon.getInfo();
                                             int tempIntLevel = Main.checkInt("Введите на сколько хотите прокачать: ", 19);
                                             if (tempIntLevel > 0 && tempIntLevel <= 20) {
                                                 Item.Weapon weaponNew = (Item.Weapon) items.get(tempInt);
@@ -677,9 +715,10 @@ public class Game {
                                                     while (tempIntLevel > 0) {
                                                         tempIntLevel--;
                                                         tempPrice += weaponNew.getPrice();
-                                                        weaponNew.levelUp();
                                                     }
                                                     Main.clearConsole();
+                                                    weapon.getInfo();
+                                                    System.out.println("Деньги: " + player.getGold());
                                                     System.out.println("Цена прокачки: " + tempPrice);
                                                     switch (Main.checkInt("1 - Да\n2 - Нет", 2)) {
                                                         case 1: {
@@ -689,6 +728,7 @@ public class Game {
                                                                 player.removeItem(weaponOld);
                                                                 if (player.getWeapon().equals(weaponNew)) {
                                                                     player.setWeapon(null);
+                                                                    weaponNew.levelUp();
                                                                     itemNew = weaponNew;
                                                                     player.setWeapon(weaponNew);
                                                                     player.addInventory(itemNew);
@@ -701,11 +741,14 @@ public class Game {
                                                             } else {
                                                                 Main.clearConsole();
                                                                 System.err.println("Недостаточно денег!");
+                                                                break;
                                                             }
+                                                            break;
                                                         }
                                                         case 2: {
                                                             Main.clearConsole();
                                                             System.out.println("Возврат");
+                                                            break;
                                                         }
                                                     }
 
@@ -732,6 +775,7 @@ public class Game {
                                     switch (Main.checkInt("Вы хотите прокачать " + armor.getName() + "?\n1 - Да\n2 - Нет", 2)) {
                                         case 1: {
                                             Main.clearConsole();
+                                            armor.getInfo();
                                             int tempIntLevel = Main.checkInt("Введите на сколько хотите прокачать: ", 19);
                                             if (tempIntLevel > 0 && tempIntLevel <= 20) {
                                                 Item.Armor armorNew = (Item.Armor) items.get(tempInt);
@@ -740,10 +784,11 @@ public class Game {
                                                     int tempPrice = armorNew.getPrice();
                                                     while (tempIntLevel > 0) {
                                                         tempIntLevel--;
-                                                        armorNew.levelUp();
                                                         tempPrice += armorNew.getPrice();
                                                     }
                                                     Main.clearConsole();
+                                                    armor.getInfo();
+                                                    System.out.println("Деньги: " + player.getGold());
                                                     System.out.println("Цена прокачки: " + tempPrice);
                                                     switch (Main.checkInt("1 - Да\n2 - Нет", 2)) {
                                                         case 1: {
@@ -752,6 +797,7 @@ public class Game {
                                                                 player.deliteGold(tempPrice);
                                                                 if (player.getArmor().equals(armorNew)) {
                                                                     player.setArmor(null);
+                                                                    armorNew.levelUp();
                                                                     player.setArmor(armorNew);
                                                                     player.removeItem(oldArmor);
                                                                     player.addInventory(armorNew);
@@ -1047,13 +1093,13 @@ public class Game {
         sb.append("Вы получили: \n----------------------------------------------------\n");
 
         // Проверка выпало ли оружие. Если да, то добавляется в список дропа
-        if (random.nextBoolean() && isDeadPerson.getWeapon() != null) {
+        if (random.nextBoolean() && isDeadPerson.getWeapon() != null && !isDeadPerson.getWeapon().getName().equals("Пусто")) {
             loot.add(isDeadPerson.getWeapon());
             sb.append(isDeadPerson.getWeapon().print());
         }
 
         // Проверка выпало ли броня. Если да, то добавляется в список дропа
-        if (random.nextBoolean() && isDeadPerson.getArmor() != null) {
+        if (random.nextBoolean() && isDeadPerson.getArmor() != null && !isDeadPerson.getArmor().getName().equals("Пусто")) {
             loot.add(isDeadPerson.getArmor());
             sb.append(isDeadPerson.getArmor().print());
         }
@@ -1145,7 +1191,7 @@ public class Game {
         int damage = 10;
         int price = 10;
         String typeEffect = "";
-        int powerEffect = 0;
+        int powerEffect = 3;
         int levelCharacter = 1;
 
         // Случайным образом выбирается название оружия
@@ -1169,19 +1215,19 @@ public class Game {
         Random randTypeEffect = new Random();
         switch (randTypeEffect.nextInt(5)) {
             case 0: {
-                typeEffect = "огонь";
+                typeEffect = "Огонь";
                 break;
             }
             case 1: {
-                typeEffect = "воздух";
+                typeEffect = "Ветер";
                 break;
             }
             case 2: {
-                typeEffect = "вода";
+                typeEffect = "Вода";
                 break;
             }
             case 3: {
-                typeEffect = "лед";
+                typeEffect = "Лед";
                 break;
             }
             case 4: {

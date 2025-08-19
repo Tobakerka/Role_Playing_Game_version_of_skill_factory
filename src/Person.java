@@ -99,7 +99,11 @@ public class Person implements Serializable{
 
     public Item.Weapon getWeapon() {
 
-        return weapon;
+        if (weapon.equals(null)) {
+            return new Item.Weapon("Пусто", 0, 0, 0, "", 0, 0);
+        } else {
+            return weapon;
+        }
     }
 
     public void setWeapon(Item.Weapon weapon) {
@@ -108,6 +112,9 @@ public class Person implements Serializable{
 
     public Item.Armor getArmor() {
 
+        if (armor.equals(null)) {
+            return new Item.Armor("Пусто", 0, 0, 0, 0);
+        }
         return armor;
     }
 
@@ -144,6 +151,10 @@ public class Person implements Serializable{
 
     public boolean getVulnerabilityOfWind() {
         return vulnerabilityOfWind;
+    }
+
+    public int getAgility() {
+        return agility;
     }
 
     public boolean getVulnerabilityOfWater() {
@@ -184,11 +195,16 @@ public class Person implements Serializable{
 
     public void setStrength(int power, int maxStrength) {
 
-        int temp =  + maxStrength;
-        if (temp > maxStrength) {
+        int tempPower;
+        if (power > maxStrength) {
             this.strength = maxStrength;
         } else {
-            this.strength += temp;
+            tempPower = this.strength + power;
+            if (tempPower > maxStrength) {
+                this.strength = maxStrength;
+            } else {
+                this.strength = tempPower;
+            }
         }
     }
     private void setHealth(int power, double maxHealth) {
@@ -213,6 +229,101 @@ public class Person implements Serializable{
 
     public void deliteGold(int price) {
         gold -= price;
+    }
+
+    public void checkIsAlive() {
+        if (health <= 0) {
+            isAlive = false;
+            System.out.println("Персонаж " + name + " умер");
+        }
+    }
+
+    public String getInfoEnergy() {
+        return "Энергия: " + strength + "/" + maxStrength;
+    }
+
+    public int checkVulnerability(Item.Weapon weapon) {
+
+        if (weapon.getTypeEffect().equals("Огонь") && vulnerabilityOfFire) {
+            System.out.println("Уезвимость: К огню ");
+            return weapon.getPowerEffect() * 2;
+        } else if (weapon.getTypeEffect().equals("Вода") && vulnerabilityOfWater) {
+            System.out.println("Уезвимость: К воде ");
+            return weapon.getPowerEffect() * 2;
+        } else if (weapon.getTypeEffect().equals("Лед") && vulnerabilityOfIce) {
+            System.out.println("Уезвимость: Ко льду ");
+            return weapon.getPowerEffect() * 2;
+        } else if (weapon.getTypeEffect().equals("Ветер") && vulnerabilityOfWind) {
+            System.out.println("Уезвимость: К ветру ");
+            return weapon.getPowerEffect() * 2;
+        } else if (weapon.getTypeEffect().equals("Огонь") && resistanceOfFire) {
+            System.out.println("Резист: К огню ");
+            return -weapon.getPowerEffect();
+        } else if (weapon.getTypeEffect().equals("Вода") && resistanceOfWater) {
+            System.out.println("Резист: К воде ");
+            return -weapon.getPowerEffect();
+        } else if (weapon.getTypeEffect().equals("Лед") && resistanceOfIce) {
+            System.out.println("Резист: Ко льду ");
+            return -weapon.getPowerEffect();
+        } else if (weapon.getTypeEffect().equals("Ветер") && resistanceOfWind) {
+            System.out.println("Резист: К ветру ");
+            return -weapon.getPowerEffect();
+        } else {
+            return 0;
+        }
+    }
+
+    public void giveAttack(int damage) {
+
+        if (health >= damage) {
+            health -= damage;
+        } else {
+            health = 0;
+        }
+        if (health <= 0) {
+            isAlive = false;
+        }
+    }
+    public String toInfo() {
+
+        String temp = "";
+        if (weapon != null) {
+            temp = " Оружие: " + weapon.getName() + "\n";
+        }
+        if (armor != null) {
+            temp += " Броня: " + armor.getName() + "\n";
+        }
+
+        if (vulnerabilityOfFire) {
+            temp += "Уезвимость: Огонь\n";
+        }
+        if (vulnerabilityOfIce) {
+            temp += "Уезвимость: Лед\n";
+        }
+        if (vulnerabilityOfWind) {
+            temp += "Уезвимость: Ветер\n";
+        }
+        if (vulnerabilityOfWater) {
+            temp += "Уезвимость: Вода\n";
+        }
+        if (resistanceOfFire) {
+            temp += "Резист: Огонь\n";
+        }
+        if (resistanceOfIce) {
+            temp += "Резист: Лед\n";
+        }
+        if (resistanceOfWind) {
+            temp += "Резист: Ветер\n";
+        }
+        if (resistanceOfWater) {
+            temp += "Резист: Вода\n";
+        }
+
+        return "Имя: " + name + "\n" +
+                "Здоровье: " + health + "/" + maxHealth + "\n" +
+                "Сила: " + strength + "\n" +
+                "Сила атаки: " + power + "\n" + temp;
+
     }
     // Метод для проверки резистов и уязвимостей
 
@@ -355,18 +466,19 @@ public class Person implements Serializable{
 
                         if (inventory.get(tempInt).equals(weapon)) {
                             Main.clearConsole();
+                            inventory.get(tempInt).getInfo();
                             System.out.println("1 - снять, 2 - удалить, 3 - информация, 0 - назад");
                             Scanner scannerWeapon = new Scanner(System.in);
                             String tempWeapon = scannerWeapon.nextLine();
                             switch (tempWeapon) {
                                 case "1": {
-                                    weapon = null;
+                                    weapon = new Item.Weapon("Пусто", 0, 0, 0, "", 0, 0);
                                     Main.clearConsole();
                                     System.out.println("Оружие снято");
                                     break;
                                 }
                                 case "2": {
-                                    weapon = null;
+                                    weapon = new Item.Weapon("Пусто", 0, 0, 0, "", 0, 0);
                                     removeItem(inventory.get(tempInt));
                                     Main.clearConsole();
                                     System.out.println("Оружие удалено");
@@ -374,7 +486,8 @@ public class Person implements Serializable{
                                 }
                                 case "3": {
                                     Main.clearConsole();
-                                    inventory.get(tempInt).getInfo();
+                                    Item.Weapon weapon1 = (Item.Weapon) inventory.get(tempInt);
+                                    weapon1.getInfo();
                                     return;
                                 }
                                 case "0": {
@@ -389,6 +502,7 @@ public class Person implements Serializable{
                             }
                         } else {
                             Main.clearConsole();
+                            inventory.get(tempInt).getInfo();
                             System.out.println("1 - надеть, 2 - удалить, 3 - информация, 0 - назад");
                             Scanner scannerWeapon1 = new Scanner(System.in);
                             String tempWeaponToEqup = scannerWeapon1.nextLine();
@@ -420,19 +534,20 @@ public class Person implements Serializable{
                         }
                     } else if (inventory.get(tempInt).getType().equals("Броня")) {
                         Main.clearConsole();
+                        inventory.get(tempInt).getInfo();
                         if (inventory.get(tempInt).equals(armor)) {
                             System.out.println("1 - снять, 2 - удалить, 3 - информация, 0 - назад");
                             Scanner scannerArmor = new Scanner(System.in);
                             String tempArmor = scannerArmor.nextLine();
                             switch (tempArmor) {
                                 case "1": {
-                                    armor = null;
+                                    armor = new Item.Armor("Пусто", 0, 0, 0, 0);
                                     Main.clearConsole();
                                     System.out.println("Броня снята");
                                     break;
                                 }
                                 case "2": {
-                                    armor = null;
+                                    armor = new Item.Armor("Пусто", 0, 0, 0, 0);
                                     removeItem(inventory.get(tempInt));
                                     Main.clearConsole();
                                     System.out.println("Броня удалена");
@@ -441,6 +556,8 @@ public class Person implements Serializable{
                                 case "3": {
                                     Main.clearConsole();
                                     inventory.get(tempInt).getInfo();
+                                    Item.Armor armor1 = (Item.Armor) inventory.get(tempInt);
+                                    armor1.getInfo();
                                     break;
                                 }
                                 case "0": {
@@ -456,6 +573,7 @@ public class Person implements Serializable{
                             }
                         } else {
                             Main.clearConsole();
+                            inventory.get(tempInt).getInfo();
                             System.out.println("1 - надеть, 2 - удалить, 3 - информация, 0 - назад");
                             Scanner scannerArmorToEqup = new Scanner(System.in);
                             String tempArmorToEqup = scannerArmorToEqup.nextLine();
@@ -472,7 +590,7 @@ public class Person implements Serializable{
                                     break;
                                 }
                                 case "2": {
-                                    armor = null;
+                                    armor = new Item.Armor("Пусто", 0, 0, 0, 0);
                                     removeItem(inventory.get(tempInt));
                                     Main.clearConsole();
                                     System.out.println("Броня удалена");
@@ -481,6 +599,8 @@ public class Person implements Serializable{
                                 case "3": {
                                     Main.clearConsole();
                                     inventory.get(tempInt).getInfo();
+                                    Item.Armor armor1 = (Item.Armor) inventory.get(tempInt);
+                                    armor1.getInfo();
                                 }
                                 case "0": {
                                     Main.clearConsole();
@@ -496,7 +616,8 @@ public class Person implements Serializable{
                         }
                     } else if (inventory.get(tempInt).getType().equals("Зелье")) {
                         Main.clearConsole();
-                        System.out.println("1 - выпить, 2 - удалить, 0 - назад");
+                        inventory.get(tempInt).getInfo();
+                        System.out.println("1 - выпить, 2 - удалить, 3 - информация, 0 - назад");
                         Scanner scannerPotion = new Scanner(System.in);
                         String tempPotion = scannerPotion.nextLine();
                         switch (tempPotion) {
@@ -527,9 +648,24 @@ public class Person implements Serializable{
                                 System.out.println("Зелье удалено");
                                 break;
                             }
+                            case "3": {
+                                Main.clearConsole();
+                                Item.Potion potion = (Item.Potion) inventory.get(tempInt);
+                                potion.getInfo();
+                                break;
+                            }
+                            case "0": {
+                                Main.clearConsole();
+                                System.out.println("Возврат");
+                                return;
+                            }
+                            default: {
+
+                            }
                         }
                     } else {
                         Main.clearConsole();
+                        inventory.get(tempInt).getInfo();
                         System.out.println("1 - съесть, 2 - удалить, 3 - информация, 0 - назад");
                         Scanner scannerFood = new Scanner(System.in);
                         String tempFood = scannerFood.nextLine();
@@ -545,7 +681,8 @@ public class Person implements Serializable{
                             System.out.println("Предмет удален");
                         } else if (tempFood.equals("3")) {
                             Main.clearConsole();
-                            inventory.get(tempInt).getInfo();
+                            Item.Food food = (Item.Food) inventory.get(tempInt);
+                            food.getInfo();
                         }
                     }
                 } else {
@@ -614,6 +751,7 @@ public class Person implements Serializable{
 
     public void addInventory(Item item) {
 
+        Main.clearConsole();
         if (inventory.size() < countInventory && item != null) {
             inventory.add(item);
             System.out.println("Предмет добавлен в инвентарь\n");
@@ -638,6 +776,12 @@ public class Person implements Serializable{
             ArrayList<Item> armors = new ArrayList();
             ArrayList<Item> potions = new ArrayList();
             ArrayList<Item> foods = new ArrayList();
+
+            temp.clear();
+            weapons.clear();
+            armors.clear();
+            potions.clear();
+            foods.clear();
 
             for (int j = 0; j < inventory.size(); j++) {
                 if (inventory.get(j).getType().equals("Оружие")) {
@@ -736,7 +880,7 @@ public class Person implements Serializable{
                     }
                     tempName = sb.toString();
                 }
-                System.out.print(tempName + "\t");
+                System.out.println(tempName + "\t");
 
                 schet++;
                 count++;
@@ -767,6 +911,22 @@ public class Person implements Serializable{
         } else {
             System.out.println("Нет живых персонажей!");
         }
+    }
+
+    public int getPower() {
+        return power;
+    }
+
+    public String getHealth() {
+        return health + "/" + maxHealth;
+    }
+
+    public String getMaxHealth() {
+        return maxHealth + "";
+    }
+
+    public void setHealth(int i) {
+        this.health = i;
     }
 
     // Внутренние статические классы:

@@ -30,6 +30,7 @@ public class Main {
             Scanner sc = new Scanner(System.in);
             String s = sc.nextLine();
             if (s.equals("")) {
+                Main.clearConsole();
                 System.out.println("Имя не может быть пустым!");
             } else {
                 return s;
@@ -39,6 +40,7 @@ public class Main {
 
 
     public static boolean saveGame(Person person) throws CustomException {
+        Main.clearConsole();
         Path pathToSave = Paths.get("C:\\SaveToProgramOfTobakerka\\SaveOfGameRole.ser");
 
         try (FileOutputStream fos = new FileOutputStream(pathToSave.toFile());
@@ -61,6 +63,7 @@ public class Main {
              ObjectInputStream ois = new ObjectInputStream(fis)) {
 
             loadedPerson = (Person) ois.readObject(); // Читаем объект из файла
+            Main.clearConsole();
             System.out.println("Восстановленный объект: " + loadedPerson);
 
         } catch (IOException | ClassNotFoundException e) {
@@ -69,8 +72,6 @@ public class Main {
         return loadedPerson;
 
     }
-
-
 
     public static int checkInt(String text, int count) {
 
@@ -82,9 +83,11 @@ public class Main {
                 if (temp >= 0 && temp <= count) {
                     return temp;
                 } else {
+                    Main.clearConsole();
                     System.err.println("Некорректный ввод!");
                 }
             } else {
+                Main.clearConsole();
                 System.err.println("Некорректный ввод!");
             }
         }

@@ -286,38 +286,43 @@ public class Magazine {
                     if (player.inventory.get(tempInt).getType().equals("Оружие")) {
 
                         if (player.inventory.get(tempInt).equals(player.getWeapon())) {
-
+                            Main.clearConsole();
                             System.out.println("1 - продать, 2 - информация, 0 - назад");
                             Scanner scannerWeapon = new Scanner(System.in);
                             String tempWeapon = scannerWeapon.nextLine();
                             switch (tempWeapon) {
                                 case "1": {
+                                    Main.clearConsole();
                                     player.addGold(player.inventory.get(tempInt).getPrice());
-                                    player.setWeapon(null);
+                                    player.setWeapon(new Item.Weapon("Пусто", 0, 0, 0, "",0, 0));
                                     itemsOfsellPerson.add(player.inventory.get(tempInt));
                                     player.removeItem(player.inventory.get(tempInt));
                                     System.out.println("Оружие продано");
                                     break;
                                 }
                                 case "2": {
+                                    Main.clearConsole();
                                     player.inventory.get(tempInt).getInfo();
                                     break;
                                 }
                                 case "0": {
+                                    Main.clearConsole();
                                     System.out.println("Возврат");
                                     return;
                                 }
                                 default: {
+                                    Main.clearConsole();
                                     System.out.println("Неверный ввод");
                                 }
                             }
                         } else {
-
+                            Main.clearConsole();
                             System.out.println("1 - продать, 2 - информация, 0 - назад");
                             Scanner scannerWeapon1 = new Scanner(System.in);
                             String tempWeaponToEqup = scannerWeapon1.nextLine();
                             switch (tempWeaponToEqup) {
                                 case "1": {
+                                    Main.clearConsole();
                                     player.addGold(player.inventory.get(tempInt).getPrice());
                                     itemsOfsellPerson.add(player.inventory.get(tempInt));
                                     player.removeItem(player.inventory.get(tempInt));
@@ -325,14 +330,17 @@ public class Magazine {
                                     break;
                                 }
                                 case "2": {
+                                    Main.clearConsole();
                                     player.inventory.get(tempInt).getInfo();
                                     break;
                                 }
                                 case "0": {
+                                    Main.clearConsole();
                                     System.out.println("Возврат");
                                     return;
                                 }
                                 default: {
+                                    Main.clearConsole();
                                     System.out.println("Неверный ввод");
                                 }
                             }
@@ -340,12 +348,13 @@ public class Magazine {
                     } else if (player.inventory.get(tempInt).getType().equals("Броня")) {
 
                         if (player.inventory.get(tempInt).equals(player.getArmor())) {
+                            Main.clearConsole();
                             System.out.println("1 - продать, 2 - информация, 0 - назад");
                             Scanner scannerArmor = new Scanner(System.in);
                             String tempArmor = scannerArmor.nextLine();
                             switch (tempArmor) {
                                 case "1": {
-                                    player.setArmor(null);
+                                    player.setArmor(new Item.Armor("Пусто", 0, 0, 0, 0));
                                     player.addGold(player.inventory.get(tempInt).getPrice());
                                     itemsOfsellPerson.add(player.inventory.get(tempInt));
                                     player.removeItem(player.inventory.get(tempInt));
@@ -365,11 +374,13 @@ public class Magazine {
                                 }
                             }
                         } else {
+                            Main.clearConsole();
                             System.out.println("1 - продать, 2 - информация, 0 - назад");
                             Scanner scannerArmorToEqup = new Scanner(System.in);
                             String tempArmorToEqup = scannerArmorToEqup.nextLine();
                             switch (tempArmorToEqup) {
                                 case "1": {
+                                    Main.clearConsole();
                                     itemsOfsellPerson.add(player.inventory.get(tempInt));
                                     player.removeItem(player.inventory.get(tempInt));
                                     player.addGold(player.inventory.get(tempInt).getPrice());
@@ -377,14 +388,17 @@ public class Magazine {
                                     break;
                                 }
                                 case "2": {
+                                    Main.clearConsole();
                                     player.inventory.get(tempInt).getInfo();
                                     break;
                                 }
                                 case "0": {
+                                    Main.clearConsole();
                                     System.out.println("Выход");
                                     return;
                                 }
                                 default: {
+                                    Main.clearConsole();
                                     System.out.println("Неверный ввод");
 
                                 }
