@@ -225,6 +225,8 @@ public class Game {
     }
 
     public void mainMenu() {
+        Main.clearConsole();
+
         Person player = new Person("");
         Magazine magazine = new Magazine();
         String text = "";
@@ -251,6 +253,7 @@ public class Game {
                     try {
                         sleep(1000);
                     } catch (InterruptedException ex) {
+                        Main.clearConsole();
                         new CustomException("Ошибка при ожидании!");
                     }
                 } catch (IOException e) {
@@ -267,9 +270,9 @@ public class Game {
                     switch (otvet) {
                         case 1: {
                             player = startNewGame();
+                            Main.clearConsole();
                             magazine = new Magazine();
                             magazine.spawnMagazine(player.getLevel());
-                            Main.clearConsole();
                             isGameToPlay = true;
                             startGame(player, magazine);
                             break;
@@ -411,7 +414,6 @@ public class Game {
                         }
                         default: {
                             Main.clearConsole();
-                            Main.clearConsole();
                             System.err.println("Некорректный ввод!");
                         }
                     }
@@ -423,6 +425,7 @@ public class Game {
                     File save = new File("C:\\SaveToProgramOfTobakerka\\SaveOfGameRole.ser");
                     path.mkdir();
                     save.createNewFile();
+                    Main.clearConsole();
                     System.out.println("Файл сохранения создан! сохрание находится по пути: " + save.getAbsolutePath());
                 } catch (Exception e) {
                     Main.clearConsole();
@@ -435,8 +438,8 @@ public class Game {
     // Метод для создания новой игры
     public Person startNewGame() {
 
+        Main.clearConsole();
         Person[] person = new Person[] {new Person.Human(""), new Person.Elf("")};
-        System.out.println("Выбор персонажа:");
         System.out.println();
         for (Person player : person) {
             player.showStats();
@@ -444,22 +447,24 @@ public class Game {
         }
 
         while (true) {
-
-            switch (Main.checkInt("Выберите персонажа:\n\n1 - " + person[0].getRace() + "\n2 - " + person[1].getRace() + "\n" + "0 - Выход",2)) {
+            System.out.println("Выбор персонажа:\n");
+            switch (Main.checkInt("Выберите персонажа:\n\n1 - " + person[0].getRace() + "\n2 - " + person[1].getRace(),2)) {
 
                 case 1: {
+                    Main.clearConsole();
                     System.out.println("Вы выбрали " + person[0].getRace());
                     person[0].setName(Main.checkNameOfNull("Введите имя:"));
                     return person[0];
                 }
                 case 2: {
+                    Main.clearConsole();
                     System.out.println("Вы выбрали " + person[1].getRace());
                     person[1].setName(Main.checkNameOfNull("Введите имя:\n"));
                     return person[1];
                 }
                 case 0: {
-
-                    break;
+                    Main.clearConsole();
+                    System.err.println("Некорректный ввод!");
                 }
                 default: {
                 }
@@ -486,34 +491,32 @@ public class Game {
                     "6 - статистика\n" +
                     "0 - Меню\n", 6)) {
                 case 1: {
-
+                    Main.clearConsole();
                     player.openInventary(isInventorySort);
                     break;
                 }
                 case 2: {
-
+                    Main.clearConsole();
                     magazine.menuMagazine(player,isInventorySort, isShopSort);
                     break;
                 }
                 case 3: {
-
+                    Main.clearConsole();
                     Fight fight = new Fight();
                     fight.start();
                     break;
                 }
                 case 4: {
-
+                    Main.clearConsole();
                     goToTheBlacksmith(player);
                     break;
                 }
                 case 5: {
-
                     Main.clearConsole();
                     toTakeADreak(player, magazine);
                     break;
                 }
                 case 6: {
-
                     Main.clearConsole();
                     player.showStats();
                     break;
@@ -535,7 +538,6 @@ public class Game {
     // Метод для продолжения игры
     public void continueGame(Person player, Magazine magazine) {
         startGame(player, magazine);
-
     }
 
     // Метод для выхода из игры

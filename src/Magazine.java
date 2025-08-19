@@ -32,19 +32,16 @@ public class Magazine {
             sortMagazine();
         }
         if (itemsOfSales.size() == 0) {
-
             System.out.println("Магазин пуст");
         } else {
 
             for (Item item : itemsOfSales) {
-
+                StringBuilder space = new StringBuilder();
                 String tempName = item.getName();
 
                 if (Integer.valueOf(count) < 10) {
-
                     System.out.print("  ");
                 } else if (Integer.valueOf(count) < 100) {
-
                     System.out.print(" ");
                 } else {
                     System.out.print("");
@@ -52,26 +49,32 @@ public class Magazine {
 
                 StringBuilder sb = new StringBuilder();
                 sb.append(count + ": " + tempName);
-                tempName = sb.toString();
-                if ( sb.length() > 25) {
-                    tempName = tempName.substring(0, 10) + "... " + item.getPrice() + " золота.";
-                } else if (sb.length() < 25) {
-                    sb.append(" " + item.getPrice() + " золота.");
-                    while (sb.length() - 25 < 15) {
-                        sb.append(" ");
+                if (item.getType().equals("Оружие")) {
+                    Item.Weapon weapon = (Item.Weapon) item;
+                    sb.append(" " + weapon.getDamage() + " урона" + " " + weapon.level + " ур." + " " + weapon.getLevelChange() + " точ. ");
+                    if (!weapon.getTypeEffect().equals("")) {
+                        sb.append(" " + weapon.getTypeEffect() + " " + weapon.getPowerEffect() + " урона ");
                     }
+                } else if (item.getType().equals("Броня")) {
+                    Item.Armor armor = (Item.Armor) item;
+                    sb.append(" " + armor.getDefense() + " брони" + " " + armor.level + " ур." + " " + armor.getLevelChange() + " точ. ");
+                } else if (item.getType().equals("Зелье")) {
+                    Item.Potion potion = (Item.Potion) item;
+                    sb.append(" " + potion.getPower() + " урона" + " " + potion.level + " ур. ");
+                } else if (item.getType().equals("Еда")){
+                    Item.Food food = (Item.Food) item;
+                    sb.append(" " + food.getPower() + " силы зелья" + " " + food.level + " ур. ");
+                }
+                tempName = sb.toString();
+                if ( sb.length() > 42) {
+                    tempName = tempName.substring(0, 33) + " /.../ " + space.toString() + item.getPrice() + " золота.";
+                } else if (sb.length() <= 42) {
+                    sb.append(item.getPrice() + " золота.");
                     tempName = sb.toString();
                 }
-                System.out.print(tempName + "\t");
+                System.out.println(tempName + "\t");
 
-                schet++;
                 count++;
-
-                if (schet == 5) {
-
-                    schet = 0;
-                    System.out.println();
-                }
 
             }
             count = 0;
@@ -146,24 +149,28 @@ public class Magazine {
             String tempString = scanner.nextLine();
             switch (tempString) {
                 case "1" : {
+                    Main.clearConsole();
                     openMagazine(player, isShopSort);
                     break;
                 }
                 case "2" : {
+                    Main.clearConsole();
                     sellItem(player, isInventorySort);
                     break;
                 }
                 case "3" : {
+                    Main.clearConsole();
                     openSellPerson(player, isInventorySort);
                     break;
                 }
                 case "0" : {
+                    Main.clearConsole();
                     System.out.println("Выход");
                     return;
                 }
                 default : {
-                    System.out.println("Неверный ввод");
                     Main.clearConsole();
+                    System.out.println("Неверный ввод");
                 }
             }
             scanner = null;
@@ -228,6 +235,11 @@ public class Magazine {
         ArrayList<Item.Potion> potions = new ArrayList<>();
         ArrayList<Item.Food> foods = new ArrayList<>();
 
+        tempItems.clear();
+        weapons.clear();
+        armors.clear();
+        potions.clear();
+        foods.clear();
         for (Item item : itemsOfSales) {
 
             if (item.getType().equals("Оружие")) {

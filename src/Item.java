@@ -248,6 +248,10 @@ public class Item implements Serializable {
             return levelChange;
         }
 
+        public int getDefense() {
+            return defense;
+        }
+
         // Метод передает информацию о брони
 
         public String print() {

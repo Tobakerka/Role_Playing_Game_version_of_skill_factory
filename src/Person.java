@@ -340,141 +340,162 @@ public class Person implements Serializable{
 
         boolean check = true;
         while (check) {
-        lookInventory(isInventorySort);
+            lookInventory(isInventorySort);
 
-        System.out.println("Выберите предмет \nлюбая буква или символ для выхода");
-        Scanner scanner = new Scanner(System.in);
+            System.out.println("Выберите предмет \nлюбая буква или символ для выхода");
+            Scanner scanner = new Scanner(System.in);
 
-        int tempInt = 0;
-        if (scanner.hasNextInt()) {
-            tempInt = scanner.nextInt();
+            int tempInt = 0;
+            if (scanner.hasNextInt()) {
+                tempInt = scanner.nextInt();
 
-            if (tempInt < inventory.size() && tempInt >= 0) {
+                if (tempInt < inventory.size() && tempInt >= 0) {
 
-                if (inventory.get(tempInt).getType().equals("Оружие")) {
+                    if (inventory.get(tempInt).getType().equals("Оружие")) {
 
-                    if (inventory.get(tempInt).equals(weapon)) {
-
-                        System.out.println("1 - снять, 2 - удалить, 3 - информация, 0 - назад");
-                        Scanner scannerWeapon = new Scanner(System.in);
-                        String tempWeapon = scannerWeapon.nextLine();
-                        switch (tempWeapon) {
-                            case "1": {
-                                weapon = null;
-                                System.out.println("Оружие снято");
-                                break;
-                            }
-                            case "2": {
-                                weapon = null;
-                                removeItem(inventory.get(tempInt));
-                                System.out.println("Оружие удалено");
-                                break;
-                            }
-                            case "3": {
-                                inventory.get(tempInt).getInfo();
-                                return;
-                            }
-                            case "0": {
-                                System.out.println("Возврат");
-                                return;
-                            }
-                            default: {
-                                System.out.println("Неверный ввод");
-                            }
-                        }
-                    } else {
-
-                        System.out.println("1 - надеть, 2 - удалить, 3 - информация, 0 - назад");
-                        Scanner scannerWeapon1 = new Scanner(System.in);
-                        String tempWeaponToEqup = scannerWeapon1.nextLine();
-                        switch (tempWeaponToEqup) {
-                            case "1": {
-                                if (inventory.get(tempInt).getLevel() <= level) {
-                                    weapon = (Item.Weapon) inventory.get(tempInt);
-                                    System.out.println("Оружие надето");
-                                } else {
-                                    System.out.println("Уровня персонажа не достаточно!");
+                        if (inventory.get(tempInt).equals(weapon)) {
+                            Main.clearConsole();
+                            System.out.println("1 - снять, 2 - удалить, 3 - информация, 0 - назад");
+                            Scanner scannerWeapon = new Scanner(System.in);
+                            String tempWeapon = scannerWeapon.nextLine();
+                            switch (tempWeapon) {
+                                case "1": {
+                                    weapon = null;
+                                    Main.clearConsole();
+                                    System.out.println("Оружие снято");
+                                    break;
                                 }
-                                break;
-                            }
-                            case "2": {
-                                removeItem(inventory.get(tempInt));
-                                System.out.println("Оружие удалено");
-                                break;
-                            }
-                            case "3": {
-                                Item.Weapon weapon1 = (Item.Weapon) inventory.get(tempInt);
-                                weapon1.getInfo();
-                                break;
-                            }
-                        }
-                    }
-                } else if (inventory.get(tempInt).getType().equals("Броня")) {
-
-                    if (inventory.get(tempInt).equals(armor)) {
-                        System.out.println("1 - снять, 2 - удалить, 3 - информация, 0 - назад");
-                        Scanner scannerArmor = new Scanner(System.in);
-                        String tempArmor = scannerArmor.nextLine();
-                        switch (tempArmor) {
-                            case "1": {
-                                armor = null;
-                                System.out.println("Броня снята");
-                                break;
-                            }
-                            case "2": {
-                                armor = null;
-                                removeItem(inventory.get(tempInt));
-                                System.out.println("Броня удалена");
-                                break;
-                            }
-                            case "3": {
-                                inventory.get(tempInt).getInfo();
-                                break;
-                            }
-                            case "0": {
-                                System.out.println("Возврат");
-                                return;
-                            }
-                            default: {
-                                System.out.println("Возврат");
-                                return;
-                            }
-                        }
-                    } else {
-                        System.out.println("1 - надеть, 2 - удалить, 3 - информация, 0 - назад");
-                        Scanner scannerArmorToEqup = new Scanner(System.in);
-                        String tempArmorToEqup = scannerArmorToEqup.nextLine();
-                        switch (tempArmorToEqup) {
-                            case "1": {
-                                if (inventory.get(tempInt).getLevel() <= level) {
-                                    armor = (Item.Armor) inventory.get(tempInt);
-                                    System.out.println("Броня надета");
-                                } else {
-                                    System.out.println("Уровня персонажа не достаточно!");
+                                case "2": {
+                                    weapon = null;
+                                    removeItem(inventory.get(tempInt));
+                                    Main.clearConsole();
+                                    System.out.println("Оружие удалено");
+                                    break;
                                 }
-                                break;
+                                case "3": {
+                                    Main.clearConsole();
+                                    inventory.get(tempInt).getInfo();
+                                    return;
+                                }
+                                case "0": {
+                                    Main.clearConsole();
+                                    System.out.println("Возврат");
+                                    return;
+                                }
+                                default: {
+                                    Main.clearConsole();
+                                    System.out.println("Неверный ввод");
+                                }
                             }
-                            case "2": {
-                                armor = null;
-                                removeItem(inventory.get(tempInt));
-                                System.out.println("Броня удалена");
-                                break;
+                        } else {
+                            Main.clearConsole();
+                            System.out.println("1 - надеть, 2 - удалить, 3 - информация, 0 - назад");
+                            Scanner scannerWeapon1 = new Scanner(System.in);
+                            String tempWeaponToEqup = scannerWeapon1.nextLine();
+                            switch (tempWeaponToEqup) {
+                                case "1": {
+                                    if (inventory.get(tempInt).getLevel() <= level) {
+                                        weapon = (Item.Weapon) inventory.get(tempInt);
+                                        Main.clearConsole();
+                                        System.out.println("Оружие надето");
+                                    } else {
+                                        Main.clearConsole();
+                                        System.out.println("Уровня персонажа не достаточно!");
+                                    }
+                                    break;
+                                }
+                                case "2": {
+                                    removeItem(inventory.get(tempInt));
+                                    Main.clearConsole();
+                                    System.out.println("Оружие удалено");
+                                    break;
+                                }
+                                case "3": {
+                                    Main.clearConsole();
+                                    Item.Weapon weapon1 = (Item.Weapon) inventory.get(tempInt);
+                                    weapon1.getInfo();
+                                    break;
+                                }
                             }
-                            case "3": {
-                                inventory.get(tempInt).getInfo();
+                        }
+                    } else if (inventory.get(tempInt).getType().equals("Броня")) {
+                        Main.clearConsole();
+                        if (inventory.get(tempInt).equals(armor)) {
+                            System.out.println("1 - снять, 2 - удалить, 3 - информация, 0 - назад");
+                            Scanner scannerArmor = new Scanner(System.in);
+                            String tempArmor = scannerArmor.nextLine();
+                            switch (tempArmor) {
+                                case "1": {
+                                    armor = null;
+                                    Main.clearConsole();
+                                    System.out.println("Броня снята");
+                                    break;
+                                }
+                                case "2": {
+                                    armor = null;
+                                    removeItem(inventory.get(tempInt));
+                                    Main.clearConsole();
+                                    System.out.println("Броня удалена");
+                                    break;
+                                }
+                                case "3": {
+                                    Main.clearConsole();
+                                    inventory.get(tempInt).getInfo();
+                                    break;
+                                }
+                                case "0": {
+                                    Main.clearConsole();
+                                    System.out.println("Возврат");
+                                    return;
+                                }
+                                default: {
+                                    Main.clearConsole();
+                                    System.out.println("Возврат");
+                                    return;
+                                }
                             }
-                            case "0": {
-                                System.out.println("Возврат");
-                                return;
-                            }
-                            default: {
-                                System.out.println("Возврат");
+                        } else {
+                            Main.clearConsole();
+                            System.out.println("1 - надеть, 2 - удалить, 3 - информация, 0 - назад");
+                            Scanner scannerArmorToEqup = new Scanner(System.in);
+                            String tempArmorToEqup = scannerArmorToEqup.nextLine();
+                            switch (tempArmorToEqup) {
+                                case "1": {
+                                    if (inventory.get(tempInt).getLevel() <= level) {
+                                        armor = (Item.Armor) inventory.get(tempInt);
+                                        Main.clearConsole();
+                                        System.out.println("Броня надета");
+                                    } else {
+                                        Main.clearConsole();
+                                        System.out.println("Уровня персонажа не достаточно!");
+                                    }
+                                    break;
+                                }
+                                case "2": {
+                                    armor = null;
+                                    removeItem(inventory.get(tempInt));
+                                    Main.clearConsole();
+                                    System.out.println("Броня удалена");
+                                    break;
+                                }
+                                case "3": {
+                                    Main.clearConsole();
+                                    inventory.get(tempInt).getInfo();
+                                }
+                                case "0": {
+                                    Main.clearConsole();
+                                    System.out.println("Возврат");
+                                    return;
+                                }
+                                default: {
+                                    Main.clearConsole();
+                                    System.out.println("Возврат");
                                     return;
                                 }
                             }
                         }
                     } else if (inventory.get(tempInt).getType().equals("Зелье")) {
-
+                        Main.clearConsole();
                         System.out.println("1 - выпить, 2 - удалить, 0 - назад");
                         Scanner scannerPotion = new Scanner(System.in);
                         String tempPotion = scannerPotion.nextLine();
@@ -482,16 +503,18 @@ public class Person implements Serializable{
                             case "1": {
                                 Item.Potion potion = (Item.Potion) inventory.get(tempInt);
                                 if (potion.level <= level) {
+                                    Main.clearConsole();
                                     if (potion.typeEffect.equals("лечебное")) {
                                         setHealth(potion.getPower(), maxHealth);
 
                                         System.out.println("Вы выпили зелье здоровья. Здоровье: + " + potion.getPower());
-                                    } else if (potion.typeEffect.equals("выносливости")){
+                                    } else if (potion.typeEffect.equals("выносливости")) {
                                         setStrength(potion.getPower(), maxStrength);
                                         System.out.println("Вы выпили зелье " + potion.typeEffect + potion.getPower());
                                         inventory.remove(potion);
                                     }
                                 } else {
+                                    Main.clearConsole();
                                     System.out.println("Уровня персонажа не достаточно!");
                                 }
 
@@ -500,31 +523,38 @@ public class Person implements Serializable{
                             case "2": {
 
                                 inventory.remove(inventory.get(tempInt));
+                                Main.clearConsole();
                                 System.out.println("Зелье удалено");
                                 break;
                             }
                         }
                     } else {
+                        Main.clearConsole();
                         System.out.println("1 - съесть, 2 - удалить, 3 - информация, 0 - назад");
                         Scanner scannerFood = new Scanner(System.in);
                         String tempFood = scannerFood.nextLine();
                         if (tempFood.equals("1")) {
                             Item.Food food = (Item.Food) inventory.get(tempInt);
                             setStrength(food.getPower(), maxStrength);
+                            Main.clearConsole();
                             System.out.println("Вы съели " + food.getName() + ". Сила: + " + food.getPower());
                             removeItem(inventory.get(tempInt));
                         } else if (tempFood.equals("2")) {
-                                inventory.remove(inventory.get(tempInt));
-                                System.out.println("Предмет удален");
+                            Main.clearConsole();
+                            inventory.remove(inventory.get(tempInt));
+                            System.out.println("Предмет удален");
                         } else if (tempFood.equals("3")) {
+                            Main.clearConsole();
                             inventory.get(tempInt).getInfo();
                         }
                     }
                 } else {
+                    Main.clearConsole();
                     System.out.println("Неверный ввод");
                     return;
                 }
             } else {
+                Main.clearConsole();
                 System.out.println("Возврат");
                 check = false;
             }
@@ -534,6 +564,7 @@ public class Person implements Serializable{
 
     public void showStats() {
 
+        Main.clearConsole();
         if (isAlive) {
             if (!name.equals("")) {
 
