@@ -844,7 +844,7 @@ public class Game {
                                                     case 0: {
                                                         Main.clearConsole();
                                                         System.out.println("Зачарование прошло неудачно!");
-                                                        System.out.println("Вы потеряли " + itemWeaponOld + (itemWeaponOld.getPrice() * 3) + " золота!");
+                                                        System.out.println("Вы потеряли " + itemWeaponOld.print() + (itemWeaponOld.getPrice() * 3) + " золота!");
                                                         player.deliteGold(itemWeaponOld.getPrice() * 3);
                                                         player.removeItem(itemOld);
                                                         if (player.getWeapon().equals(itemWeaponOld)) {
