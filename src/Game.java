@@ -1059,9 +1059,11 @@ public class Game {
                 if (isFood) {
                     Item food = Game.spawnFood(player.getLevel());
                     sb.append(food.getName() + " цена: " + food.price + " золота\n" );
+                    loot.add(food);
                 } else {
                     Item potion = Game.spawnPotion(player.getLevel());
                     sb.append(potion.getName() + " цена: " + potion.price + " золота\n" );
+                    loot.add(potion);
                 }
             }
         }
