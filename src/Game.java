@@ -1042,13 +1042,13 @@ public class Game {
         // Проверка выпало ли оружие. Если да, то добавляется в список дропа
         if (random.nextBoolean() && isDeadPerson.getWeapon() != null && !isDeadPerson.getWeapon().getName().equals("Пусто")) {
             loot.add(isDeadPerson.getWeapon());
-            sb.append(isDeadPerson.getWeapon().print());
+            sb.append(isDeadPerson.getWeapon().print() + "\n");
         }
 
         // Проверка выпало ли броня. Если да, то добавляется в список дропа
         if (random.nextBoolean() && isDeadPerson.getArmor() != null && !isDeadPerson.getArmor().getName().equals("Пусто")) {
             loot.add(isDeadPerson.getArmor());
-            sb.append(isDeadPerson.getArmor().print());
+            sb.append(isDeadPerson.getArmor().print() + "\n");
         }
 
         Random randomFoodOfPotion = new Random();
@@ -1058,11 +1058,11 @@ public class Game {
                 boolean isFood = random.nextBoolean();
                 if (isFood) {
                     Item food = Game.spawnFood(player.getLevel());
-                    sb.append(food.getName() + " цена: " + food.price + " золота\n" );
+                    sb.append(food.getName() + " цена: " + food.price + " золота\n\n" );
                     loot.add(food);
                 } else {
                     Item potion = Game.spawnPotion(player.getLevel());
-                    sb.append(potion.getName() + " цена: " + potion.price + " золота\n" );
+                    sb.append(potion.getName() + " цена: " + potion.price + " золота\n\n" );
                     loot.add(potion);
                 }
             }
