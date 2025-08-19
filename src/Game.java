@@ -661,6 +661,7 @@ public class Game {
                                                     int tempPrice = weaponNew.getPrice();
                                                     while (tempIntLevel > 0) {
                                                         tempIntLevel--;
+                                                        weaponNew.levelUp();
                                                         tempPrice += weaponNew.getPrice();
                                                     }
                                                     Main.clearConsole();
@@ -731,6 +732,7 @@ public class Game {
                                                     int tempPrice = armorNew.getPrice();
                                                     while (tempIntLevel > 0) {
                                                         tempIntLevel--;
+                                                        armorNew.levelUp();
                                                         tempPrice += armorNew.getPrice();
                                                     }
                                                     Main.clearConsole();
