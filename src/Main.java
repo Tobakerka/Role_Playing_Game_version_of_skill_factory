@@ -8,14 +8,36 @@ import static java.lang.Thread.sleep;
 public class Main {
 
     public static void main(String[] args) {
-
-        Game game = new Game();
-        try {
-        game.mainMenu();
-        sleep (1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        boolean isExit = true;
+        while (restartGame()) {
+            Game game = new Game();
+            try {
+                game.mainMenu();
+                sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
+    }
+
+    public static boolean restartGame() {
+
+        boolean isRestart = true;
+        while (isRestart) {
+            System.out.println("Запустить игру?");
+            switch (Main.checkInt("1 - Да\n0 - Нет", 1)) {
+                case 1: {
+
+                    return true;
+                }
+                case 0: {
+                    return false;
+                }
+                default: {
+                }
+            }
+        }
+        return false;
     }
 
     public static void clearConsole() {

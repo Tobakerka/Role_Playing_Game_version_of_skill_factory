@@ -11,7 +11,6 @@ import java.util.Scanner;
 import static java.lang.Thread.sleep;
 
 public class Game {
-
     private boolean isSave = false; // Проверка есть ли файл сохранения
     private boolean isGameToPlay = false; // Проверка запущена ли игра. Нужен для правильного отображения меню при запуске игры
     private int difficulty = 1; // Сложность игры 1 - Легко, 2 - Средне, 3 - Сложно
@@ -230,12 +229,11 @@ public class Game {
 
     public void mainMenu() {
         Main.clearConsole();
-
         Person player = new Person("");
         Magazine magazine = new Magazine();
         String text = "";
         File file = new File("C:\\SaveToProgramOfTobakerka\\SaveOfGameRole.ser");
-        while (true) {
+
             if (file.exists()) {
 
                 try (FileInputStream fis = new FileInputStream(file)) {
@@ -433,7 +431,7 @@ public class Game {
                     System.out.println("Ошибка при создании файла сохранения!");
                 }
             }
-        }
+
     }
 
     // Метод для создания новой игры
@@ -514,7 +512,7 @@ public class Game {
                         throw new RuntimeException(e);
                     }
                     if (!player.getIsAlive()) {
-                        player = restartGame(player);
+                        return;
                     }
                     break;
                 }
@@ -550,33 +548,7 @@ public class Game {
 
     // Метод для продолжения игры
     public void continueGame(Person player, Magazine magazine) {
-        if (player.getIsAlive()) {
             startGame(player, magazine);
-        } else {
-            restartGame(player);
-        }
-    }
-
-    private Person restartGame(Person player) {
-        System.out.println("Игра окончена!\n");
-        boolean isRestart = true;
-        while (isRestart) {
-            System.out.println("Начать новую игру?");
-            switch (Main.checkInt("1 - Да\n0 - Нет", 1)) {
-                case 1: {
-
-                    isRestart = false;
-                    return startNewGame();
-                }
-                case 0: {
-                    System.exit(0);
-                    break;
-                }
-                default: {
-                }
-            }
-        }
-        return null;
     }
 
     // Метод для выхода из игры

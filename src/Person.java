@@ -929,6 +929,10 @@ public class Person implements Serializable{
         this.health = i;
     }
 
+    public void setIsAlive(boolean isAlive) {
+        this.isAlive = isAlive;
+    }
+
     // Внутренние статические классы:
     // Класс для игрока
     public static class Human extends Person implements Serializable{
