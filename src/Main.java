@@ -10,6 +10,7 @@ public class Main {
     public static void main(String[] args) {
         boolean isExit = true;
         while (restartGame()) {
+            Main.clearConsole();
             Game game = new Game();
             try {
                 game.mainMenu();
