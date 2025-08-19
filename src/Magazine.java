@@ -19,7 +19,7 @@ public class Magazine {
         itemsOfSales = new ArrayList<>(Game.generateItem(countToItems, level));
     }
 
-    public void printMagazine(Person player, boolean isShopSort) {
+    public void printMagazine(Person player) {
 
         int count = 0;
         int schet = 0;
@@ -28,7 +28,7 @@ public class Magazine {
                 "Ваше золото:" + player.getGold() + "\n" +
                 "Предметы:" + itemsOfSales.size() + " из " + countToItems + "\n");
 
-        if (isShopSort) {
+        if (player.getIsInventorySort()) {
             sortMagazine();
         }
         if (itemsOfSales.size() == 0) {
@@ -141,7 +141,7 @@ public class Magazine {
     public void addItemToMagazine(){
     }
 
-    public void menuMagazine(Person player, boolean isInventorySort, boolean isShopSort) {
+    public void menuMagazine(Person player) {
 
         while (true) {
             System.out.printf("Магазин: \n\n1 - Купить | 2 - Продать | 3 - Выкупить | 0 - Выйти\n");
@@ -150,17 +150,17 @@ public class Magazine {
             switch (tempString) {
                 case "1" : {
                     Main.clearConsole();
-                    openMagazine(player, isShopSort);
+                    openMagazine(player);
                     break;
                 }
                 case "2" : {
                     Main.clearConsole();
-                    sellItem(player, isInventorySort);
+                    sellItem(player);
                     break;
                 }
                 case "3" : {
                     Main.clearConsole();
-                    openSellPerson(player, isInventorySort);
+                    openSellPerson(player);
                     break;
                 }
                 case "0" : {
@@ -177,7 +177,7 @@ public class Magazine {
         }
     }
 
-    private void openSellPerson(Person player, boolean isInventorySort) {
+    private void openSellPerson(Person player) {
         while (true) {
             printMagazineOfSellPerson();
             System.out.println("Выберите предмет \nлюбая буква или символ для выхода");
@@ -269,10 +269,10 @@ public class Magazine {
     }
 
     // Продажа предметов
-    private void sellItem(Person player, boolean isInventorySort) {
+    private void sellItem(Person player) {
 
         while (true) {
-            player.lookInventory(isInventorySort);
+            player.lookInventory();
 
             System.out.println("Выберите предмет \nлюбая буква или символ для выхода");
             Scanner scanner = new Scanner(System.in);
@@ -466,10 +466,10 @@ public class Magazine {
     }
 
     // Открытие магазина для покупки
-    public void openMagazine(Person player, boolean isShopSort) {
+    public void openMagazine(Person player) {
 
         while (true) {
-            printMagazine(player, isShopSort);
+            printMagazine(player);
             System.out.println("Выберите предмет \nлюбая буква или символ для выхода");
             Scanner scannerPred = new Scanner(System.in);
 

@@ -13,9 +13,6 @@ import static java.lang.Thread.sleep;
 public class Game {
     private boolean isSave = false; // Проверка есть ли файл сохранения
     private boolean isGameToPlay = false; // Проверка запущена ли игра. Нужен для правильного отображения меню при запуске игры
-    private int difficulty = 1; // Сложность игры 1 - Легко, 2 - Средне, 3 - Сложно
-    private boolean isShopSort = false; // Проверка включена ли сортировка магазина
-    private boolean isInventorySort = false; // Проверка включена ли сортировка инвентаря
 
     // Геттеры и сеттеры
     public boolean getIsGameToPlay() {
@@ -134,85 +131,58 @@ public class Game {
         return null;
     }
 
-    public int getDifficulty() {
-        return difficulty;
-    }
-
-    public void options() {
+    public void options(Person player) {
 
         while (true) {
-            String sMag = "";
-            String sInv = "";
-
+            String sMag;
+            String sInv;
+            StringBuilder sDef = new StringBuilder();
             // Проверка включена ли сортировка магазина в опциях
-            if (isShopSort) {
+            if (player.getIsChopSort()) {
                 sMag = "Сортировка магазина включена";
             } else {
                 sMag = "Сортировка магазина выключена";
             }
 
             // Проверка включена ли сортировка инвентаря в опциях
-            if (isInventorySort) {
+            if (player.getIsInventorySort()) {
                 sInv = "Сортировка инвентаря включена";
             } else {
                 sInv = "Сортировка инвентаря выключена";
             }
 
-            // Переменная для выставления сложности игры
-            String sDef = "";
 
-            // Проверка сложности игры
-            switch (difficulty) {
-                case 1: {
-                    sDef = "Сложность игры: Легко";
-                    break;
-                }
-                case 2: {
-                    sDef = "Сложность игры: Средне";
-                    break;
-                }
-                case 3: {
-                    sDef = "Сложность игры: Сложно";
-                    break;
-                }
+            if (player.getDifficulty() == 1) {
+                sDef.append("Сложность игры: Легко");
+            } else if (player.getDifficulty() == 2) {
+                sDef.append("Сложность игры: Средне");
+            } else if (player.getDifficulty() == 3) {
+                sDef.append("Сложность игры: Сложно");
             }
+
+            // Переменная для выставления сложности игры
 
             // Вывод меню опций
             Scanner scanner = new Scanner(System.in);
             System.out.println("Настройки\n\n");
-            System.out.println(sInv + "\n" + sMag + "\n" + sDef);
+            System.out.println(sInv + "\n" + sMag + "\n" + sDef.toString());
             System.out.println("1 - Сложность игры\n" + "2 - Сортировка инвентаря\n" + "3 - Сортировка магазина\n" + "0 - Назад");
             String otvet = scanner.nextLine();
 
             switch (otvet) {
                 case "1" : {
-                    if (difficulty == 1 || difficulty == 2) {
-                        difficulty ++;
-                        Main.clearConsole();
-                    } else {
-                        difficulty = 1;
-                        Main.clearConsole();
-                    }
+                    Main.clearConsole();
+                    player.setDifficulty();
                     break;
                 }
                 case "2" : {
-                    if (isInventorySort) {
-                        isInventorySort = false;
-                        Main.clearConsole();
-                    } else {
-                        isInventorySort = true;
-                        Main.clearConsole();
-                    }
+                    Main.clearConsole();
+                    player.setIsInventorySort();
                     break;
                 }
                 case "3" : {
-                    if (isShopSort) {
-                        isShopSort = false;
-                        Main.clearConsole();
-                    } else {
-                        isShopSort = true;
-                        Main.clearConsole();
-                    }
+                    Main.clearConsole();
+                    player.setIsChopSort();
                     break;
                 }
                 case "0" : {
@@ -265,159 +235,162 @@ public class Game {
                 String sTemp;
                 int otvet = -1;
 
-                if (isSave && isGameToPlay) {
-                    sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n3 - Загрузить игру\n4 - Настройки\n5 - Сохранить\n0 - Выйти из игры";
-                    otvet = Main.checkInt(sTemp, 5);
-                    switch (otvet) {
-                        case 1: {
-                            player = startNewGame();
-                            Main.clearConsole();
-                            magazine = new Magazine();
-                            magazine.spawnMagazine(player.getLevel());
-                            isGameToPlay = true;
-                            startGame(player, magazine);
-                            break;
-                        }
-                        case 2: {
+                while (player.getIsAlive()) {
 
-                            Main.clearConsole();
-                            continueGame(player, magazine);
-                            break;
-                        }
-                        case 3: {
-                            Main.clearConsole();
-                            player = Main.loadGame();
-                            isGameToPlay = true;
-                            break;
-                        }
-                        case 4: {
-                            Main.clearConsole();
-                            options();
-                            break;
-                        }
-                        case 5: {
-                            try {
-                                isSave = Main.saveGame(player);
-                            } catch (CustomException e) {
-                                System.err.println(e.getMessage());
+                    if (isSave && isGameToPlay) {
+                        sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n3 - Загрузить игру\n4 - Настройки\n5 - Сохранить\n0 - Выйти из игры";
+                        otvet = Main.checkInt(sTemp, 5);
+                        switch (otvet) {
+                            case 1: {
+                                player = startNewGame();
+                                Main.clearConsole();
+                                magazine = new Magazine();
+                                magazine.spawnMagazine(player.getLevel());
+                                isGameToPlay = true;
+                                startGame(player, magazine);
+                                break;
                             }
-                            break;
-                        }
-                        case 0: {
-                            Main.clearConsole();
-                            quitGame(player);
-                            break;
-                        }
-                        default: {
+                            case 2: {
 
-                        }
-                    }
-                } else if (!isSave && !isGameToPlay) {
-                    sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Настройки\n0 - Выйти из игры";
-                    otvet = Main.checkInt(sTemp, 2);
-                    switch (otvet) {
-
-                        case 1: {
-                            player = startNewGame();
-                            Magazine magazine1 = new Magazine();
-                            magazine = magazine1;
-                            magazine.spawnMagazine(player.getLevel());
-                            isGameToPlay = true;
-                            Main.clearConsole();
-                            startGame(player, magazine);
-                            break;
-                        }
-                        case 2: {
-                            Main.clearConsole();
-                            options();
-                            break;
-                        }
-                        case 0: {
-                            Main.clearConsole();
-                            quitGame(player);
-                            return;
-                        }
-                        default: {
-
-                        }
-                    }
-                } else if (!isSave && isGameToPlay) {
-                    sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n3 - Настройки\n4 - Сохранить\n0 - Выйти из игры";
-                    otvet = Main.checkInt(sTemp, 4);
-                    switch (otvet) {
-                        case 1: {
-                            player = startNewGame();
-                            magazine = new Magazine();
-                            magazine.spawnMagazine(player.getLevel());
-                            isGameToPlay = true;
-                            Main.clearConsole();
-                            startGame(player, magazine);
-                            break;
-                        }
-                        case 2: {
-                            continueGame(player, magazine);
-                            break;
-                        }
-                        case 3: {
-                            options();
-                            break;
-                        }
-                        case 4: {
-                            try {
-                                Main.saveGame(player);
-                            } catch (CustomException e) {
-                                System.err.println(e.getMessage());
+                                Main.clearConsole();
+                                continueGame(player, magazine);
+                                break;
                             }
-                            break;
-                        }
-                        case 0: {
-                            Main.clearConsole();
-                            isGameToPlay = false;
-                            quitGame(player);
-                            break;
-                        }
-                        default: {
+                            case 3: {
+                                Main.clearConsole();
+                                player = Main.loadGame();
+                                isGameToPlay = true;
+                                break;
+                            }
+                            case 4: {
+                                Main.clearConsole();
+                                options(player);
+                                break;
+                            }
+                            case 5: {
+                                try {
+                                    isSave = Main.saveGame(player);
+                                } catch (CustomException e) {
+                                    System.err.println(e.getMessage());
+                                }
+                                break;
+                            }
+                            case 0: {
+                                Main.clearConsole();
+                                quitGame(player);
+                                break;
+                            }
+                            default: {
 
+                            }
+                        }
+                    } else if (!isSave && !isGameToPlay) {
+                        sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Настройки\n0 - Выйти из игры";
+                        otvet = Main.checkInt(sTemp, 2);
+                        switch (otvet) {
+
+                            case 1: {
+                                player = startNewGame();
+                                Magazine magazine1 = new Magazine();
+                                magazine = magazine1;
+                                magazine.spawnMagazine(player.getLevel());
+                                isGameToPlay = true;
+                                Main.clearConsole();
+                                startGame(player, magazine);
+                                break;
+                            }
+                            case 2: {
+                                Main.clearConsole();
+                                options(player);
+                                break;
+                            }
+                            case 0: {
+                                Main.clearConsole();
+                                quitGame(player);
+                                return;
+                            }
+                            default: {
+
+                            }
+                        }
+                    } else if (!isSave && isGameToPlay) {
+                        sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n3 - Настройки\n4 - Сохранить\n0 - Выйти из игры";
+                        otvet = Main.checkInt(sTemp, 4);
+                        switch (otvet) {
+                            case 1: {
+                                player = startNewGame();
+                                magazine = new Magazine();
+                                magazine.spawnMagazine(player.getLevel());
+                                isGameToPlay = true;
+                                Main.clearConsole();
+                                startGame(player, magazine);
+                                break;
+                            }
+                            case 2: {
+                                continueGame(player, magazine);
+                                break;
+                            }
+                            case 3: {
+                                options(player);
+                                break;
+                            }
+                            case 4: {
+                                try {
+                                    Main.saveGame(player);
+                                } catch (CustomException e) {
+                                    System.err.println(e.getMessage());
+                                }
+                                break;
+                            }
+                            case 0: {
+                                Main.clearConsole();
+                                isGameToPlay = false;
+                                quitGame(player);
+                                break;
+                            }
+                            default: {
+
+                            }
+                        }
+                    } else if (isSave && !isGameToPlay) {
+                        sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Загрузить игру\n3 - Настройки\n0 - Выйти из игры";
+                        otvet = Main.checkInt(sTemp, 3);
+                        switch (otvet) {
+                            case 1: {
+                                Main.clearConsole();
+                                player = startNewGame();
+                                magazine = new Magazine();
+                                magazine.spawnMagazine(player.getLevel());
+                                isGameToPlay = true;
+                                Main.clearConsole();
+                                startGame(player, magazine);
+                                break;
+                            }
+                            case 2: {
+                                Main.clearConsole();
+                                player = Main.loadGame();
+                                isGameToPlay = true;
+                                magazine.spawnMagazine(player.getLevel());
+                                break;
+                            }
+                            case 3: {
+                                Main.clearConsole();
+                                options(player);
+                                break;
+                            }
+                            case 0: {
+                                Main.clearConsole();
+                                quitGame(player);
+                                break;
+                            }
+                            default: {
+                                Main.clearConsole();
+                                System.err.println("Некорректный ввод!");
+                            }
                         }
                     }
-                } else if (isSave && !isGameToPlay) {
-                    sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Загрузить игру\n3 - Настройки\n0 - Выйти из игры";
-                    otvet = Main.checkInt(sTemp, 3);
-                    switch (otvet) {
-                        case 1: {
-                            Main.clearConsole();
-                            player = startNewGame();
-                            magazine = new Magazine();
-                            magazine.spawnMagazine(player.getLevel());
-                            isGameToPlay = true;
-                            Main.clearConsole();
-                            startGame(player, magazine);
-                            break;
-                        }
-                        case 2: {
-                            Main.clearConsole();
-                            player = Main.loadGame();
-                            isGameToPlay = true;
-                            magazine.spawnMagazine(player.getLevel());
-                            break;
-                        }
-                        case 3: {
-                            Main.clearConsole();
-                            options();
-                            break;
-                        }
-                        case 0: {
-                            Main.clearConsole();
-                            quitGame(player);
-                            break;
-                        }
-                        default: {
-                            Main.clearConsole();
-                            System.err.println("Некорректный ввод!");
-                        }
-                    }
+                    System.out.println();
                 }
-                System.out.println();
             } else {
                 try {
                     File path = new File("C:\\SaveToProgramOfTobakerka");
@@ -431,6 +404,8 @@ public class Game {
                     System.out.println("Ошибка при создании файла сохранения!");
                 }
             }
+
+
 
     }
 
@@ -492,18 +467,18 @@ public class Game {
                     "0 - Меню\n", 6)) {
                 case 1: {
                     Main.clearConsole();
-                    player.openInventary(isInventorySort);
+                    player.openInventary();
                     break;
                 }
                 case 2: {
                     Main.clearConsole();
-                    player.move(difficulty);
-                    magazine.menuMagazine(player,isInventorySort, isShopSort);
+                    player.move();
+                    magazine.menuMagazine(player);
                     break;
                 }
                 case 3: {
                     Main.clearConsole();
-                    Fight fight = new Fight(player,difficulty, isInventorySort);
+                    Fight fight = new Fight(player);
                     Thread thread = new Thread(fight);
                     thread.start();
                     try {
@@ -518,7 +493,7 @@ public class Game {
                 }
                 case 4: {
                     Main.clearConsole();
-                    player.move(difficulty);
+                    player.move();
                     goToTheBlacksmith(player);
                     break;
                 }
@@ -1074,6 +1049,21 @@ public class Game {
         if (random.nextBoolean() && isDeadPerson.getArmor() != null && !isDeadPerson.getArmor().getName().equals("Пусто")) {
             loot.add(isDeadPerson.getArmor());
             sb.append(isDeadPerson.getArmor().print());
+        }
+
+        Random randomFoodOfPotion = new Random();
+        int checkCount = randomFoodOfPotion.nextInt(6);
+        for (int i = 0; i < checkCount; i++) {
+            if (random.nextInt() >= 90) {
+                boolean isFood = random.nextBoolean();
+                if (isFood) {
+                    Item food = Game.spawnFood(player.getLevel());
+                    sb.append(food.getName() + " цена: " + food.price + " золота\n" );
+                } else {
+                    Item potion = Game.spawnPotion(player.getLevel());
+                    sb.append(potion.getName() + " цена: " + potion.price + " золота\n" );
+                }
+            }
         }
 
         if (random.nextBoolean() && isDeadPerson.getGold() > 0) {

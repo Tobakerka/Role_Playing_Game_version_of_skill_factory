@@ -8,10 +8,10 @@ import static java.lang.Thread.sleep;
 public class Main {
 
     public static void main(String[] args) {
-        boolean isExit = true;
         while (restartGame()) {
-            Main.clearConsole();
             Game game = new Game();
+
+            Main.clearConsole();
             try {
                 game.mainMenu();
                 sleep(1000);
@@ -66,16 +66,20 @@ public class Main {
         Main.clearConsole();
         Path pathToSave = Paths.get("C:\\SaveToProgramOfTobakerka\\SaveOfGameRole.ser");
 
-        try (FileOutputStream fos = new FileOutputStream(pathToSave.toFile());
-             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+        try (FileOutputStream fosSave = new FileOutputStream(pathToSave.toFile());
+             ObjectOutputStream oosIsSave = new ObjectOutputStream(fosSave)){
+
 
             // Если файл не существует, он будет создан автоматически
-            oos.writeObject(person);
+            oosIsSave.writeObject(person);
+
             Main.clearConsole();
             System.out.println("Игра сохранена");
             return true;
+        } catch (FileNotFoundException e) {
+            throw new CustomException ("Файл не найден");
         } catch (IOException e) {
-            throw new CustomException("Ошибка! Файл не найден или произошла ошибка при записи: " + e.getMessage());
+            throw new CustomException("Ошибка ввода-вывода");
         }
     }
 
@@ -93,7 +97,6 @@ public class Main {
             e.printStackTrace();
         }
         return loadedPerson;
-
     }
 
     public static int checkInt(String text, int count) {

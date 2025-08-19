@@ -10,7 +10,7 @@ public class Fight extends Thread {
     long expTemp;
     boolean isInventorySort;
 
-    public Fight(Person player, int difficulty, boolean isInventorySort) {
+    public Fight(Person player) {
         this.difficulty = difficulty;
         this.player = player;
         monster = Game.spawnPerson(player.getLevel());
@@ -43,7 +43,7 @@ public class Fight extends Thread {
                         isFight = false;
                         while (player.getIsAlive() && monster.getIsAlive()) {
 
-                            player.move(1);
+                            player.move();
                             if (player.getIsAlive()) {
 
                                 System.out.println("Игрок: " + player.getName() + " HP: " + player.getHealth() + " Энергия: " + player.getInfoEnergy() + " " + "Противник: " + monster.getName() + " HP: " + monster.getHealth());
@@ -148,7 +148,7 @@ public class Fight extends Thread {
                             player.setHealth(0);
                             break;
                         }
-                        player.move(-20);
+                        player.move();
                         Random random = new Random();
                         boolean isEscape = random.nextBoolean();
                         if (isEscape) {
@@ -162,7 +162,7 @@ public class Fight extends Thread {
                     }
                     case 3: {
                         Main.clearConsole();
-                        player.openInventary(isInventorySort);
+                        player.openInventary();
                         break;
                     }
                     default: {

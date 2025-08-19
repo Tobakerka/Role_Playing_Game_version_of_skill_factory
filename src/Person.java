@@ -1,6 +1,5 @@
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Person implements Serializable{
@@ -17,6 +16,9 @@ public class Person implements Serializable{
     private int strength;
     private boolean isAlive;
     private String race;
+    private boolean isChopSort;
+    private boolean isInventorySort;
+    private int difficulty;
 
     // Возможные уязвимости
     private boolean vulnerabilityOfFire;
@@ -43,6 +45,9 @@ public class Person implements Serializable{
         isAlive = true;
         Item.Weapon weapon = null;
         Item.Armor armor = null;
+        this.isChopSort = isChopSort;
+        this.isInventorySort = isInventorySort;
+        this.difficulty = 1;
 
         for (Item item : inventory) {
             inventory.add(null);
@@ -65,12 +70,26 @@ public class Person implements Serializable{
         this.strength = 100;
         inventory.add(weapon);
         inventory.add(armor);
+        isChopSort = false;
+        isInventorySort = false;
+        difficulty = 1;
     }
 
     // Геттеры и сеттеры:
     public long getlevelUpThreshold() {
 
         return levelUpThreshold;
+    }
+    public boolean getIsChopSort() {
+        return isChopSort;
+    }
+
+    public boolean getIsInventorySort() {
+        return isInventorySort;
+    }
+
+    public int getDifficulty() {
+        return difficulty;
     }
 
     public void setStrength(int strength) {
@@ -108,6 +127,38 @@ public class Person implements Serializable{
 
     public void setWeapon(Item.Weapon weapon) {
         this.weapon = weapon;
+    }
+
+    public void isShopSort(boolean isChopSort) {
+        this.isChopSort = isChopSort;
+    }
+
+    public void isInventorySort(boolean isInventorySort) {
+        this.isInventorySort = isInventorySort;
+    }
+
+    public void setDifficulty() {
+        if (difficulty == 1 || difficulty == 2) {
+            this.difficulty ++;
+        }else {
+            difficulty = 1;
+        }
+    }
+
+    public void setIsInventorySort() {
+        if (this.isInventorySort) {
+            this.isInventorySort = false;
+        } else {
+            this.isInventorySort = true;
+        }
+    }
+
+    public void setIsChopSort() {
+        if (this.isChopSort) {
+            this.isChopSort = false;
+        } else {
+            this.isChopSort = true;
+        }
     }
 
     public Item.Armor getArmor() {
@@ -447,11 +498,11 @@ public class Person implements Serializable{
     }
     // Метод открывает инвентарь и предлагает действия с предметами
 
-    public void openInventary(boolean isInventorySort) {
+    public void openInventary() {
 
         boolean check = true;
         while (check) {
-            lookInventory(isInventorySort);
+            lookInventory();
 
             System.out.println("Выберите предмет \nлюбая буква или символ для выхода");
             Scanner scanner = new Scanner(System.in);
@@ -814,7 +865,7 @@ public class Person implements Serializable{
     }
     // Метод для вывода содержимого инвентаря
 
-    public void lookInventory(boolean isInventorySort) {
+    public void lookInventory() {
         int count = 0;
         int schet = 0;
 
@@ -897,9 +948,9 @@ public class Person implements Serializable{
         System.out.println();
     }
 
-    public void move(int i) {
-        if (i <= this.strength && this.isAlive) {
-            this.strength -= i;
+    public void move() {
+        if (difficulty <= this.strength && this.isAlive) {
+            this.strength -= difficulty;
             if (this.strength <= 0) {
                 this.isAlive = false;
                 Main.clearConsole();
@@ -955,6 +1006,8 @@ public class Person implements Serializable{
             super.race = "Человек";
             inventory.add(getWeapon());
             inventory.add(getArmor());
+
+
 
         }
     }
