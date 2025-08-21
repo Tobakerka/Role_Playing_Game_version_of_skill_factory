@@ -36,6 +36,7 @@ public class Fight extends Thread {
                 Main.clearConsole();
                 System.out.println("Игрок: " + player.toInfo() + "\n\n" + "Против:\n\n" + "Монстр: " + monster.toInfo());
 
+                int count = 1;
                 switch (Main.checkInt("Выберите действие:\n1. Атаковать\n2. Попробовать сбежать (- 20 Энергии)\n3. Открыть инвентарь", 3)) {
 
                     case 1: {
@@ -44,9 +45,10 @@ public class Fight extends Thread {
                         while (player.getIsAlive() && monster.getIsAlive()) {
 
                             player.move();
+                            System.out.println("Ход № " + count++);
                             if (player.getIsAlive()) {
 
-                                System.out.println("Игрок: " + player.getName() + " HP: " + player.getHealth() + " Энергия: " + player.getInfoEnergy() + " " + "Противник: " + monster.getName() + " HP: " + monster.getHealth());
+                                System.out.println("Статистика: " + player.getName() + " HP: " + player.getHealth() + " Энергия: " + player.getInfoEnergy() + " | " + monster.getName() + " HP: " + monster.getHealth());
                                 tempAgility = player.getAgility() - monster.getAgility();
 
                                 Random random = new Random();
@@ -77,7 +79,6 @@ public class Fight extends Thread {
                                             }
                                             System.out.println("Игрок " + player.getName() + " наносит " + monster.getName() + " " + tempKrit + " урона!\n");
                                             monster.giveAttack(tempKrit);
-                                            System.out.println();
                                         } else {
                                             tempKrit = player.getPower() + dopDamage + player.getWeapon().getDamage();
                                             tempKrit = tempKrit - monster.getArmor().getDefense();
@@ -135,6 +136,11 @@ public class Fight extends Thread {
                                 }
                             } else {
                                 System.out.println("Ваш персонаж погиб.");
+                            }
+                            try {
+                                sleep(1000);
+                            } catch (InterruptedException e) {
+                                new CustomException("Ошибка при ожидании");
                             }
                             System.out.println();
                         }
