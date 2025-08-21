@@ -5,17 +5,21 @@ public class Item implements Serializable {
     String name;
     int price;
     int level;
+    double weight;
 
     public Item(String name, int price, int level) {
 
         this.name = name;
         this.price = price;
-        String type;
         this.level = level;
     }
 
     public void getInfo() {
         System.out.println(name + " " + price + " " + level);
+    }
+
+    public double getWeight() {
+        return weight;
     }
 
     public String getType() {
@@ -43,10 +47,11 @@ public class Item implements Serializable {
         int power;
         String type = "Еда";
 
-        public Food(String name, int price, int power, int level) {
+        public Food(String name, int price, int power, int level, double weight) {
 
             super(name, price, level);
             this.power = power;
+            super.weight = weight;
         }
 
         // Метод передает информацию о еде
@@ -65,7 +70,8 @@ public class Item implements Serializable {
         public void getInfo() {
             System.out.println(type + ": " + name + "\n" +
                     "Цена: " + price + "\n" +
-                    "Восстанавливает: " + power + " выносливости\n");
+                    "Восстанавливает: " + power + " выносливости\n" +
+                    "Вес: " + weight + "\n");
         }
 
 
@@ -84,12 +90,13 @@ public class Item implements Serializable {
         String typeEffect;
         String type = "Зелье";
 
-        public Potion(String name, String type, int price, String typeEffect, int power, int level) {
+        public Potion(String name, String type, int price, String typeEffect, int power, int level, double weight) {
 
             super(name, price, level);
             this.type = type;
             this.typeEffect = typeEffect;
             this.power = power;
+            super.weight = weight;
         }
 
         // Метод передает информацию о зелье
@@ -108,7 +115,8 @@ public class Item implements Serializable {
             }
             return  type + ": " + typeEffect + " " +
                     "Цена: " + price + "\n" +
-                    "Восстанавливает: " + power + " " + tempText + "\n";
+                    "Восстанавливает: " + power + " " + tempText + "\n" +
+                    "Вес: " + weight + "\n";
         }
 
 
@@ -128,7 +136,8 @@ public class Item implements Serializable {
         public void getInfo() {
             System.out.println(type + ": " + typeEffect + " " +
                     "Цена: " + price + "\n" +
-                    "Восстанавливает: " + power + " " + "\n");
+                    "Восстанавливает: " + power + " " + "\n" +
+                    "Вес: " + weight + "\n");
         }
     }
 
@@ -140,7 +149,7 @@ public class Item implements Serializable {
         private int powerEffect;
         private int levelChange; // Уровень заточки
 
-        public Weapon(String name, int price, int damage, int level, String typeEffect, int powerEffect, int levelChange) {
+        public Weapon(String name, int price, int damage, int level, String typeEffect, int powerEffect, int levelChange, double weight) {
 
             super(name, price, level);
             this.damage = damage;
@@ -148,6 +157,7 @@ public class Item implements Serializable {
             this.typeEffect = typeEffect;
             this.powerEffect = powerEffect;
             this.levelChange = levelChange;
+            super.weight = weight;
         }
 
         public int getLevelChange() {
@@ -167,6 +177,7 @@ public class Item implements Serializable {
                     "\tУровень: " + level + "\n" +
                     "\tЦена: " + price + "\n" +
                     "\tУрон: " + damage + "\n" +
+                    "\tВес: " + weight + "\n" +
                     "\tУровень заточки: " + levelChange + "\n";
             if (!typeEffect.equals("")) {
                 tempText += "\tЭффект: " + typeEffect + "\n" + "\tСила эффекта: " + powerEffect + "\n";
@@ -186,6 +197,7 @@ public class Item implements Serializable {
                     "\tУровень: " + level + "\n" +
                     "\tЦена: " + price + "\n" +
                     "\tУрон: " + damage + "\n" +
+                    "\tВес: " + weight + "\n" +
                     "\tУровень заточки: " + levelChange + "\n";
             if (!typeEffect.equals("")) {
                 tempText += "\tЭффект: " + typeEffect + "\n" + "\tСила эффекта: " + powerEffect + "\n";
@@ -239,11 +251,12 @@ public class Item implements Serializable {
         String type = "Броня";
         int levelChange;
 
-        public Armor(String name, int price, int defense, int level, int levelChange) {
+        public Armor(String name, int price, int defense, int level, int levelChange, double weight) {
 
             super(name, price, level);
             this.defense = defense;
             this.levelChange = levelChange;
+            super.weight = weight;
 
         }
 
@@ -264,6 +277,7 @@ public class Item implements Serializable {
                     "\tУровень: " + level + "\n" +
                     "\tЦена: " + price + "\n" +
                     "\tЗащита: " + defense + "\n" +
+                    "\tВес: " + weight + "\n" +
                     "\tУровень заточки: " + levelChange + "\n";
         }
 
@@ -280,6 +294,7 @@ public class Item implements Serializable {
                     "\tУровень: " + level + "\n" +
                     "\tЦена: " + price + "\n" +
                     "\tЗащита: " + defense + "\n\n" +
+                    "\tВес: " + weight + "\n" +
                     "\tУровень заточки: " + levelChange + "\n");
         }
 

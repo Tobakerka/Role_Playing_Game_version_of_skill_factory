@@ -20,6 +20,8 @@ public class Person implements Serializable{
     private boolean isChopSort;
     private boolean isInventorySort;
     private int difficulty; // сложность игры. Для каждого персонажа свой уровень сложности.
+    private double maxWeight; // Вес, который можно взять с собой
+    private double weight; // Текущий вес
 
     // Возможные уязвимости
     private boolean vulnerabilityOfFire;
@@ -84,6 +86,15 @@ public class Person implements Serializable{
 
         return levelUpThreshold;
     }
+
+    public double getMaxWeight (){
+        return maxWeight;
+    }
+
+    public double getWeight (){
+        return weight;
+    }
+
     public boolean getIsChopSort() {
         return isChopSort;
     }
@@ -127,7 +138,7 @@ public class Person implements Serializable{
     public Item.Weapon getWeapon() {
 
         if (weapon.equals(null)) {
-            return new Item.Weapon("Пусто", 0, 0, 0, "", 0, 0);
+            return new Item.Weapon("Пусто", 0, 0, 0, "", 0, 0, 0);
         } else {
             return weapon;
         }
@@ -172,7 +183,7 @@ public class Person implements Serializable{
     public Item.Armor getArmor() {
 
         if (armor.equals(null)) {
-            return new Item.Armor("Пусто", 0, 0, 0, 0);
+            return new Item.Armor("Пусто", 0, 0, 0, 0, 0);
         }
         return armor;
     }
@@ -532,13 +543,13 @@ public class Person implements Serializable{
                             String tempWeapon = scannerWeapon.nextLine();
                             switch (tempWeapon) {
                                 case "1": {
-                                    weapon = new Item.Weapon("Пусто", 0, 0, 0, "", 0, 0);
+                                    weapon = new Item.Weapon("Пусто", 0, 0, 0, "", 0, 0, 0);
                                     Main.clearConsole();
                                     System.out.println("Оружие снято");
                                     break;
                                 }
                                 case "2": {
-                                    weapon = new Item.Weapon("Пусто", 0, 0, 0, "", 0, 0);
+                                    weapon = new Item.Weapon("Пусто", 0, 0, 0, "", 0, 0, 0);
                                     removeItem(inventory.get(tempInt));
                                     Main.clearConsole();
                                     System.out.println("Оружие удалено");
@@ -601,13 +612,13 @@ public class Person implements Serializable{
                             String tempArmor = scannerArmor.nextLine();
                             switch (tempArmor) {
                                 case "1": {
-                                    armor = new Item.Armor("Пусто", 0, 0, 0, 0);
+                                    armor = new Item.Armor("Пусто", 0, 0, 0, 0, 0);
                                     Main.clearConsole();
                                     System.out.println("Броня снята");
                                     break;
                                 }
                                 case "2": {
-                                    armor = new Item.Armor("Пусто", 0, 0, 0, 0);
+                                    armor = new Item.Armor("Пусто", 0, 0, 0, 0, 0);
                                     removeItem(inventory.get(tempInt));
                                     Main.clearConsole();
                                     System.out.println("Броня удалена");
@@ -650,7 +661,7 @@ public class Person implements Serializable{
                                     break;
                                 }
                                 case "2": {
-                                    armor = new Item.Armor("Пусто", 0, 0, 0, 0);
+                                    armor = new Item.Armor("Пусто", 0, 0, 0, 0, 0);
                                     removeItem(inventory.get(tempInt));
                                     Main.clearConsole();
                                     System.out.println("Броня удалена");
@@ -777,6 +788,8 @@ public class Person implements Serializable{
             System.out.println("Сила: " + power);
             System.out.println("Ловкость: " + agility);
             System.out.println("Золото: " + gold);
+            System.out.println("Опыт: " + exp + " / " + levelUpThreshold);
+            System.out.println("Вес: " + weight + " / " + maxWeight);
             System.out.println();
             showWeapon();
             showArmor();
@@ -1017,6 +1030,18 @@ public class Person implements Serializable{
         }
     }
 
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    public void addWeight(double weight) {
+        this.weight += weight;
+    }
+
+    public void setCountInventory(int i) {
+        countInventory = i;
+    }
+
     // Внутренние статические классы:
     // Класс для игрока
     public static class Human extends Person implements Serializable{
@@ -1035,13 +1060,15 @@ public class Person implements Serializable{
             super.level = 1;
             super.exp = 0L;
             super.levelUpThreshold = 100L;
-            super.setWeapon(new Item.Weapon("Кинжал", 10, 10, 1, "", 0, 1));
-            super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1, 1));
+            super.setWeapon(new Item.Weapon("Кинжал", 10, 10, 1, "", 0, 1, 0.4));
+            super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1, 1, 0.5));
             super.isAlive = true;
-            super.countInventory = 5;
+            super.countInventory = 10;
             super.race = "Человек";
             inventory.add(getWeapon());
             inventory.add(getArmor());
+            super.maxWeight = 20;
+            super.weight = 0;
 
 
 
@@ -1049,7 +1076,7 @@ public class Person implements Serializable{
     }
 
     // Класс для игрока
-    public static class Elf extends Person implements Serializable {
+    public static class Elf extends Person implements Serializable{
 
         public Elf(String name) {
 
@@ -1065,13 +1092,15 @@ public class Person implements Serializable{
             super.level = 1;
             super.exp = 0L;
             super.levelUpThreshold = 100L;
-            super.setWeapon(new Item.Weapon("Лук", 10, 10, 1, "", 0, 1));
-            super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1, 1));
+            super.setWeapon(new Item.Weapon("Лук", 10, 10, 1, "", 0, 1, 2));
+            super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1, 1, 0.5));
             super.isAlive = true;
-            super.countInventory = 20;
+            super.countInventory = 10;
             super.race = "Эльф";
             inventory.add(getWeapon());
             inventory.add(getArmor());
+            super.maxWeight = 20;
+            super.weight = 0;
         }
     }
 

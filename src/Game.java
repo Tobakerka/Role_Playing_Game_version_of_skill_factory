@@ -98,7 +98,7 @@ public class Game {
             weapon = (Item.Weapon) spawnWeapon(level);
         } else {
 
-            weapon = new Item.Weapon("Пусто", 0, 0, 0, "",0,0);
+            weapon = new Item.Weapon("Пусто", 0, 0, 0, "",0,0, 0);
         }
 
         if (isArmor) {
@@ -106,7 +106,7 @@ public class Game {
             armor = (Item.Armor)spawnArmor(level);
         } else {
 
-            armor = new Item.Armor("Пусто", 0, 0,0,0);
+            armor = new Item.Armor("Пусто", 0, 0,0,0, 0);
         }
 
         // Проверка будет ли у персонажа деньги
@@ -451,6 +451,13 @@ public class Game {
         Main.clearConsole();
         while (true) {
 
+            player.setWeight(0);
+            for (Item item : player.getInventory()) {
+                player.addWeight(item.getWeight());
+            }
+            if (player.getWeight() >= player.getMaxWeight()) {
+                System.err.println("Вы превысили максимальный вес инвентаря!\nВы не можете двигаться");
+            }
             // Отображение доступных действий
             System.out.println("Уровень: " + player.getLevel() + "\n");
             System.out.println("Здоровье: " + player.getHealth());
@@ -470,12 +477,20 @@ public class Game {
                     break;
                 }
                 case 2: {
+                    if (player.getWeight() >= player.getMaxWeight()) {
+                        System.err.println("Вы превысили максимальный вес инвентаря!\nВы не можете двигаться");
+                        break;
+                    }
                     Main.clearConsole();
                     player.move();
                     magazine.menuMagazine(player);
                     break;
                 }
                 case 3: {
+                    if (player.getWeight() >= player.getMaxWeight()) {
+                        System.err.println("Вы превысили максимальный вес инвентаря!\nВы не можете двигаться");
+                        break;
+                    }
                     Main.clearConsole();
                     Fight fight = new Fight(player);
                     Thread thread = new Thread(fight);
@@ -491,12 +506,20 @@ public class Game {
                     break;
                 }
                 case 4: {
+                    if (player.getWeight() >= player.getMaxWeight()) {
+                        System.err.println("Вы превысили максимальный вес инвентаря!\nВы не можете двигаться");
+                        break;
+                    }
                     Main.clearConsole();
                     player.move();
                     goToTheBlacksmith(player);
                     break;
                 }
                 case 5: {
+                    if (player.getWeight() >= player.getMaxWeight()) {
+                        System.err.println("Вы превысили максимальный вес инвентаря!\nВы не можете двигаться");
+                        break;
+                    }
                     Main.clearConsole();
                     toTakeADreak(player, magazine);
                     break;
@@ -1201,20 +1224,24 @@ public class Game {
         String typeEffect = "";
         int powerEffect = 3;
         int levelCharacter = 1;
+        double weight = 0;
 
         // Случайным образом выбирается название оружия
         Random random = new Random();
         switch (random.nextInt(3))  {
             case 0: {
                 name = "Кинжал";
+                weight = 0.4;
                 break;
             }
             case 1: {
                 name = "Посох";
+                weight = 3;
                 break;
             }
             case 2: {
                 name = "Лук";
+                weight = 2.7;
                 break;
             }
         }
@@ -1255,7 +1282,7 @@ public class Game {
             }
         }
 
-        return new Item.Weapon(name, price, damage, level, typeEffect, powerEffect, levelCharacter);
+        return new Item.Weapon(name, price, damage, level, typeEffect, powerEffect, levelCharacter, weight);
 
     }
 
@@ -1268,6 +1295,7 @@ public class Game {
         int price = 10;
         int defence = 2;
         int levelCharacter = 1;
+        double weight = 0;
 
         // Определение мощьности и цены брони
         for (int i = 0; i < level; i++) {
@@ -1282,20 +1310,26 @@ public class Game {
             case 0: {
                 name = "Кожаная броня";
                 price += Math.round(price * 0.05);
+                defence += Math.round(defence * 0.05);
+                weight = 0.5;
                 break;
             }
             case 1: {
                 name = "Железная броня";
                 price += Math.round(price * 0.08);
+                defence += Math.round(defence * 0.08);
+                weight = 2.5;
                 break;
             }
             case 2: {
                 name = "Стальной броня";
                 price += Math.round(price * 0.1);
+                defence += Math.round(defence * 0.1);
+                weight = 5;
                 break;
             }
         }
-        return new Item.Armor(name, price, defence, level, levelCharacter);
+        return new Item.Armor(name, price, defence, level, levelCharacter, weight);
     }
 
     // Метод для генерации зелий
@@ -1307,6 +1341,7 @@ public class Game {
         int price = 10;
         String typeEffect = "";
         int power = 10;
+        double weight = 0.3;
 
         // Случайным образом выбирается тип зелья. Может быть лечебное или выносливость
         Random random = new Random();
@@ -1331,7 +1366,7 @@ public class Game {
             }
         }
 
-        return new Item.Potion(name, "Зелье", price, typeEffect, power, level);
+        return new Item.Potion(name, "Зелье", price, typeEffect, power, level, weight);
     }
 
     // Метод для генерации еды
@@ -1341,6 +1376,7 @@ public class Game {
         String name = "";
         int price = 10;
         int power = 10;
+        double weight = 0;
 
         // Случайным образом выбирается название и тип еды + от типа еды зависит сколько сил будет прибавлять
         Random random = new Random();
@@ -1350,36 +1386,43 @@ public class Game {
             case 0: {
                 name = "Яблоко";
                 power += 1;
+                weight = 0.2;
                 break;
             }
             case 1: {
                 name = "Хлеб";
                 power += 2;
+                weight = 0.3;
                 break;
             }
             case 2: {
                 name = "Мясо";
                 power += 3;
+                weight = 0.5;
                 break;
             }
             case 3: {
                 name = "Сыр";
                 power += 4;
+                weight = 0.7;
                 break;
             }
             case 4: {
                 name = "Молоко";
                 power += 5;
+                weight = 1;
                 break;
             }
             case 5: {
                 name = "Картошка";
                 power += 6;
+                weight = 0.2;
                 break;
             }
             case 6: {
                 name = "Суп";
                 power += 7;
+                weight = 0.4;
                 break;
             }
         }
@@ -1391,6 +1434,6 @@ public class Game {
                 power += Math.round(power * 0.05);
             }
         }
-        return new Item.Food(name, price, power, level);
+        return new Item.Food(name, price, power, level, weight);
     }
 }
