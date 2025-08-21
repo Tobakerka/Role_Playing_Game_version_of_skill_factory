@@ -19,7 +19,7 @@ public class Person implements Serializable{
     private String race;
     private boolean isChopSort;
     private boolean isInventorySort;
-    private int difficulty;
+    private int difficulty; // сложность игры. Для каждого персонажа свой уровень сложности.
 
     // Возможные уязвимости
     private boolean vulnerabilityOfFire;

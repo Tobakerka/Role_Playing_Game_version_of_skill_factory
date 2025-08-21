@@ -853,16 +853,17 @@ public class Game {
                                     Main.clearConsole();
 
                                     System.out.println("Вы хотите зачаровать " + itemWeaponOld.getName() + "\n");
-                                    System.out.println("Стоимость зачарования: " + (itemWeaponOld.getPrice()) * 3);
+                                    System.out.println("Стоимость зачарования: " + (itemWeaponOld.getPrice() * 3));
                                     switch (Main.checkInt("1 - Да\n2 - Нет", 2)) {
                                         case 1: {
                                             Main.clearConsole();
                                             Random randomChar = new Random();
                                             int chanceChar = randomChar.nextInt(5);
-                                            if (player.getGold() >= (itemWeaponOld.getPrice()) * 3) {
+                                            if (player.getGold() >= (itemWeaponOld.getPrice() * 3)) {
                                                 int tempPowerEffect = 5 + randomChar.nextInt(100);
                                                 switch (chanceChar) {
                                                     case 0: {
+
                                                         Main.clearConsole();
                                                         System.out.println("Зачарование прошло неудачно!");
                                                         System.out.println("Вы потеряли " + itemWeaponOld.print() + (itemWeaponOld.getPrice() * 3) + " золота!");
@@ -874,6 +875,7 @@ public class Game {
                                                         break;
                                                     }
                                                     case 1: {
+
                                                         Main.clearConsole();
                                                         System.out.println("Зачарование прошло успешно!");
                                                         if (tempPowerEffect <= 25) {
@@ -906,6 +908,7 @@ public class Game {
                                                         break;
                                                     }
                                                     case 2: {
+
                                                         Main.clearConsole();
                                                         System.out.println("Зачарование прошло успешно!");
                                                         if (tempPowerEffect <= 25) {
@@ -939,6 +942,7 @@ public class Game {
                                                         break;
                                                     }
                                                     case 3: {
+
                                                         Main.clearConsole();
                                                         System.out.println("Зачарование прошло успешно!");
                                                         if (tempPowerEffect <= 25) {
@@ -972,6 +976,7 @@ public class Game {
                                                         break;
                                                     }
                                                     case 4: {
+
                                                         Main.clearConsole();
                                                         System.out.println("Зачарование прошло успешно!");
                                                         if (tempPowerEffect <= 25) {
