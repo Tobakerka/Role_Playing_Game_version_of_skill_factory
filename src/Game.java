@@ -200,215 +200,212 @@ public class Game {
     }
 
     public void mainMenu() {
-        Main.clearConsole();
         Person player = new Person("");
         Magazine magazine = new Magazine();
         String text = "";
         File file = new File("C:\\SaveToProgramOfTobakerka\\SaveOfGameRole.ser");
 
-            if (file.exists()) {
+        if (file.exists()) {
 
-                try (FileInputStream fis = new FileInputStream(file)) {
-                    byte[] buffer = new byte[1024]; // буфер для чтения
-                    int bytesRead;
-                    StringBuilder content = new StringBuilder();
+            try (FileInputStream fis = new FileInputStream(file)) {
+                byte[] buffer = new byte[1024]; // буфер для чтения
+                int bytesRead;
+                StringBuilder content = new StringBuilder();
 
-                    while ((bytesRead = fis.read(buffer)) != -1) {
-                        // Можно обработать байты, например, преобразовать в строку
-                        for (int i = 0; i < bytesRead; i++) {
-                            content.append((char) buffer[i]);
-                            isSave = true;
-                        }
+                while ((bytesRead = fis.read(buffer)) != -1) {
+                    // Можно обработать байты, например, преобразовать в строку
+                    for (int i = 0; i < bytesRead; i++) {
+                        content.append((char) buffer[i]);
+                        isSave = true;
                     }
-                    byte[] bytes = content.toString().getBytes();
-                } catch (FileNotFoundException e) {
-                    Main.clearConsole();
-                    new CustomException("Ошибка в файле сохранения!");
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException ex) {
-                        Main.clearConsole();
-                        new CustomException("Ошибка при ожидании!");
-                    }
-                } catch (IOException e) {
-                    Main.clearConsole();
-                    System.err.println(e.getMessage() + "Файл сохранения поврежден!");
                 }
-                String sTemp;
-                int otvet = -1;
-
-                while (player.getIsAlive()) {
-
-                    if (isSave && isGameToPlay) {
-                        sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n3 - Загрузить игру\n4 - Настройки\n5 - Сохранить\n0 - Выйти из игры";
-                        otvet = Main.checkInt(sTemp, 5);
-                        switch (otvet) {
-                            case 1: {
-                                player = startNewGame();
-                                Main.clearConsole();
-                                magazine = new Magazine();
-                                magazine.spawnMagazine(player.getLevel());
-                                isGameToPlay = true;
-                                startGame(player, magazine);
-                                break;
-                            }
-                            case 2: {
-
-                                Main.clearConsole();
-                                continueGame(player, magazine);
-                                break;
-                            }
-                            case 3: {
-                                Main.clearConsole();
-                                player = Main.loadGame();
-                                isGameToPlay = true;
-                                break;
-                            }
-                            case 4: {
-                                Main.clearConsole();
-                                options(player);
-                                break;
-                            }
-                            case 5: {
-                                try {
-                                    isSave = Main.saveGame(player);
-                                } catch (CustomException e) {
-                                    System.err.println(e.getMessage());
-                                }
-                                break;
-                            }
-                            case 0: {
-                                Main.clearConsole();
-                                quitGame(player);
-                                break;
-                            }
-                            default: {
-
-                            }
-                        }
-                    } else if (!isSave && !isGameToPlay) {
-                        sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Настройки\n0 - Выйти из игры";
-                        otvet = Main.checkInt(sTemp, 2);
-                        switch (otvet) {
-
-                            case 1: {
-                                player = startNewGame();
-                                Magazine magazine1 = new Magazine();
-                                magazine = magazine1;
-                                magazine.spawnMagazine(player.getLevel());
-                                isGameToPlay = true;
-                                Main.clearConsole();
-                                startGame(player, magazine);
-                                break;
-                            }
-                            case 2: {
-                                Main.clearConsole();
-                                options(player);
-                                break;
-                            }
-                            case 0: {
-                                Main.clearConsole();
-                                quitGame(player);
-                                return;
-                            }
-                            default: {
-
-                            }
-                        }
-                    } else if (!isSave && isGameToPlay) {
-                        sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n3 - Настройки\n4 - Сохранить\n0 - Выйти из игры";
-                        otvet = Main.checkInt(sTemp, 4);
-                        switch (otvet) {
-                            case 1: {
-                                player = startNewGame();
-                                magazine = new Magazine();
-                                magazine.spawnMagazine(player.getLevel());
-                                isGameToPlay = true;
-                                Main.clearConsole();
-                                startGame(player, magazine);
-                                break;
-                            }
-                            case 2: {
-                                continueGame(player, magazine);
-                                break;
-                            }
-                            case 3: {
-                                options(player);
-                                break;
-                            }
-                            case 4: {
-                                try {
-                                    Main.saveGame(player);
-                                } catch (CustomException e) {
-                                    System.err.println(e.getMessage());
-                                }
-                                break;
-                            }
-                            case 0: {
-                                Main.clearConsole();
-                                isGameToPlay = false;
-                                quitGame(player);
-                                break;
-                            }
-                            default: {
-
-                            }
-                        }
-                    } else if (isSave && !isGameToPlay) {
-                        sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Загрузить игру\n3 - Настройки\n0 - Выйти из игры";
-                        otvet = Main.checkInt(sTemp, 3);
-                        switch (otvet) {
-                            case 1: {
-                                Main.clearConsole();
-                                player = startNewGame();
-                                magazine = new Magazine();
-                                magazine.spawnMagazine(player.getLevel());
-                                isGameToPlay = true;
-                                Main.clearConsole();
-                                startGame(player, magazine);
-                                break;
-                            }
-                            case 2: {
-                                Main.clearConsole();
-                                player = Main.loadGame();
-                                isGameToPlay = true;
-                                magazine.spawnMagazine(player.getLevel());
-                                break;
-                            }
-                            case 3: {
-                                Main.clearConsole();
-                                options(player);
-                                break;
-                            }
-                            case 0: {
-                                Main.clearConsole();
-                                quitGame(player);
-                                break;
-                            }
-                            default: {
-                                Main.clearConsole();
-                                System.err.println("Некорректный ввод!");
-                            }
-                        }
-                    }
-                    System.out.println();
-                }
-            } else {
+                byte[] bytes = content.toString().getBytes();
+            } catch (FileNotFoundException e) {
+                Main.clearConsole();
+                new CustomException("Ошибка в файле сохранения!");
                 try {
-                    File path = new File("C:\\SaveToProgramOfTobakerka");
-                    File save = new File("C:\\SaveToProgramOfTobakerka\\SaveOfGameRole.ser");
-                    path.mkdir();
-                    save.createNewFile();
+                    sleep(1000);
+                } catch (InterruptedException ex) {
                     Main.clearConsole();
-                    System.out.println("Файл сохранения создан! сохрание находится по пути: " + save.getAbsolutePath());
-                } catch (Exception e) {
-                    Main.clearConsole();
-                    System.out.println("Ошибка при создании файла сохранения!");
+                    new CustomException("Ошибка при ожидании!");
                 }
+            } catch (IOException e) {
+                Main.clearConsole();
+                System.err.println(e.getMessage() + "Файл сохранения поврежден!");
             }
+            String sTemp;
+            int otvet = -1;
 
+            while (player.getIsAlive()) {
 
+                if (isSave && isGameToPlay) {
+                    sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n3 - Загрузить игру\n4 - Настройки\n5 - Сохранить\n0 - Выйти из игры";
+                    otvet = Main.checkInt(sTemp, 5);
+                    switch (otvet) {
+                        case 1: {
+                            player = startNewGame();
+                            Main.clearConsole();
+                            magazine = new Magazine();
+                            magazine.spawnMagazine(player.getLevel());
+                            isGameToPlay = true;
+                            startGame(player, magazine);
+                            break;
+                        }
+                        case 2: {
 
+                            Main.clearConsole();
+                            continueGame(player, magazine);
+                            break;
+                        }
+                        case 3: {
+                            Main.clearConsole();
+                            player = Main.loadGame();
+                            isGameToPlay = true;
+                            break;
+                        }
+                        case 4: {
+                            Main.clearConsole();
+                            options(player);
+                            break;
+                        }
+                        case 5: {
+                            try {
+                                isSave = Main.saveGame(player);
+                            } catch (CustomException e) {
+                                System.err.println(e.getMessage());
+                            }
+                            break;
+                        }
+                        case 0: {
+                            Main.clearConsole();
+                            quitGame(player);
+                            break;
+                        }
+                        default: {
+
+                        }
+                    }
+                } else if (!isSave && !isGameToPlay) {
+                    sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Настройки\n0 - Выйти из игры";
+                    otvet = Main.checkInt(sTemp, 2);
+                    switch (otvet) {
+
+                        case 1: {
+                            player = startNewGame();
+                            Magazine magazine1 = new Magazine();
+                            magazine = magazine1;
+                            magazine.spawnMagazine(player.getLevel());
+                            isGameToPlay = true;
+                            Main.clearConsole();
+                            startGame(player, magazine);
+                            break;
+                        }
+                        case 2: {
+                            Main.clearConsole();
+                            options(player);
+                            break;
+                        }
+                        case 0: {
+                            Main.clearConsole();
+                            quitGame(player);
+                            return;
+                        }
+                        default: {
+
+                        }
+                    }
+                } else if (!isSave && isGameToPlay) {
+                    sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Продолжить игру\n3 - Настройки\n4 - Сохранить\n0 - Выйти из игры";
+                    otvet = Main.checkInt(sTemp, 4);
+                    switch (otvet) {
+                        case 1: {
+                            player = startNewGame();
+                            magazine = new Magazine();
+                            magazine.spawnMagazine(player.getLevel());
+                            isGameToPlay = true;
+                            Main.clearConsole();
+                            startGame(player, magazine);
+                            break;
+                        }
+                        case 2: {
+                            continueGame(player, magazine);
+                            break;
+                        }
+                        case 3: {
+                            options(player);
+                            break;
+                        }
+                        case 4: {
+                            try {
+                                Main.saveGame(player);
+                            } catch (CustomException e) {
+                                System.err.println(e.getMessage());
+                            }
+                            break;
+                        }
+                        case 0: {
+                            Main.clearConsole();
+                            isGameToPlay = false;
+                            quitGame(player);
+                            break;
+                        }
+                        default: {
+
+                        }
+                    }
+                } else if (isSave && !isGameToPlay) {
+                    sTemp = "Главное меню\n\n1 - Начать новую игру\n2 - Загрузить игру\n3 - Настройки\n0 - Выйти из игры";
+                    otvet = Main.checkInt(sTemp, 3);
+                    switch (otvet) {
+                        case 1: {
+                            Main.clearConsole();
+                            player = startNewGame();
+                            magazine = new Magazine();
+                            magazine.spawnMagazine(player.getLevel());
+                            isGameToPlay = true;
+                            Main.clearConsole();
+                            startGame(player, magazine);
+                            break;
+                        }
+                        case 2: {
+                            Main.clearConsole();
+                            player = Main.loadGame();
+                            isGameToPlay = true;
+                            magazine.spawnMagazine(player.getLevel());
+                            break;
+                        }
+                        case 3: {
+                            Main.clearConsole();
+                            options(player);
+                            break;
+                        }
+                        case 0: {
+                            Main.clearConsole();
+                            quitGame(player);
+                            break;
+                        }
+                        default: {
+                            Main.clearConsole();
+                            System.err.println("Некорректный ввод!");
+                        }
+                    }
+                }
+                System.out.println();
+            }
+        } else {
+
+            try {
+                File path = new File("C:\\SaveToProgramOfTobakerka");
+                File save = new File("C:\\SaveToProgramOfTobakerka\\SaveOfGameRole.ser");
+                path.mkdir();
+                save.createNewFile();
+                Main.clearConsole();
+                System.out.println("Файл сохранения создан! сохрание находится по пути: " + save.getAbsolutePath());
+            } catch (Exception e) {
+                Main.clearConsole();
+                System.out.println("Ошибка при создании файла сохранения!");
+            }
+        }
     }
 
     // Метод для создания новой игры
