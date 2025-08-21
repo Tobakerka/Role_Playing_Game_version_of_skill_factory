@@ -502,6 +502,7 @@ public class Person implements Serializable{
             strength = maxStrength;
             power += Math.round(power * 0.05);
             agility += Math.round(agility * 0.05);
+            maxWeight += Math.round(maxWeight * 0.05);
 
             levelUpThreshold += Math.round(levelUpThreshold * 0.05);
             System.out.println("Уровень повышен!" + " Текущий уровень: " + level);
@@ -1059,7 +1060,7 @@ public class Person implements Serializable{
             super.gold = 0;
             super.level = 1;
             super.exp = 0L;
-            super.levelUpThreshold = 100L;
+            super.levelUpThreshold = 1000L;
             super.setWeapon(new Item.Weapon("Кинжал", 10, 10, 1, "", 0, 1, 0.4));
             super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1, 1, 0.5));
             super.isAlive = true;
@@ -1091,7 +1092,7 @@ public class Person implements Serializable{
             super.gold = 0;
             super.level = 1;
             super.exp = 0L;
-            super.levelUpThreshold = 100L;
+            super.levelUpThreshold = 1000L;
             super.setWeapon(new Item.Weapon("Лук", 10, 10, 1, "", 0, 1, 2));
             super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1, 1, 0.5));
             super.isAlive = true;
