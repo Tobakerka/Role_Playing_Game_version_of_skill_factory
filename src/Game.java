@@ -671,11 +671,12 @@ public class Game {
                                             if (tempIntLevel > 0 && tempIntLevel <= 20) {
                                                 Item.Weapon weaponNew = (Item.Weapon) items.get(tempInt);
                                                 Item.Weapon weaponOld = (Item.Weapon) items.get(tempInt);
+                                                int countLevelUp = 0;
                                                 if (weaponNew.getLevelChange() + tempIntLevel <= 20) {
                                                     int tempPrice = weaponNew.getPrice();
                                                     while (tempIntLevel > 0) {
                                                         tempIntLevel--;
-                                                        weaponNew.levelUp();
+                                                        countLevelUp++;
                                                         tempPrice += weaponNew.getPrice();
                                                     }
                                                     Main.clearConsole();
@@ -690,7 +691,7 @@ public class Game {
                                                                 player.removeItem(weaponOld);
                                                                 if (player.getWeapon().equals(weaponNew)) {
                                                                     player.setWeapon(null);
-                                                                    weaponNew.levelUp();
+                                                                    weaponNew.levelUp(countLevelUp);
                                                                     itemNew = weaponNew;
                                                                     player.setWeapon(weaponNew);
                                                                     player.addInventory(itemNew);
@@ -738,15 +739,17 @@ public class Game {
                                         case 1: {
                                             Main.clearConsole();
                                             armor.getInfo();
+
                                             int tempIntLevel = Main.checkInt("Введите на сколько хотите прокачать: ", 19);
                                             if (tempIntLevel > 0 && tempIntLevel <= 20) {
+                                                int countLevelUp = 0;
                                                 Item.Armor armorNew = (Item.Armor) items.get(tempInt);
                                                 Item.Armor oldArmor = (Item.Armor) items.get(tempInt);
                                                 if (armorNew.getLevelChange() + tempIntLevel <= 20) {
                                                     int tempPrice = armorNew.getPrice();
                                                     while (tempIntLevel > 0) {
                                                         tempIntLevel--;
-                                                        armorNew.levelUp();
+                                                        countLevelUp++;
                                                         tempPrice += armorNew.getPrice();
                                                     }
                                                     Main.clearConsole();
@@ -760,7 +763,7 @@ public class Game {
                                                                 player.deliteGold(tempPrice);
                                                                 if (player.getArmor().equals(armorNew)) {
                                                                     player.setArmor(null);
-                                                                    armorNew.levelUp();
+                                                                    armorNew.levelUp(countLevelUp);
                                                                     player.setArmor(armorNew);
                                                                     player.removeItem(oldArmor);
                                                                     player.addInventory(armorNew);

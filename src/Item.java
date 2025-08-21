@@ -206,11 +206,13 @@ public class Item implements Serializable {
             return type;
         }
 
-        public void levelUp() {
+        public void levelUp(int countLevel) {
 
-            levelChange++;
-            price += price * 10 / 100;
-            damage += price * 10 / 100;
+            for (int i = 0; i < countLevel; i++) {
+                levelChange++;
+                price += price * 10 / 100;
+                damage += price * 10 / 100;
+            }
 
         }
 
@@ -265,10 +267,12 @@ public class Item implements Serializable {
                     "\tУровень заточки: " + levelChange + "\n";
         }
 
-        public void levelUp() {
-            levelChange++;
-            price += price * 10 / 100;
-            defense += price * 10 / 100;
+        public void levelUp(int countLevelUp) {
+            for (int i = 0; i < countLevelUp; i++) {
+                levelChange++;
+                price += price * 10 / 100;
+                defense += price * 10 / 100;
+            }
         }
         public void getInfo() {
             System.out.println(type + ": \n" +
