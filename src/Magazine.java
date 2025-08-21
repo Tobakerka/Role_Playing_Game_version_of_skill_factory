@@ -156,10 +156,17 @@ public class Magazine {
     public void menuMagazine(Person player) {
 
         while (true) {
+            int priceCount = 1000; // Цена покупки дополнительной ячейки
+            int i = 0;
+            for (i = 0; i < player.getCountInventory(); i++) {
+                i++;
+            }
+            priceCount = priceCount * i;
+            i = 0;
             System.out.printf("Магазин: \n\n1 - Купить | 2 - Продать | 3 - Выкупить | 4 - Купить дополнительную ячейку | 0 - Выйти\n\n");
             Scanner scanner = new Scanner(System.in);
             String tempString = scanner.nextLine();
-            int priceCount = 1000; // Цена покупки дополнительной ячейки
+
 
             switch (tempString) {
                 case "1" : {
@@ -183,16 +190,11 @@ public class Magazine {
                     return;
                 }
                 case "4" : {
-                    int i = 0;
-                    for (i = 0; i < player.getCountInventory(); i++) {
-                        i++;
-                    }
-                    priceCount = priceCount * i;
-                    i = 0;
+
                     switch (Main.checkInt("Цена покупки дополнительной ячейки: " + priceCount + " золота. \n1 - Купить | 2 - Выйти", 2)) {
                         case 1 : {
                             if (player.getGold() >= priceCount) {
-                                player.setCountInventory(player.getCountInventory() + 1);
+                                player.addCountInventory();
                                 player.deliteGold(priceCount);
                                 System.out.println("Вы купили дополнительную ячейку");
                             } else {

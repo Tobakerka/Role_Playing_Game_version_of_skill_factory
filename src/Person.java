@@ -1043,6 +1043,10 @@ public class Person implements Serializable{
         countInventory = i;
     }
 
+    public void addCountInventory() {
+        countInventory++;
+    }
+
     // Внутренние статические классы:
     // Класс для игрока
     public static class Human extends Person implements Serializable{
