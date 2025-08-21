@@ -1000,6 +1000,22 @@ public class Person implements Serializable{
         this.isAlive = isAlive;
     }
 
+    public void leve() {
+        if (20 <= this.strength && this.isAlive) {
+            this.strength -= 20;
+            if (this.strength <= 0) {
+                this.isAlive = false;
+                Main.clearConsole();
+                System.out.println("Вы погибли от усталости!");
+                System.out.println("Игра окончена");
+            } else {
+
+            }
+        } else {
+            System.out.println("Нет живых персонажей!");
+        }
+    }
+
     // Внутренние статические классы:
     // Класс для игрока
     public static class Human extends Person implements Serializable{

@@ -163,15 +163,16 @@ public class Fight extends Thread {
                     case 2: {
                         isFight = false;
                         Random randCheckLuck = new Random();
+                        player.leve();
                         if (randCheckLuck.nextInt(100) == 100) {
                             System.out.println("В попытке сбежать вы попали в засаду и были убиты!");
                             player.setHealth(0);
                             break;
                         }
-                        player.move();
                         Random randomLuck = new Random();
                         boolean isEscape = randomLuck.nextBoolean();
                         if (isEscape) {
+                            System.out.println("Вы успешно сбежали!");
                             break;
                         } else {
                             System.out.println("В попытке сбежать монстр смог нанести вам урон!");
