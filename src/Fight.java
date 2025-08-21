@@ -116,7 +116,7 @@ public class Fight extends Thread {
                                     System.out.println("Противник " + monster.getName() + " атакует!");
                                     int tempKrit;
 
-                                    if (randomKrit > 80) {
+                                    if (randomKrit > 90) {
                                         System.out.println("Критический удар!");
                                         tempKrit = (int) Math.round((monster.getPower() + monster.getWeapon().getDamage()) * 1.5);
                                         tempKrit = tempKrit - (player.getDefense() + player.getArmor().getDefense());
@@ -129,7 +129,7 @@ public class Fight extends Thread {
                                         }
                                         System.out.println("Противник " + monster.getName() + " наносит " + player.getName() + " " + tempKrit + " урона!");
                                         player.giveAttack(tempKrit);
-                                    } else if (randomKrit > 20 && randomKrit <= 80){
+                                    } else if (randomKrit > 10 && randomKrit <= 90){
                                         tempKrit = monster.getPower() + monster.getWeapon().getDamage();
                                         tempKrit = tempKrit - (player.getDefense() + player.getArmor().getDefense());
                                         if (tempKrit <= 0) {

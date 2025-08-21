@@ -347,10 +347,10 @@ public class Person implements Serializable{
 
         String temp = "";
         if (weapon != null) {
-            temp = " Оружие: " + weapon.getName() + "\n";
+            temp = "\tОружие: " + weapon.getName() + "\n";
         }
         if (armor != null) {
-            temp += " Броня: " + armor.getName() + "\n";
+            temp += "\tБроня: " + armor.getName() + "\n";
         }
 
         if (vulnerabilityOfFire) {
@@ -379,6 +379,7 @@ public class Person implements Serializable{
         }
 
         return "Имя: " + name + "\n" +
+                "Уровень: " + level + "\n" +
                 "Здоровье: " + health + "/" + maxHealth + "\n" +
                 "Сила: " + strength + "\n" +
                 "Сила атаки: " + power + "\n" + temp;
@@ -1037,7 +1038,7 @@ public class Person implements Serializable{
             super.setWeapon(new Item.Weapon("Кинжал", 10, 10, 1, "", 0, 1));
             super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1, 1));
             super.isAlive = true;
-            super.countInventory = 20;
+            super.countInventory = 5;
             super.race = "Человек";
             inventory.add(getWeapon());
             inventory.add(getArmor());

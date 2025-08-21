@@ -1110,20 +1110,36 @@ public class Game {
 
         for (Item item : loot) {
 
-            System.out.println("Добавить предмет + " + item.name + " в инвентарь? (y/n)");
-            Scanner scanner = new Scanner(System.in);
-            boolean check = true;
-            while (check) {
+            boolean checkInventoryFull = true;
+            while (checkInventoryFull) {
+                System.out.println("Добавить предмет + " + item.name + " в инвентарь? (y/n)");
+                Scanner scanner = new Scanner(System.in);
+
+
 
                 switch (scanner.next()) {
                     case "y": {
-                        player.addInventory(item);
-                        check = false;
-                        scanner = null;
+                        if (player.getInventory().size() != player.getCountInventory()) {
+                            player.addInventory(item);
+                            checkInventoryFull = false;
+                            scanner = null;
+                            break;
+                        } else {
+
+                            switch (Main.checkInt("Инвентарь заполнен!\n" + "открыть инвентарь?\n1 - Да\n0 - Нет", 1)) {
+                                case 1: {
+                                    player.openInventary();
+                                    break;
+                                }
+                                default: {
+                                }
+                            }
+
+                        }
                         break;
                     }
                     case "n": {
-                        check = false;
+                        checkInventoryFull = false;
                         scanner = null;
                         break;
                     }
