@@ -70,16 +70,13 @@ public class Game {
 
         // Поля будующего персонажа
         int maxHealth = 100;
-        int health = 100;
+        int health = maxHealth;
         int maxStrength = 100;
-        int strength = 100;
-        int power = 10;
-        int agility = 10;
+        int strength = maxStrength;
+        int defence = 2;
+        int power = 20;
+        int agility = 20;
         int gold = 0;
-
-        // Присваиваются максимально доступные жизнь и стамина.
-        health = maxHealth;
-        strength = maxStrength;
 
         // Присваиваются характеристики персонажа в зависимости от уровня
         for (int i = 0; i < level -1 ; i++) {
@@ -88,7 +85,12 @@ public class Game {
             maxStrength += Math.round(maxStrength * 0.05);
             power += Math.round(power * 0.05);
             agility += Math.round(agility * 0.05);
+            defence += Math.round(defence * 0.05);
         }
+
+        // Присваиваются максимально доступные жизнь и стамина.
+        health = maxHealth;
+        strength = maxStrength;
 
         // Если у персонажа будет оружие или броня, то запускается метод создания оружия или брони. Если их нет, то присваивается null
         if (isWeapon) {
@@ -123,10 +125,10 @@ public class Game {
         Random randomPerson = new Random();
         int tempCheckPerson = randomPerson.nextInt(4);
         switch (tempCheckPerson) {
-            case 0: return new Person.Skeleton("Скелет", maxHealth, power, agility, gold, level, weapon, armor );
-            case 1: return new Person.Goblin("Гоблин", maxHealth, power, agility, gold, level, weapon, armor);
-            case 2: return new Person.Zombie("Зомби", maxHealth, power, agility, gold, level,weapon, armor);
-            case 3: return new Person.Vampire("Вампир", maxHealth, power, agility, gold, level, weapon, armor);
+            case 0: return new Person.Skeleton("Скелет", maxHealth, health, power, agility, maxStrength,strength, defence, gold, level, weapon, armor);
+            case 1: return new Person.Goblin("Гоблин", maxHealth,  health, power, agility, maxStrength, strength, defence, gold, level, weapon, armor);
+            case 2: return new Person.Zombie("Зомби", maxHealth, health, power, agility, maxStrength, strength, defence, gold, level, weapon, armor);
+            case 3: return new Person.Vampire("Вампир", maxHealth, health, power, agility, maxStrength, strength, defence, gold, level, weapon, armor);
         }
         return null;
     }
@@ -564,7 +566,14 @@ public class Game {
     // Метод для отдыха и восстановления стамины
     private void toTakeADreak(Person player, Magazine magazine) {
         Main.clearConsole();
-        System.out.println("Вы отдохнули\n");
+        System.out.println("Вы отдыхаете\n");
+        try {
+            sleep(3000);
+        } catch (InterruptedException e) {
+            new CustomException("Ошибка при ожидании!");
+        }
+        Main.clearConsole();
+        System.out.println("Вы отдохнули\nТовары в магазине также обновились\n");
         player.setStrength(player.getMaxStrength());
         magazine.spawnMagazine(player.getLevel());
     }
@@ -611,7 +620,11 @@ public class Game {
                         sb.append("Твои вещи:\n");
                         sb.append("Оружие:\n");
                         for (Item.Weapon weapon : weapons) {
-                            sb.append(count + " - " + weapon.getName() + " " + weapon.getLevelChange() + " ур.\n");
+                            String equpWeapon = "";
+                            if (weapon.equals(player.getWeapon())) {
+                                equpWeapon = " - (надето)";
+                            }
+                            sb.append(count + " - " + weapon.getName() + " " + weapon.getLevelChange() + " ур." + equpWeapon + "\n");
                             count++;
                             if (count2 == 10) {
                                 count2 = 0;
@@ -622,7 +635,11 @@ public class Game {
                         sb.append("\n");
                         sb.append("Броня:\n");
                         for (Item.Armor armor : armors) {
-                            sb.append(count + " - " + armor.getName() + " " + armor.getLevelChange() + " ур.\n");
+                            String equpArmor = "";
+                            if (armor.equals(player.getArmor())) {
+                                equpArmor = " - (Надето)";
+                            }
+                            sb.append(count + " - " + armor.getName() + " " + armor.getLevelChange() + " ур." + equpArmor + "\n");
                             count++;
                             if (count2 == 10) {
                                 count2 = 0;
@@ -797,13 +814,17 @@ public class Game {
                     }
                 }
                 case 2: {
+                    String equpWeapon = "";
                     Main.clearConsole();
                     count = 0;
                     StringBuilder sbChar = new StringBuilder();
                     sbChar.append("Твои вещи:\n");
                     sbChar.append("Оружие:\n");
                     for (Item.Weapon weapon : weapons) {
-                        sbChar.append(count + " - " + weapon.getName() + " " + weapon.getLevelChange() + " ур.\n");
+                        if (weapon.equals(player.getWeapon())) {
+                            equpWeapon = " - (надето)";
+                        }
+                        sbChar.append(count + " - " + weapon.getName() + " " + weapon.getLevelChange() + " ур." + equpWeapon + "\n");
                         if (!weapon.getTypeEffect().equals("")) {
                             sbChar.append("Эффект: " + weapon.getTypeEffect() + "\n");
                         }
@@ -1224,7 +1245,7 @@ public class Game {
         int levelArmor = level;
         String name = "";
         int price = 10;
-        int defence = 10;
+        int defence = 2;
         int levelCharacter = 1;
 
         // Определение мощьности и цены брони

@@ -163,13 +163,13 @@ public class Item implements Serializable {
         public String print() {
 
             String tempText = type + ": \n" +
-                    "Название: " + name + "\n" +
-                    "Уровень: " + level + "\n" +
-                    "Цена: " + price + "\n" +
-                    "Урон: " + damage + "\n" +
-                    "Уровень заточки: " + levelChange + "\n";
+                    "\tНазвание: " + name + "\n" +
+                    "\tУровень: " + level + "\n" +
+                    "\tЦена: " + price + "\n" +
+                    "\tУрон: " + damage + "\n" +
+                    "\tУровень заточки: " + levelChange + "\n";
             if (!typeEffect.equals("")) {
-                tempText += "Эффект: " + typeEffect + "\n" + "Сила эффекта: " + powerEffect + "\n";
+                tempText += "\tЭффект: " + typeEffect + "\n" + "\tСила эффекта: " + powerEffect + "\n";
 
             } else {
                 tempText += "\n";
@@ -180,14 +180,15 @@ public class Item implements Serializable {
 
         public void getInfo() {
 
+            System.out.println("Информация о " + type + ": \n");
             String tempText = type + ": \n" +
-                    "Название: " + name + "\n" +
-                    "Уровень: " + level + "\n" +
-                    "Цена: " + price + "\n" +
-                    "Урон: " + damage + "\n" +
-                    "Уровень заточки: " + levelChange + "\n";
+                    "\tНазвание: " + name + "\n" +
+                    "\tУровень: " + level + "\n" +
+                    "\tЦена: " + price + "\n" +
+                    "\tУрон: " + damage + "\n" +
+                    "\tУровень заточки: " + levelChange + "\n";
             if (!typeEffect.equals("")) {
-                tempText += "Эффект: " + typeEffect + "\n" + "Сила эффекта: " + powerEffect + "\n";
+                tempText += "\tЭффект: " + typeEffect + "\n" + "\tСила эффекта: " + powerEffect + "\n";
 
             } else {
                 tempText += "\n";
@@ -257,11 +258,11 @@ public class Item implements Serializable {
         public String print() {
 
             return type + ": \n" +
-                    "Название: " + name + "\n" +
-                    "Уровень: " + level + "\n" +
-                    "Цена: " + price + "\n" +
-                    "Защита: " + defense + "\n" +
-                    "Уровень заточки: " + levelChange + "\n";
+                    "\tНазвание: " + name + "\n" +
+                    "\tУровень: " + level + "\n" +
+                    "\tЦена: " + price + "\n" +
+                    "\tЗащита: " + defense + "\n" +
+                    "\tУровень заточки: " + levelChange + "\n";
         }
 
         public void levelUp() {
@@ -271,11 +272,11 @@ public class Item implements Serializable {
         }
         public void getInfo() {
             System.out.println(type + ": \n" +
-                    "Название: " + name + "\n" +
-                    "Уровень: " + level + "\n" +
-                    "Цена: " + price + "\n" +
-                    "Защита: " + defense + "\n\n" +
-                    "Уровень заточки: " + levelChange + "\n");
+                    "\tНазвание: " + name + "\n" +
+                    "\tУровень: " + level + "\n" +
+                    "\tЦена: " + price + "\n" +
+                    "\tЗащита: " + defense + "\n\n" +
+                    "\tУровень заточки: " + levelChange + "\n");
         }
 
 

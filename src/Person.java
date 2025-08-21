@@ -14,6 +14,7 @@ public class Person implements Serializable{
     private long exp;
     private int maxStrength;
     private int strength;
+    private int defense; // Защита
     private boolean isAlive;
     private String race;
     private boolean isChopSort;
@@ -42,6 +43,7 @@ public class Person implements Serializable{
         this.name = name;
         maxStrength = 100;
         strength = 100;
+        defense = 20;
         isAlive = true;
         Item.Weapon weapon = null;
         Item.Armor armor = null;
@@ -56,10 +58,10 @@ public class Person implements Serializable{
 
     // Конструктор для удобного создания противника для процедурной генерации
 
-    public Person(String name, int maxHealth, int power, int agility, int gold, Item.Weapon weapon, Item.Armor armor) {
+    public Person(String name, double maxHealth, double health, int power, int agility, int maxStrength, int strength, int defense, int gold, int level, Item.Weapon weapon, Item.Armor armor) {
         this.name = name;
         this.maxHealth = maxHealth;
-        this.health = maxHealth;
+        this.health = health;
         this.power = power;
         this.agility = agility;
         this.gold = gold;
@@ -67,7 +69,9 @@ public class Person implements Serializable{
         this.armor = armor;
         this.isAlive = true;
         this.countInventory = 20;
-        this.strength = 100;
+        this.maxStrength = maxStrength;
+        this.strength = strength;
+        this.defense = defense;
         inventory.add(weapon);
         inventory.add(armor);
         isChopSort = false;
@@ -114,6 +118,10 @@ public class Person implements Serializable{
         } else {
             System.out.println("Нельзя установить значение меньше максимального");
         }
+    }
+
+    public int getDefense() {
+        return defense;
     }
 
     public Item.Weapon getWeapon() {
@@ -886,6 +894,7 @@ public class Person implements Serializable{
 
             for (Item item : inventory) {
 
+                String equip = "";
                 String tempName = item.getName();
                 if (item.getType().equals("Оружие")) {
                     Item.Weapon weapon = (Item.Weapon) item;
@@ -893,10 +902,17 @@ public class Person implements Serializable{
                     if (!weapon.getTypeEffect().equals("")) {
                         tempName +=  weapon.getTypeEffect() + " " + weapon.getPowerEffect() + "ед. ";
                     }
+
+                    if (weapon.equals(getWeapon())) {
+                        equip += " - (Надето)";
+                    }
                 }
                 if (item.getType().equals("Броня")) {
                     Item.Armor armor = (Item.Armor) item;
                     tempName += " " + armor.getLevel() + " Ур. " + armor.getLevelChange() + " точ. ";
+                    if (armor.equals(getArmor())) {
+                        equip += " - (Надета)";
+                    }
                 }
 
                 if (item.getType().equals("Зелье")) {
@@ -923,9 +939,9 @@ public class Person implements Serializable{
                 sb.append(count + ": " + tempName);
                 tempName = sb.toString();
                 if ( sb.length() > 25) {
-                    tempName = tempName.substring(0, 20) + "... " + item.getPrice() + " з.";
+                    tempName = tempName.substring(0, 20) + "... " + item.getPrice() + " з." + equip;
                 } else if (sb.length() <= 25) {
-                    sb.append(" " + item.getPrice() + " з.");
+                    sb.append(" " + item.getPrice() + " з." + equip);
                     while (sb.length() - 30 < 13) {
                         sb.append(" ");
                     }
@@ -993,8 +1009,11 @@ public class Person implements Serializable{
             super(name);
             super.maxHealth = 100;
             super.health = 100;
-            super.power = 10;
+            super.power = 20;
             super.agility = 10;
+            super.maxStrength = 100;
+            super.strength = 100;
+            super.defense = 2;
             super.gold = 0;
             super.level = 1;
             super.exp = 0L;
@@ -1020,8 +1039,11 @@ public class Person implements Serializable{
             super(name);
             super.maxHealth = 80;
             super.health = 80;
-            super.power = 8;
+            super.power = 20;
             super.agility = 15;
+            super.maxStrength = 100;
+            super.strength = 100;
+            super.defense = 2;
             super.gold = 0;
             super.level = 1;
             super.exp = 0L;
@@ -1039,9 +1061,9 @@ public class Person implements Serializable{
     // Класс противника
     public static class Skeleton extends Person {
 
-        public Skeleton(String name, int maxHealth, int power, int agility, int gold, int level, Item.Weapon weapon, Item.Armor armor) {
+        public Skeleton(String name, int maxHealth,int health, int power, int agility, int maxStrength, int strength, int defense, int gold, int level, Item.Weapon weapon, Item.Armor armor) {
 
-            super(name, maxHealth, power, agility, gold, weapon, armor);
+            super(name, maxHealth, health, power, agility, maxStrength, strength, defense, gold, level, weapon, armor);
             super.level = level;
             super.exp = 0L;
             super.levelUpThreshold = 100L;
@@ -1063,9 +1085,9 @@ public class Person implements Serializable{
     // Класс противника
     public static class Zombie extends Person {
 
-        public Zombie(String name, int maxHealth, int power, int agility, int gold, int level, Item.Weapon weapon, Item.Armor armor) {
+        public Zombie(String name, double maxHealth,  double health, int power, int agility, int maxStrength, int strength, int defense, int gold, int level, Item.Weapon weapon, Item.Armor armor) {
 
-            super(name, maxHealth, power, agility, gold, weapon, armor);
+            super(name, maxHealth, health, power, agility, maxStrength, strength, defense, gold, level, weapon, armor);
             super.level = level;
             super.exp = 0L;
             super.levelUpThreshold = 100L;
@@ -1086,9 +1108,9 @@ public class Person implements Serializable{
     // Класс противника
     public static class Goblin extends Person {
 
-        public Goblin(String name, int maxHealth, int power, int agility, int gold, int level, Item.Weapon weapon, Item.Armor armor) {
+        public Goblin(String name, double maxHealth, double health, int power, int agility, int maxStrength, int strength, int defense, int gold, int level, Item.Weapon weapon, Item.Armor armor) {
 
-            super(name, maxHealth, power, agility, gold, weapon, armor);
+            super(name, maxHealth, health, power, agility, maxStrength, strength, defense, gold, level, weapon, armor);
             super.level = level;
             super.exp = 0L;
             super.levelUpThreshold = 100L;
@@ -1113,8 +1135,8 @@ public class Person implements Serializable{
             super(name);
         }
 
-        public Vampire(String name, int maxHealth, int power, int agility, int gold,int level, Item.Weapon weapon, Item.Armor armor) {
-            super(name, maxHealth, power, agility, gold, weapon, armor);
+        public Vampire(String name, double maxHealth, double health, int power, int agility, int maxStrength, int strength, int defense, int gold, int level, Item.Weapon weapon, Item.Armor armor) {
+            super(name, maxHealth, health, power, agility, maxStrength, strength, defense, gold, level, weapon, armor);
             super.level = level;
             super.exp = 0L;
             super.levelUpThreshold = 100L;
