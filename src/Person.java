@@ -268,11 +268,11 @@ public class Person implements Serializable{
     }
     private void setHealth(int power, double maxHealth) {
 
-        double temp = this.health + health;
+        double temp = this.health + power;
         if (temp > maxHealth) {
             this.health = maxHealth;
         } else {
-            this.health += temp;
+            this.health = temp;
         }
     }
 
