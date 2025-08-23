@@ -1271,25 +1271,30 @@ public class Game {
             case 0: {
                 typeEffect = "Огонь";
                 price += 25;
+                powerEffect += 25;
                 break;
             }
             case 1: {
                 typeEffect = "Ветер";
                 price += 25;
+                powerEffect += 25;
                 break;
             }
             case 2: {
                 typeEffect = "Вода";
                 price += 25;
+                powerEffect += 25;
                 break;
             }
             case 3: {
                 typeEffect = "Лед";
                 price += 25;
+                powerEffect += 25;
                 break;
             }
             case 4: {
                 typeEffect = "";
+                powerEffect = 0;
             }
         }
 
@@ -1297,6 +1302,8 @@ public class Game {
         for (int i = 0; i < level; i++) {
             damage += Math.round(damage * 0.1);
             price += Math.round(price * 0.1);
+            powerEffect += Math.round(powerEffect * 0.1);
+
             if (!typeEffect.equals("")) {
 
                 if (random.nextBoolean()) {
