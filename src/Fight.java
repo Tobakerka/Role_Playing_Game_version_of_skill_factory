@@ -164,7 +164,7 @@ public class Fight extends Thread {
                         isFight = false;
                         Random randCheckLuck = new Random();
                         player.leve();
-                        if (randCheckLuck.nextInt(100) == 100) {
+                        if (randCheckLuck.nextInt(100) < 5) {
                             System.out.println("В попытке сбежать вы попали в засаду и были убиты!");
                             player.setHealth(0);
                             break;

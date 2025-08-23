@@ -1014,18 +1014,12 @@ public class Person implements Serializable{
     }
 
     public void leve() {
-        if (20 <= this.strength && this.isAlive) {
+        if (this.strength > 20 && this.isAlive) {
             this.strength -= 20;
-            if (this.strength <= 0) {
-                this.isAlive = false;
-                Main.clearConsole();
-                System.out.println("Вы погибли от усталости!");
-                System.out.println("Игра окончена");
-            } else {
-
-            }
         } else {
-            System.out.println("Нет живых персонажей!");
+            System.out.println("Вы умерли от усталости!");
+            this.strength = 0;
+            this.isAlive = false;
         }
     }
 
