@@ -1227,20 +1227,35 @@ public class Game {
 
         // Случайным образом выбирается название оружия
         Random random = new Random();
-        switch (random.nextInt(3))  {
+        switch (random.nextInt(5))  {
             case 0: {
                 name = "Кинжал";
                 weight = 0.4;
+                price += 10;
                 break;
             }
             case 1: {
                 name = "Посох";
                 weight = 3;
+                price += 15;
                 break;
             }
             case 2: {
                 name = "Лук";
                 weight = 2.7;
+                price += 20;
+                break;
+            }
+            case 3: {
+                name = "Меч";
+                weight = 1.5;
+                price += 25;
+                break;
+            }
+            case 4: {
+                name = "Булава";
+                weight = 0.8;
+                price += 20;
                 break;
             }
         }
@@ -1250,18 +1265,22 @@ public class Game {
         switch (randTypeEffect.nextInt(5)) {
             case 0: {
                 typeEffect = "Огонь";
+                price += 25;
                 break;
             }
             case 1: {
                 typeEffect = "Ветер";
+                price += 25;
                 break;
             }
             case 2: {
                 typeEffect = "Вода";
+                price += 25;
                 break;
             }
             case 3: {
                 typeEffect = "Лед";
+                price += 25;
                 break;
             }
             case 4: {
@@ -1351,21 +1370,25 @@ public class Game {
             case 0: {
                 name = "Малое зелье ";
                 power += 5;
+                price += 5;
                 break;
             }
             case 1: {
                 name = "Среднее зелье ";
                 power += 15;
+                price += 15;
                 break;
             }
             case 2: {
                 name = "Большое зелье ";
                 power += 30;
+                price += 30;
                 break;
             }
             case 3: {
                 name = "Сильное зелье ";
                 power += 50;
+                price += 50;
                 break;
             }
 
@@ -1410,42 +1433,49 @@ public class Game {
                 name = "Яблоко";
                 power += 10;
                 weight = 0.2;
+                price += 5;
                 break;
             }
             case 1: {
                 name = "Хлеб";
                 power += 20;
                 weight = 0.3;
+                price += 10;
                 break;
             }
             case 2: {
                 name = "Мясо";
                 power += 30;
                 weight = 0.5;
+                price += 15;
                 break;
             }
             case 3: {
                 name = "Сыр";
                 power += 40;
                 weight = 0.7;
+                price += 20;
                 break;
             }
             case 4: {
                 name = "Молоко";
                 power += 50;
                 weight = 1;
+                price += 25;
                 break;
             }
             case 5: {
                 name = "Картошка";
                 power += 60;
                 weight = 0.2;
+                price += 30;
                 break;
             }
             case 6: {
                 name = "Суп";
                 power += 70;
                 weight = 0.4;
+                price += 35;
                 break;
             }
         }
