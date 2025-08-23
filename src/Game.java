@@ -875,13 +875,14 @@ public class Game {
                                     Main.clearConsole();
 
                                     System.out.println("Вы хотите зачаровать " + itemWeaponOld.getName() + "\n");
-                                    System.out.println("Стоимость зачарования: " + (itemWeaponOld.getPrice() * 3));
+                                    int price = itemWeaponOld.getPrice() * 3;
+                                    System.out.println("Стоимость зачарования: " + price);
                                     switch (Main.checkInt("1 - Да\n2 - Нет", 2)) {
                                         case 1: {
                                             Main.clearConsole();
                                             Random randomChar = new Random();
                                             int chanceChar = randomChar.nextInt(5);
-                                            if (player.getGold() >= (itemWeaponOld.getPrice() * 3)) {
+                                            if (player.getGold() >= price) {
                                                 int tempPowerEffect = randomChar.nextInt(100);
                                                 switch (chanceChar) {
                                                     case 0: {
@@ -889,10 +890,10 @@ public class Game {
                                                         Main.clearConsole();
                                                         System.out.println("Зачарование прошло неудачно!");
                                                         System.out.println("Вы потеряли " + itemWeaponOld.print() + (itemWeaponOld.getPrice() * 3) + " золота!");
-                                                        player.deliteGold(itemWeaponOld.getPrice() * 3);
+                                                        player.deliteGold(price);
                                                         player.removeItem(itemOld);
                                                         if (player.getWeapon().equals(itemWeaponOld)) {
-                                                            player.setWeapon(null);
+                                                            player.setWeapon(new Item.Weapon("Пусто", 0,0,0,"",0,0,0));
                                                         }
                                                         break;
                                                     }
@@ -916,7 +917,7 @@ public class Game {
                                                         System.out.println("Вы получили огненные чары " + tempPowerEffect);
                                                         itemWeaponNew.setTypeEffect("огонь");
                                                         itemWeaponNew.setPrice((int) Math.round(itemWeaponNew.getPowerEffect() * 1.5));
-                                                        player.deliteGold(itemWeaponOld.getPrice() * 3);
+                                                        player.deliteGold(price);
                                                         itemNew = itemWeaponNew;
                                                         if (player.getWeapon().equals(itemWeaponOld)) {
                                                             player.setWeapon(null);
@@ -950,7 +951,7 @@ public class Game {
                                                         System.out.println("Вы получили ледяные чары " + tempPowerEffect);
                                                         itemWeaponNew.setTypeEffect("лед");
                                                         itemWeaponNew.setPrice((int) Math.round(itemWeaponNew.getPowerEffect() * 1.5));
-                                                        player.deliteGold(itemWeaponOld.getPrice() * 3);
+                                                        player.deliteGold(price);
                                                         itemNew = itemWeaponNew;
                                                         if (player.getWeapon().equals(itemWeaponOld)) {
                                                             player.setWeapon(null);
@@ -983,7 +984,7 @@ public class Game {
                                                         System.out.println("Вы получили водные чары " + tempPowerEffect);
                                                         itemWeaponNew.setTypeEffect("вода");
                                                         itemWeaponNew.setPrice((int) Math.round(itemWeaponNew.getPowerEffect() * 1.5));
-                                                        player.deliteGold(itemWeaponOld.getPrice() * 3);
+                                                        player.deliteGold(price);
                                                         itemNew = itemWeaponNew;
                                                         if (player.getWeapon().equals(itemWeaponOld)) {
                                                             player.setWeapon(null);
@@ -1013,7 +1014,7 @@ public class Game {
                                                         System.out.println("Вы получили зачарование ветра " + tempPowerEffect);
                                                         itemWeaponNew.setTypeEffect("ветер");
                                                         itemWeaponNew.setPrice((int) Math.round(itemWeaponNew.getPowerEffect() * 1.5));
-                                                        player.deliteGold(itemWeaponOld.getPrice() * 3);
+                                                        player.deliteGold(price);
                                                         itemNew = itemWeaponNew;
                                                         if (player.getWeapon().equals(itemWeaponOld)) {
                                                             player.setWeapon(null);
