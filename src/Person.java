@@ -697,8 +697,8 @@ public class Person implements Serializable{
                                     Main.clearConsole();
                                     if (potion.typeEffect.equals("лечебное")) {
                                         setHealth(potion.getPower(), maxHealth);
-
                                         System.out.println("Вы выпили зелье здоровья. Здоровье: + " + potion.getPower());
+                                        inventory.remove(potion);
                                     } else if (potion.typeEffect.equals("выносливости")) {
                                         setStrength(potion.getPower(), maxStrength);
                                         System.out.println("Вы выпили зелье выносливости. Выносливость + " + potion.getPower());
