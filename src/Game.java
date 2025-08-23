@@ -882,7 +882,7 @@ public class Game {
                                             Random randomChar = new Random();
                                             int chanceChar = randomChar.nextInt(5);
                                             if (player.getGold() >= (itemWeaponOld.getPrice() * 3)) {
-                                                int tempPowerEffect = 5 + randomChar.nextInt(100);
+                                                int tempPowerEffect = randomChar.nextInt(100);
                                                 switch (chanceChar) {
                                                     case 0: {
 
