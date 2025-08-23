@@ -17,6 +17,7 @@ public class Magazine {
 
         itemsOfSales.clear();
         itemsOfSales = new ArrayList<>(Game.generateItem(countToItems, level));
+        itemsOfsellPerson.clear();
     }
 
     public void printMagazine(Person player) {
