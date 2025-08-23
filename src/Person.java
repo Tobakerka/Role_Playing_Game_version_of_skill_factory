@@ -1094,7 +1094,7 @@ public class Person implements Serializable{
             super.gold = 0;
             super.level = 1;
             super.exp = 0L;
-            super.levelUpThreshold = 100L;
+            super.levelUpThreshold = 200L;
             super.setWeapon(new Item.Weapon("Лук", 10, 10, 1, "", 0, 1, 2));
             super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1, 1, 0.5));
             super.isAlive = true;
@@ -1115,7 +1115,7 @@ public class Person implements Serializable{
             super(name, maxHealth, health, power, agility, maxStrength, strength, defense, gold, level, weapon, armor);
             super.level = level;
             super.exp = 0L;
-            super.levelUpThreshold = 100L;
+            super.levelUpThreshold = 200L;
             super.isAlive = true;
             super.race = "Скелет";
             // Уезвим к стихии ветра а резист к воде
@@ -1139,7 +1139,7 @@ public class Person implements Serializable{
             super(name, maxHealth, health, power, agility, maxStrength, strength, defense, gold, level, weapon, armor);
             super.level = level;
             super.exp = 0L;
-            super.levelUpThreshold = 100L;
+            super.levelUpThreshold = 200L;
             super.isAlive = true;
             super.race = "Зомби";
             // Уезвим к стихии воды а резист к ветру
@@ -1162,7 +1162,7 @@ public class Person implements Serializable{
             super(name, maxHealth, health, power, agility, maxStrength, strength, defense, gold, level, weapon, armor);
             super.level = level;
             super.exp = 0L;
-            super.levelUpThreshold = 100L;
+            super.levelUpThreshold = 200L;
             super.isAlive = true;
             super.race = "Гоблин";
             // Уезвим к стихии льда а резист к огню
@@ -1188,7 +1188,7 @@ public class Person implements Serializable{
             super(name, maxHealth, health, power, agility, maxStrength, strength, defense, gold, level, weapon, armor);
             super.level = level;
             super.exp = 0L;
-            super.levelUpThreshold = 100L;
+            super.levelUpThreshold = 200L;
             super.isAlive = true;
             super.race = "Вампир";
             // Уезвим к стихии огня а резист к льду
