@@ -1324,7 +1324,7 @@ public class Game {
         int levelArmor = level;
         String name = "";
         int price = 10;
-        int defence = 2;
+        int defence = 10;
         int levelCharacter = 1;
         double weight = 0;
 
