@@ -1232,30 +1232,35 @@ public class Game {
                 name = "Кинжал";
                 weight = 0.4;
                 price += 10;
+                damage += 5;
                 break;
             }
             case 1: {
                 name = "Посох";
                 weight = 3;
                 price += 15;
+                damage += 10;
                 break;
             }
             case 2: {
                 name = "Лук";
                 weight = 2.7;
                 price += 20;
+                damage += 15;
                 break;
             }
             case 3: {
                 name = "Меч";
                 weight = 1.5;
                 price += 25;
+                damage += 20;
                 break;
             }
             case 4: {
                 name = "Булава";
                 weight = 0.8;
                 price += 20;
+                damage += 17;
                 break;
             }
         }
