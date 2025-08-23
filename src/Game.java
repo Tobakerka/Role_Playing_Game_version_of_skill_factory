@@ -81,11 +81,11 @@ public class Game {
         // Присваиваются характеристики персонажа в зависимости от уровня
         for (int i = 0; i < level -1 ; i++) {
 
-            maxHealth += Math.round(maxHealth * 0.05);
-            maxStrength += Math.round(maxStrength * 0.05);
-            power += Math.round(power * 0.05);
-            agility += Math.round(agility * 0.05);
-            defence += Math.round(defence * 0.05);
+            maxHealth += Math.round(maxHealth * 0.1);
+            maxStrength += Math.round(maxStrength * 0.1);
+            power += Math.round(power * 0.1);
+            agility += Math.round(agility * 0.1);
+            defence += Math.round(defence * 0.1);
         }
 
         // Присваиваются максимально доступные жизнь и стамина.
@@ -222,12 +222,11 @@ public class Game {
                 byte[] bytes = content.toString().getBytes();
             } catch (FileNotFoundException e) {
                 Main.clearConsole();
-                new CustomException("Ошибка в файле сохранения!");
                 try {
                     sleep(1000);
                 } catch (InterruptedException ex) {
                     Main.clearConsole();
-                    new CustomException("Ошибка при ожидании!");
+                    new CustomException("Ошибка при чтении файла сохранения!");
                 }
             } catch (IOException e) {
                 Main.clearConsole();
@@ -1272,12 +1271,12 @@ public class Game {
 
         // Производится расчет параметров оружия
         for (int i = 0; i < level; i++) {
-            damage += Math.round(damage * 0.05);
-            price += Math.round(price * 0.05);
+            damage += Math.round(damage * 0.1);
+            price += Math.round(price * 0.1);
             if (!typeEffect.equals("")) {
 
                 if (random.nextBoolean()) {
-                    powerEffect += Math.round(powerEffect * 0.05);
+                    powerEffect += Math.round(powerEffect * 0.1);
                 }
             }
         }
@@ -1299,8 +1298,8 @@ public class Game {
 
         // Определение мощьности и цены брони
         for (int i = 0; i < level; i++) {
-            price += Math.round(price * 0.05);
-            defence += Math.round(defence * 0.05);
+            price += Math.round(price * 0.1);
+            defence += Math.round(defence * 0.1);
         }
 
         // Случайным образом выбирается название брони
@@ -1309,21 +1308,21 @@ public class Game {
         switch (random.nextInt(3)) {
             case 0: {
                 name = "Кожаная броня";
-                price += Math.round(price * 0.05);
+                price += Math.round(price * 0.1);
                 defence += Math.round(defence * 0.05);
                 weight = 0.5;
                 break;
             }
             case 1: {
                 name = "Железная броня";
-                price += Math.round(price * 0.08);
+                price += Math.round(price * 0.2);
                 defence += Math.round(defence * 0.08);
                 weight = 2.5;
                 break;
             }
             case 2: {
                 name = "Стальной броня";
-                price += Math.round(price * 0.1);
+                price += Math.round(price * 0.3);
                 defence += Math.round(defence * 0.1);
                 weight = 5;
                 break;
@@ -1338,31 +1337,55 @@ public class Game {
 
         // Создаются начальные параметры зелья
         String name = "";
-        int price = 10;
+        int price = 25;
         String typeEffect = "";
-        int power = 10;
+        int power = 50;
         double weight = 0.3;
 
         // Случайным образом выбирается тип зелья. Может быть лечебное или выносливость
         Random random = new Random();
         boolean isPotionEffect = random.nextBoolean();
 
+        int qualityPotion = random.nextInt(4);
+        switch (qualityPotion) {
+            case 0: {
+                name = "Малое зелье ";
+                power += 5;
+                break;
+            }
+            case 1: {
+                name = "Среднее зелье ";
+                power += 15;
+                break;
+            }
+            case 2: {
+                name = "Большое зелье ";
+                power += 30;
+                break;
+            }
+            case 3: {
+                name = "Сильное зелье ";
+                power += 50;
+                break;
+            }
+
+        }
         // Проверка типа зелья
         if (isPotionEffect) {
 
             typeEffect = "лечебное";
-            name = "Зелье лечения";
+            name += " лечения";
         } else {
 
             typeEffect = "выносливости";
-            name = "Зелье выносливости";
+            name += " выносливости";
         }
 
         //Если уровень зелья больше 1, то происходит увеличение цены и силы зелья
         if (level > 1) {
             for (int i = 0; i < level; i++) {
-                price += Math.round(price * 0.05);
-                power += Math.round(power * 0.05);
+                price += Math.round(price * 0.1);
+                power += Math.round(power * 0.1);
             }
         }
 
@@ -1374,7 +1397,7 @@ public class Game {
 
         // Создаются начальные параметры еды
         String name = "";
-        int price = 10;
+        int price = 15;
         int power = 10;
         double weight = 0;
 
@@ -1385,43 +1408,43 @@ public class Game {
         switch (rendFood) {
             case 0: {
                 name = "Яблоко";
-                power += 1;
+                power += 10;
                 weight = 0.2;
                 break;
             }
             case 1: {
                 name = "Хлеб";
-                power += 2;
+                power += 20;
                 weight = 0.3;
                 break;
             }
             case 2: {
                 name = "Мясо";
-                power += 3;
+                power += 30;
                 weight = 0.5;
                 break;
             }
             case 3: {
                 name = "Сыр";
-                power += 4;
+                power += 40;
                 weight = 0.7;
                 break;
             }
             case 4: {
                 name = "Молоко";
-                power += 5;
+                power += 50;
                 weight = 1;
                 break;
             }
             case 5: {
                 name = "Картошка";
-                power += 6;
+                power += 60;
                 weight = 0.2;
                 break;
             }
             case 6: {
                 name = "Суп";
-                power += 7;
+                power += 70;
                 weight = 0.4;
                 break;
             }
@@ -1430,8 +1453,8 @@ public class Game {
         // Если уровень еды больше 1, то происходит увеличение цены и силы еды
         if (level > 1) {
             for (int i = 0; i < level; i++) {
-                price += Math.round(price * 0.05);
-                power += Math.round(power * 0.05);
+                price += Math.round(price * 0.1);
+                power += Math.round(power * 0.1);
             }
         }
         return new Item.Food(name, price, power, level, weight);

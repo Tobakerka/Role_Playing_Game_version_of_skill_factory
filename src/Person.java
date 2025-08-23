@@ -497,15 +497,15 @@ public class Person implements Serializable{
 
             exp -= levelUpThreshold;
             level++;
-            maxHealth += Math.round(maxHealth * 0.05);
+            maxHealth += Math.round(maxHealth * 0.1);
             health = maxHealth;
-            maxStrength += Math.round(maxStrength * 0.05);
+            maxStrength += Math.round(maxStrength * 0.1);
             strength = maxStrength;
-            power += Math.round(power * 0.05);
-            agility += Math.round(agility * 0.05);
-            maxWeight += Math.round(maxWeight * 0.05);
+            power += Math.round(power * 0.1);
+            agility += Math.round(agility * 0.1);
+            maxWeight += Math.round(maxWeight * 0.1);
 
-            levelUpThreshold += Math.round(levelUpThreshold * 0.05);
+            levelUpThreshold += Math.round(levelUpThreshold * 0.1);
             System.out.println("Уровень повышен!" + " Текущий уровень: " + level);
         }
         System.out.println("Текущий опыт: " + exp + " / " + levelUpThreshold);
@@ -701,7 +701,7 @@ public class Person implements Serializable{
                                         System.out.println("Вы выпили зелье здоровья. Здоровье: + " + potion.getPower());
                                     } else if (potion.typeEffect.equals("выносливости")) {
                                         setStrength(potion.getPower(), maxStrength);
-                                        System.out.println("Вы выпили зелье " + potion.typeEffect + potion.getPower());
+                                        System.out.println("Вы выпили зелье выносливости. Выносливость + " + potion.getPower());
                                         inventory.remove(potion);
                                     }
                                 } else {
@@ -917,7 +917,7 @@ public class Person implements Serializable{
                     }
 
                     if (weapon.equals(getWeapon())) {
-                        equip += " - (Надето)";
+                        equip += " - (Надет)";
                     }
                 }
                 if (item.getType().equals("Броня")) {
@@ -1066,7 +1066,7 @@ public class Person implements Serializable{
             super.setWeapon(new Item.Weapon("Кинжал", 10, 10, 1, "", 0, 1, 0.4));
             super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1, 1, 0.5));
             super.isAlive = true;
-            super.countInventory = 10;
+            super.countInventory = 20;
             super.race = "Человек";
             inventory.add(getWeapon());
             inventory.add(getArmor());
@@ -1098,7 +1098,7 @@ public class Person implements Serializable{
             super.setWeapon(new Item.Weapon("Лук", 10, 10, 1, "", 0, 1, 2));
             super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1, 1, 0.5));
             super.isAlive = true;
-            super.countInventory = 10;
+            super.countInventory = 20;
             super.race = "Эльф";
             inventory.add(getWeapon());
             inventory.add(getArmor());
