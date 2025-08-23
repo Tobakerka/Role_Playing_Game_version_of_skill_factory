@@ -492,9 +492,10 @@ public class Person implements Serializable{
 
         System.out.println("Вы получили " + givenExp + " опыта!");
 
-        while (givenExp >= this.levelUpThreshold) {
+        exp += givenExp;
+        while (exp >= this.levelUpThreshold) {
 
-            givenExp -= levelUpThreshold;
+            exp -= levelUpThreshold;
             level++;
             maxHealth += Math.round(maxHealth * 0.05);
             health = maxHealth;
@@ -506,9 +507,6 @@ public class Person implements Serializable{
 
             levelUpThreshold += Math.round(levelUpThreshold * 0.05);
             System.out.println("Уровень повышен!" + " Текущий уровень: " + level);
-        }
-        if (givenExp < this.levelUpThreshold) {
-            this.exp += givenExp;
         }
         System.out.println("Текущий опыт: " + exp + " / " + levelUpThreshold);
         System.out.println();
@@ -1064,7 +1062,7 @@ public class Person implements Serializable{
             super.gold = 0;
             super.level = 1;
             super.exp = 0L;
-            super.levelUpThreshold = 300L;
+            super.levelUpThreshold = 200L;
             super.setWeapon(new Item.Weapon("Кинжал", 10, 10, 1, "", 0, 1, 0.4));
             super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1, 1, 0.5));
             super.isAlive = true;
@@ -1096,7 +1094,7 @@ public class Person implements Serializable{
             super.gold = 0;
             super.level = 1;
             super.exp = 0L;
-            super.levelUpThreshold = 300L;
+            super.levelUpThreshold = 100L;
             super.setWeapon(new Item.Weapon("Лук", 10, 10, 1, "", 0, 1, 2));
             super.setArmor(new Item.Armor("Кожаная кираса", 10, 10, 1, 1, 0.5));
             super.isAlive = true;
