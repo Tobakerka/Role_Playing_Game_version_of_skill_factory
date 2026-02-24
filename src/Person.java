@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 public class Person implements Serializable{
 
+    private static final long serialVersionUID = 1L;
     private int countInventory;
     ArrayList<Item> inventory = new ArrayList<>(countInventory);
 
@@ -1037,6 +1038,14 @@ public class Person implements Serializable{
 
     public void addCountInventory() {
         countInventory++;
+    }
+
+    public double getMHealth() {
+        return maxHealth;
+    }
+
+    public void setH(double mHealth) {
+        health = mHealth;
     }
 
     // Внутренние статические классы:

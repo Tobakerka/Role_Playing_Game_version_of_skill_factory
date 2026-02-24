@@ -192,17 +192,20 @@ public class Magazine {
                 }
                 case "4" : {
 
-                    switch (Main.checkInt("Цена покупки дополнительной ячейки: " + priceCount + " золота. \n1 - Купить | 2 - Выйти", 2)) {
+                    switch (Main.checkInt("Цена покупки дополнительной ячейки: " + priceCount + " золота. \n1 - Купить | любая клавиша - Выйти", 2)) {
                         case 1 : {
                             if (player.getGold() >= priceCount) {
+                                Main.clearConsole();
                                 player.addCountInventory();
                                 player.deliteGold(priceCount);
                                 System.out.println("Вы купили дополнительную ячейку");
                             } else {
                                 if (player.getGold() < priceCount) {
+                                    Main.clearConsole();
                                     System.out.println("Недостаточно золота");
                                 }
                             }
+
                         }
                     }
                     break;

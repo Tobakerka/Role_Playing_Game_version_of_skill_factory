@@ -165,6 +165,7 @@ public class Fight extends Thread {
                         Random randCheckLuck = new Random();
                         player.leve();
                         if (randCheckLuck.nextInt(100) < 5) {
+                            Main.clearConsole();
                             System.out.println("В попытке сбежать вы попали в засаду и были убиты!");
                             player.setHealth(0);
                             break;
@@ -172,9 +173,11 @@ public class Fight extends Thread {
                         Random randomLuck = new Random();
                         boolean isEscape = randomLuck.nextBoolean();
                         if (isEscape) {
+                            Main.clearConsole();
                             System.out.println("Вы успешно сбежали!");
                             break;
                         } else {
+                            Main.clearConsole();
                             System.out.println("В попытке сбежать монстр смог нанести вам урон!");
                             player.giveAttack(monster.getPower() + monster.getWeapon().getDamage());
                             System.out.println("Вы получили урон: " + (monster.getPower() + monster.getWeapon().getDamage()));

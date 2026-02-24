@@ -191,6 +191,33 @@ public class Game {
                     Main.clearConsole();
                     return;
                 }
+
+                //Блок с чит кодами
+                case "/" : {
+                    Scanner scan = new Scanner(System.in);
+                    switch (scan.next()) {
+                        case "givemoneyplease" :{
+                            player.addGold(10000);
+                            System.out.println("Вы получили 10 000 Золота");
+                            break;
+                        }
+                        case "healme" : {
+                            player.setH(player.getMHealth());
+                            System.out.println("Вы исцелились");
+                            break;
+                        }
+                        case "givemoremoneyplease" : {
+                            player.addGold(10000000);
+                            System.out.println("Вы получили 10 000 000 Золота");
+                            break;
+                        }
+                        default: {
+                            System.out.println("Неизвестная команда");
+                            break;
+                        }
+                    }
+                    break;
+                }
                 default: {
                     Main.clearConsole();
                     System.err.println("Некорректный ввод!");
@@ -797,6 +824,7 @@ public class Game {
                                                                 System.out.println("Успешно прокачено!");
                                                                 System.out.println("Броня: " + armorNew.getName() + " " + armorNew.getLevelChange() + " ур.");
                                                             } else {
+                                                                Main.clearConsole();
                                                                 System.err.println("Недостаточно денег!");
                                                             }
                                                             break;
@@ -831,6 +859,7 @@ public class Game {
                                 System.err.println("Некорректный ввод!");
                             }
                         } else {
+                            Main.clearConsole();
                             return;
                         }
                     }
